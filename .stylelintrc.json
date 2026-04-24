@@ -1,0 +1,69 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "alpha-value-notation": "number",
+    "color-function-notation": "modern",
+    "color-no-invalid-hex": true,
+    "color-hex-length": "short",
+    "comment-no-empty": true,
+    "comment-empty-line-before": [
+      "always",
+      {
+        "except": ["first-nested"],
+        "ignore": ["stylelint-commands", "after-comment"]
+      }
+    ],
+    "custom-property-empty-line-before": [
+      "always",
+      {
+        "except": ["after-comment", "after-custom-property", "first-nested"],
+        "ignore": ["after-comment", "inside-single-line-block"]
+      }
+    ],
+    "custom-property-pattern": [
+      "^(_[a-z][a-z0-9-]*|color-[a-z][a-z0-9-]*|font-[a-z][a-z0-9-]*|line-height-[a-z][a-z0-9-]*|letter-spacing-[a-z][a-z0-9-]*|space-[a-z0-9-]+|radius-[a-z][a-z0-9-]*|shadow-[a-z][a-z0-9-]*|border-[a-z][a-z0-9-]*|transition-[a-z][a-z0-9-]*|animation-[a-z][a-z0-9-]*|ease-[a-z][a-z0-9-]*|focus-[a-z][a-z0-9-]*|density-[a-z][a-z0-9-]*|table-[a-z][a-z0-9-]*|layout-[a-z][a-z0-9-]*|z-[a-z][a-z0-9-]*)$",
+      {
+        "message": "Custom property must follow the framework naming convention (semantic tokens or --_ primitives)"
+      }
+    ],
+    "declaration-no-important": true,
+    "no-duplicate-selectors": true,
+    "no-empty-source": true,
+    "no-descending-specificity": null,
+    "property-no-vendor-prefix": null,
+    "selector-id-pattern": null,
+    "selector-no-qualifying-type": [
+      true,
+      { "ignore": ["attribute"] }
+    ],
+    "selector-max-id": 0,
+    "selector-max-compound-selectors": 4,
+    "selector-max-specificity": "0,3,3",
+    "selector-not-notation": "complex",
+    "selector-pseudo-class-no-unknown": [
+      true,
+      { "ignorePseudoClasses": ["global"] }
+    ],
+    "unit-allowed-list": [
+      "rem", "em", "px", "%", "vw", "vh", "dvb", "dvh", "dvw",
+      "ch", "ex", "fr", "deg", "turn", "s", "ms", "dpi", "dpcm", "dppx"
+    ],
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreKeywords": [
+          "Roboto", "Helvetica", "Arial", "Consolas", "Menlo",
+          "SFMono-Regular", "Liberation Mono", "Segoe UI",
+          "currentColor"
+        ]
+      }
+    ],
+    "shorthand-property-no-redundant-values": true,
+    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "keyframes-name-pattern": "^[a-z][a-z0-9-]*$",
+    "media-feature-range-notation": "context",
+    "import-notation": "string"
+  },
+  "ignoreFiles": ["node_modules/**", "dist/**"]
+}

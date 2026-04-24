@@ -1,0 +1,4916 @@
+/*!
+ * lumen.css — v1.0.0
+ *
+ * A CSS-only, CSS-variable-configurable, semantic-first framework for
+ * productive business applications. No startup classes required.
+ *
+ * Public customization API: override the semantic tokens defined on :root
+ * inside the `tokens` layer. Primitive tokens (--_*) are internal only.
+ *
+ * Layer order (narrowest override wins):
+ *   reset → tokens → base → typography → controls → data → state
+ */
+
+/* ─── Layer declaration (establishes explicit cascade order) ──────────────── */
+@layer reset, tokens, base, typography, controls, data, state;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: reset
+   Normalises box-sizing, removes browser UA margins/padding, and establishes
+   media-safe foundations. Kept minimal and auditable.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer reset {
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    html {
+        text-size-adjust: 100%; /* prevent font inflation on mobile orientation change */
+        -webkit-text-size-adjust: 100%;
+        color-scheme: light dark; /* honour OS chrome colour */
+    }
+
+    /* Opt-in smooth scrolling — respects prefers-reduced-motion override below */
+    html[data-smooth-scroll] {
+        scroll-behavior: smooth;
+    }
+
+    img,
+    video,
+    svg,
+    canvas,
+    iframe,
+    embed,
+    object {
+        display: block;
+        max-inline-size: 100%;
+    }
+
+    /* Remove list bullets only when a list is explicitly marked as presentational */
+    :where(ul, ol)[role="list"] {
+        list-style: none;
+        padding: 0;
+    }
+
+    /* Inherit fonts for form elements (UA default is system-ui in modern browsers
+     but certain inputs still render differently) */
+    :where(button, input, select, textarea) {
+        font: inherit;
+        color: inherit;
+    }
+
+    /* Prevent textarea resize from breaking layouts */
+    textarea {
+        resize: vertical;
+    }
+
+    /* Remove built-in fieldset border and padding */
+    fieldset {
+        border: none;
+        padding: 0;
+    }
+
+    /* Remove default appearance for search inputs */
+    :where([type="search"]) {
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    /* Reduce motion for all transitions and animations when requested */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important; /* stylelint-disable-line declaration-no-important */
+            animation-iteration-count: 1 !important; /* stylelint-disable-line declaration-no-important */
+            transition-duration: 0.01ms !important; /* stylelint-disable-line declaration-no-important */
+            scroll-behavior: auto !important; /* stylelint-disable-line declaration-no-important */
+        }
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: tokens
+   Defines the complete CSS custom property contract.
+
+   Naming convention:
+     --_*           primitive tokens (internal derivation helpers, not public API)
+     --color-*      semantic color tokens  ← PUBLIC API
+     --font-*       typography tokens      ← PUBLIC API
+     --space-*      spacing tokens         ← PUBLIC API
+     --radius-*     border-radius tokens   ← PUBLIC API
+     --shadow-*     elevation tokens       ← PUBLIC API
+     --shadow-color shadow tint (RGB)      ← PUBLIC API (brand-tintable)
+     --border-*     border tokens          ← PUBLIC API
+     --transition-* motion tokens          ← PUBLIC API
+     --ease-*       easing curves          ← PUBLIC API
+     --focus-*      focus ring tokens      ← PUBLIC API
+     --z-*          z-index scale          ← PUBLIC API
+     --layout-*     layout tokens          ← PUBLIC API
+
+   Theme resolution:
+     All color tokens use the native CSS `light-dark()` function, which picks
+     the light or dark variant based on the element's used `color-scheme`. The
+     root `color-scheme` defaults to `light dark`, so the OS preference wins.
+     Add [data-theme="light"] or [data-theme="dark"] on <html> to force a
+     scheme. No duplicated token declarations are needed per theme.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer tokens {
+    /* ── Primitive scale & semantic tokens ─────────────────────────────────────
+       Primitives (--_*) are internal and not part of the public override API.
+       Semantic tokens use native `light-dark()` to resolve theme-sensitive
+       colors. The root `color-scheme` is `light dark`, so the OS preference
+       wins by default. [data-theme="light"] or [data-theme="dark"] on <html>
+       forces a scheme. Non-color tokens that differ per theme (shadows, table
+       helpers) live in a dedicated dark-scope block below. ────────────────── */
+    :root {
+        color-scheme: light dark;
+
+        /* Neutral palette — modern cool slate scale for a clean native feel */
+        --_neutral-0: #fff;
+        --_neutral-50: #f8fafc;
+        --_neutral-100: #f1f5f9;
+        --_neutral-200: #e2e8f0;
+        --_neutral-300: #cbd5e1;
+        --_neutral-400: #94a3b8;
+        --_neutral-500: #64748b;
+        --_neutral-600: #475569;
+        --_neutral-700: #334155;
+        --_neutral-800: #1e293b;
+        --_neutral-850: #172033;
+        --_neutral-900: #0f172a;
+        --_neutral-950: #020617;
+
+        /* Brand / action palette — refined indigo-blue (Tailwind blue) */
+        --_blue-50: #eff6ff;
+        --_blue-100: #dbeafe;
+        --_blue-200: #bfdbfe;
+        --_blue-400: #60a5fa;
+        --_blue-500: #3b82f6;
+        --_blue-600: #2563eb;
+        --_blue-700: #1d4ed8;
+        --_blue-800: #1e40af;
+
+        /* Status palettes */
+        --_green-50: #ecfdf5;
+        --_green-400: #34d399;
+        --_green-500: #10b981;
+        --_green-700: #047857;
+        --_green-900: #064e3b;
+        --_yellow-50: #fefce8;
+        --_yellow-400: #facc15;
+        --_yellow-500: #eab308;
+        --_yellow-700: #a16207;
+        --_yellow-900: #713f12;
+        --_red-50: #fef2f2;
+        --_red-400: #f87171;
+        --_red-500: #ef4444;
+        --_red-600: #dc2626;
+        --_red-700: #b91c1c;
+        --_red-900: #7f1d1d;
+
+        /* Accent purple primitives (used for visited links) */
+        --_purple-300: #c4b5fd;
+        --_purple-500: #7c3aed;
+
+        /* Surfaces */
+        --color-bg: light-dark(var(--_neutral-0), var(--_neutral-950));
+        --color-surface: light-dark(var(--_neutral-0), var(--_neutral-900));
+        --color-surface-raised: light-dark(var(--_neutral-0), var(--_neutral-850));
+        --color-surface-sunken: light-dark(var(--_neutral-50), var(--_neutral-950));
+
+        /* Borders */
+        --color-border: light-dark(var(--_neutral-200), var(--_neutral-700));
+        --color-border-strong: light-dark(var(--_neutral-300), var(--_neutral-600));
+        --color-border-subtle: light-dark(var(--_neutral-100), var(--_neutral-800));
+
+        /* Text */
+        --color-text: light-dark(var(--_neutral-900), var(--_neutral-100));
+        --color-text-secondary: light-dark(var(--_neutral-600), var(--_neutral-300));
+        --color-text-tertiary: light-dark(var(--_neutral-500), var(--_neutral-400));
+        --color-text-disabled: light-dark(var(--_neutral-400), var(--_neutral-500));
+        --color-text-inverse: light-dark(var(--_neutral-0), var(--_neutral-900));
+
+        /* Foreground on filled accent/link surfaces. Light: white on blue-600.
+           Dark: near-black on blue-200 (bright-accent convention) so filled
+           primary buttons keep ≥ 4.5:1 contrast in both schemes. */
+        --color-text-on-accent: light-dark(var(--_neutral-0), var(--_neutral-900));
+
+        /* Links (on surface text, not filled surfaces) */
+        --color-link: light-dark(var(--_blue-600), var(--_blue-200));
+        --color-link-visited: light-dark(var(--_purple-500), var(--_purple-300));
+        --color-link-hover: light-dark(var(--_blue-700), var(--_blue-100));
+
+        /* Action / accent — strong saturated hue in light, bright tint in dark.
+           Dark uses --_blue-200 because the accent doubles as both a filled
+           surface (paired with near-black text) and a text/border color on the
+           dark body; a bright tint keeps AA contrast in both roles. */
+        --color-accent: light-dark(var(--_blue-600), var(--_blue-200));
+        --color-accent-hover: light-dark(var(--_blue-700), var(--_blue-100));
+        --color-accent-active: light-dark(var(--_blue-700), var(--_blue-400));
+        --color-accent-subtle: light-dark(var(--_blue-50), var(--_blue-800));
+
+        /* Semantic status: success */
+        --color-success: light-dark(var(--_green-500), var(--_green-400));
+        --color-success-subtle: light-dark(var(--_green-50), var(--_green-900));
+        --color-success-text: light-dark(var(--_green-700), var(--_green-400));
+        --color-success-border: light-dark(var(--_green-400), var(--_green-700));
+
+        /* Semantic status: warning */
+        --color-warning: light-dark(var(--_yellow-500), var(--_yellow-400));
+        --color-warning-subtle: light-dark(var(--_yellow-50), var(--_yellow-900));
+        --color-warning-text: light-dark(var(--_yellow-700), var(--_yellow-400));
+        --color-warning-border: light-dark(var(--_yellow-400), var(--_yellow-700));
+
+        /* Semantic status: danger / error */
+        --color-danger: light-dark(var(--_red-500), var(--_red-400));
+        --color-danger-subtle: light-dark(var(--_red-50), var(--_red-900));
+        --color-danger-text: light-dark(var(--_red-700), var(--_red-400));
+        --color-danger-border: light-dark(var(--_red-400), var(--_red-700));
+
+        /* Button variant tokens — filled backgrounds derive hover/active via
+           color-mix. Light mixes toward black, dark mixes toward white so each
+           theme tints in the visually correct direction. */
+        --color-button-neutral-bg: light-dark(var(--color-surface-sunken), var(--_neutral-800));
+        --color-button-neutral-hover: light-dark(var(--color-border), var(--_neutral-700));
+        --color-button-neutral-active: light-dark(var(--color-border-strong), var(--_neutral-600));
+        --color-button-neutral-text: var(--color-text);
+        --color-button-neutral-border: var(--color-border);
+        --color-button-accent-bg: var(--color-accent);
+        --color-button-accent-hover: var(--color-accent-hover);
+        --color-button-accent-active: var(--color-accent-active);
+        --color-button-accent-text: var(--color-text-on-accent);
+        --color-button-accent-border: transparent;
+        --color-button-success-bg: var(--color-success);
+        --color-button-success-hover: light-dark(
+            color-mix(in srgb, var(--color-success) 88%, black),
+            color-mix(in srgb, var(--color-success) 84%, white)
+        );
+        --color-button-success-active: light-dark(
+            color-mix(in srgb, var(--color-success) 76%, black),
+            color-mix(in srgb, var(--color-success) 70%, white)
+        );
+        --color-button-success-text: light-dark(
+            var(--color-text-on-accent),
+            var(--color-text-inverse)
+        );
+        --color-button-success-border: transparent;
+        --color-button-warning-bg: var(--color-warning);
+        --color-button-warning-hover: light-dark(
+            color-mix(in srgb, var(--color-warning) 88%, black),
+            color-mix(in srgb, var(--color-warning) 84%, white)
+        );
+        --color-button-warning-active: light-dark(
+            color-mix(in srgb, var(--color-warning) 76%, black),
+            color-mix(in srgb, var(--color-warning) 70%, white)
+        );
+        --color-button-warning-text: light-dark(var(--color-text), var(--color-text-inverse));
+        --color-button-warning-border: transparent;
+        --color-button-danger-bg: var(--color-danger);
+        --color-button-danger-hover: light-dark(
+            color-mix(in srgb, var(--color-danger) 88%, black),
+            color-mix(in srgb, var(--color-danger) 84%, white)
+        );
+        --color-button-danger-active: light-dark(
+            color-mix(in srgb, var(--color-danger) 76%, black),
+            color-mix(in srgb, var(--color-danger) 70%, white)
+        );
+        --color-button-danger-text: light-dark(
+            var(--color-text-on-accent),
+            var(--color-text-inverse)
+        );
+        --color-button-danger-border: transparent;
+
+        /* Focus ring */
+        --focus-ring-color: light-dark(var(--_blue-500), var(--_blue-400));
+        --focus-ring-width: 2px;
+        --focus-ring-offset: 2px;
+        --focus-ring-style: solid;
+
+        /* Typography */
+        --font-family-base:
+            -apple-system, "BlinkMacSystemFont", "Segoe UI Variable", "Segoe UI", "Inter",
+            system-ui, "Roboto", "Helvetica Neue", "Arial", sans-serif;
+        --font-family-mono:
+            ui-monospace, "SF Mono", "SFMono-Regular", "JetBrains Mono", "Fira Code", "Menlo",
+            "Monaco", "Consolas", "Liberation Mono", monospace;
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-md: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        --font-size-3xl: 1.875rem;
+        --font-size-4xl: 2.25rem;
+        --font-weight-normal: 400;
+        --font-weight-medium: 500;
+        --font-weight-semibold: 600;
+        --font-weight-bold: 700;
+        --line-height-tight: 1.2;
+        --line-height-snug: 1.4;
+        --line-height-normal: 1.5;
+        --line-height-relaxed: 1.65;
+        --letter-spacing-tight: -0.015em;
+        --letter-spacing-normal: 0;
+        --letter-spacing-wide: 0.04em;
+
+        /* Spacing */
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-5: 1.25rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-10: 2.5rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+
+        /* Semantic page layout */
+        --layout-sidebar-width: clamp(18rem, 22vw, 24rem);
+
+        /* Semantic navbar layout (via data-navbar attribute) */
+        --layout-navbar-height: 3rem;
+        --layout-navbar-padding-inline: var(--space-4);
+        --layout-navbar-item-gap: var(--space-1);
+        --layout-navbar-dropdown-min-inline-size: 12rem;
+        --layout-navbar-surface: var(--color-bg);
+        --layout-navbar-border-color: var(--color-border);
+        --layout-navbar-shadow: none;
+        --layout-navbar-z-index: var(--z-sticky);
+
+        /* Semantic loading / spinner layout  ← PUBLIC API */
+        --layout-spinner-size: 1.25rem;
+        --layout-spinner-button-size: 1em;
+        --layout-spinner-region-size: 2.5rem;
+        --layout-spinner-stroke-width: 2px;
+        --layout-spinner-track-color: var(--color-border);
+        --layout-spinner-color: var(--color-accent);
+        --layout-spinner-duration: 0.75s;
+        --layout-spinner-region-backdrop: rgb(from var(--color-bg) r g b / 0.65);
+
+        /* Semantic toast notification layout  ← PUBLIC API
+       Host contract: aside[data-toast-region][aria-label] > :is(ul, ol) > li > div[role="status"|"alert"]
+       Each li is a structural list item; the inner div carries the live-region role.
+       Urgency: role="status" (polite) or role="alert" (assertive) on the inner div.
+       Visual tone (optional): data-tone="success|warning|danger" on the li.
+       Placement: fixed top-end stack only (v1). Application code owns lifecycle. */
+        --layout-toast-top: var(--space-4);
+        --layout-toast-inline-end: var(--space-4);
+        --layout-toast-gap: var(--space-3);
+        --layout-toast-max-inline-size: 22rem;
+        --layout-toast-z-index: var(--z-toast);
+
+        /* Semantic pagination layout (nav[data-pagination])  ← PUBLIC API
+       Host contract: nav[data-pagination][aria-label|aria-labelledby]
+         > :is(ol, ul)
+           > li > a[href]                        normal page link
+           > li > a[aria-current="page"]         current page link
+           > li > span[aria-disabled="true"]     disabled previous / next control
+           > li > span[aria-hidden="true"]        ellipsis gap marker
+       Application code owns page calculation and link generation. */
+        --layout-pagination-gap: var(--space-1);
+        --layout-pagination-item-min-inline-size: 2.25rem;
+        --layout-pagination-item-padding-inline: var(--space-3);
+
+        /* Semantic breadcrumb navigation (nav[data-breadcrumbs])  ← PUBLIC API
+       Host contract: nav[data-breadcrumbs][aria-label|aria-labelledby]
+         > ol
+           > li > a[href]                        ancestor location step
+           > li > a[aria-current="page"]         current page (last item)
+           > li > span[aria-current="page"]      current page non-link (last item)
+       Separators are decorative CSS (li + li::before) — never written into the DOM.
+       Application code owns route generation and localized crumb labels. */
+        --layout-breadcrumb-gap: var(--space-2);
+        --layout-breadcrumb-separator-color: var(--color-text-tertiary);
+        --layout-breadcrumb-current-font-weight: var(--font-weight-medium);
+
+        /* Semantic field composition (div[data-field], fieldset[data-field])  ← PUBLIC API
+       Single-field wrapper: div[data-field] > label | > control | [data-help] | [data-error] | [data-success]
+       Grouped-choice wrapper: fieldset[data-field] > legend | > controls | [data-help] | [data-error] | [data-success]
+       Inline field row: div[data-field-row] > div[data-field] children
+       Application code owns validation logic and ARIA state management. */
+        --layout-field-gap: var(--space-1);
+        --layout-field-help-size: var(--font-size-xs);
+        --layout-field-row-gap: var(--space-4);
+        --layout-field-row-min-column-size: 14rem;
+
+        /* Semantic icon-nav layout (nav.icon-nav)  ← PUBLIC API */
+        --layout-icon-nav-item-size: 3rem;
+        --layout-icon-nav-icon-size: 1.5rem;
+        --layout-icon-nav-gap: var(--space-1);
+        --layout-icon-nav-padding-inline: var(--space-2);
+        --layout-icon-nav-padding-block: var(--space-2);
+        --layout-icon-nav-label-size: var(--font-size-xs);
+        --layout-icon-nav-surface: var(--color-bg);
+        --layout-icon-nav-border-color: var(--color-border);
+        --layout-icon-nav-shadow: none;
+        --layout-icon-nav-z-index: var(--z-sticky);
+
+        /* Layout shell (div[data-layout-shell])  ← PUBLIC API
+       Host contract: div[data-layout-shell]
+         > header[data-layout-header]    — optional sticky header (contains nav[data-navbar])
+         > aside[data-layout-sidebar]    — optional primary sidebar (left)
+         > main                          — required primary content region
+         > aside[data-layout-panel]      — optional secondary inspector panel (right)
+         > footer[data-layout-footer]    — optional footer bar
+       Supported direct-child combinations (exactly eight):
+         main
+         header + main
+         header + main + panel
+         header + main + footer
+         header + sidebar + main
+         header + sidebar + main + panel
+         header + sidebar + main + footer
+         header + sidebar + main + panel + footer
+       Responsive collapse at 48em:
+         - aside[data-layout-sidebar] goes off-canvas; revealed with [data-open].
+         - aside[data-layout-panel] hidden at ≤ 48em; panel track collapsed.
+         - nav[data-navbar] collapses; revealed when sibling toggle has aria-expanded="true".
+       Application code owns sidebar open/close state, panel visibility,
+       toggle events, aria-expanded state, and open-state persistence. */
+        --layout-shell-header-height: 3.5rem;
+        --layout-shell-sidebar-width: var(--layout-sidebar-width); /* reuses sidebar token */
+        --layout-shell-panel-width: 20rem;
+        --layout-shell-gap: 0;
+
+        /* Border radius */
+        --radius-sm: 0.25rem; /* 4px  — chips, tags, inner slots */
+        --radius-md: 0.375rem; /* 6px  — inputs, buttons */
+        --radius-lg: 0.625rem; /* 10px — cards, dropdowns, popovers */
+        --radius-xl: 0.875rem; /* 14px — dialogs, sheets */
+        --radius-full: 9999px;
+
+        /* Borders */
+        --border-width: 1px;
+        --border-width-2: 2px;
+        --border-style: solid;
+
+        /* Shadows — tintable via --shadow-color (RGB triplet). Elevation ramp
+           shares a single hue so brand tinting only requires overriding one
+           token. Dark theme uses a denser, darker hue below. */
+        --shadow-color: 15 23 42; /* slate-900 RGB */
+        --shadow-sm:
+            0 1px 2px 0 rgb(var(--shadow-color) / 0.04),
+            0 1px 1px 0 rgb(var(--shadow-color) / 0.03);
+        --shadow-md:
+            0 4px 8px -2px rgb(var(--shadow-color) / 0.06),
+            0 2px 4px -2px rgb(var(--shadow-color) / 0.04);
+        --shadow-lg:
+            0 12px 24px -6px rgb(var(--shadow-color) / 0.1),
+            0 4px 8px -4px rgb(var(--shadow-color) / 0.06);
+        --shadow-xl:
+            0 24px 40px -12px rgb(var(--shadow-color) / 0.14),
+            0 8px 16px -8px rgb(var(--shadow-color) / 0.08);
+
+        /* Transitions & easing curves */
+        --transition-fast: 75ms cubic-bezier(0.33, 1, 0.68, 1);
+        --transition-base: 125ms cubic-bezier(0.33, 1, 0.68, 1);
+        --transition-slow: 200ms cubic-bezier(0.33, 1, 0.68, 1);
+        --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+        --ease-in-out: cubic-bezier(0.33, 1, 0.68, 1);
+        --ease-emphasized: cubic-bezier(0.33, 1, 0.68, 1);
+
+        /* Z-index scale — layering contract for stacking contexts. Components
+           wire their --layout-*-z-index tokens to this scale. */
+        --z-base: 0;
+        --z-docked: 10;
+        --z-sticky: 100;
+        --z-dropdown: 1000;
+        --z-overlay: 1100;
+        --z-modal: 1200;
+        --z-toast: 1300;
+
+        /* Table-specific */
+        --table-stripe-bg: var(--_neutral-50);
+        --table-row-hover-bg: var(--color-accent-subtle);
+        --table-cell-padding-block: var(--space-3);
+        --table-cell-padding-inline: var(--space-4);
+        --table-cell-padding-block-compact: var(--space-1);
+        --table-sticky-header-shadow: 0 2px 4px -1px rgb(var(--shadow-color) / 0.08);
+
+        /* Semantic badge layout (:where(span, strong, small)[data-badge])  ← PUBLIC API
+       Host contract: :where(span, strong, small)[data-badge]
+       Visual tone (optional): data-tone="neutral|accent|success|warning|danger".
+       Default tone is neutral. Purely presentational, non-interactive, compact pill only (v1). */
+        --layout-badge-padding-inline: var(--space-2);
+        --layout-badge-padding-block: var(--space-1);
+        --layout-badge-font-size: var(--font-size-xs);
+        --layout-badge-radius: var(--radius-full);
+
+        /* Semantic input-group layout (div[data-input-group])  ← PUBLIC API
+       Host contract: div[data-input-group]
+         > :is(input:not([type="checkbox"],[type="radio"],[type="range"],[type="file"],[type="color"]), select, button)
+         > [data-prefix]  — non-interactive leading text (e.g. currency symbol, domain)
+         > [data-suffix]  — non-interactive trailing text (e.g. unit label)
+         > [data-icon]    — non-interactive leading icon
+         > button         — trailing action button (e.g. "Search", "Copy", "Clear")
+       v1 scope: presentation-only composition wrapper for the four canonical patterns:
+         leading icon search, currency prefix, suffix unit, and trailing action button.
+       Application code owns: submission, clear-button behaviour, masking, unit conversion,
+         and validation messaging. data-input-group is not a general layout primitive. */
+        --layout-input-group-gap: 0px; /* gap between segments; 0 gives a flush joined look */
+        --layout-input-group-padding-inline: var(
+            --space-3
+        ); /* inline padding for prefix/suffix/icon slots */
+
+        --layout-input-group-action-min-inline-size: 2.5rem; /* minimum inline size for trailing action buttons */
+
+        /* Semantic region-state layout (:where(section, article, main, aside)[data-region-state])  ← PUBLIC API
+       Host contract: :where(section, article, main, aside)[data-region-state="empty|success|error"]
+       data-region-state="empty"   — informational; no required live-region role.
+       data-region-state="success" — pair with role="status" when AT announcement is needed.
+       data-region-state="error"   — pair with role="alert" when AT announcement is needed.
+       The host may contain a heading, body content (p, ul, ol), and an optional direct footer for actions.
+       Reuses existing success and danger semantic token families — no new feedback palette. */
+        --layout-region-state-padding: var(--space-8);
+        --layout-region-state-gap: var(--space-4);
+        --layout-region-state-max-inline-size: 36rem;
+
+        /* Semantic form-level validation summary (form[data-form-errors] > [data-form-summary])  ← PUBLIC API
+       Host contract: form[data-form-errors]
+         > [data-form-summary][role="alert"|"status"]  — summary host; role="alert" for assertive, "status" for polite
+             > :is(h2, h3, h4)                         — required summary heading
+             > :is(ul, ol)                              — required link list; each li contains an anchor targeting an invalid control or legend
+       Grouped-field errors extend the existing fieldset[data-field] contract:
+         fieldset[data-field][aria-invalid="true"]      — adds group border reinforcement and legend emphasis
+       Application code owns: when validation runs, populating the summary list, moving focus after submit,
+       and setting aria-invalid on controls and the fieldset. lumen.css owns presentation only. */
+        --layout-form-summary-padding: var(--space-4);
+        --layout-form-summary-gap: var(--space-3);
+        --layout-form-summary-max-inline-size: 40rem;
+
+        /* Semantic tabs (section[data-tabs])  ← PUBLIC API
+       Host contract: section[data-tabs]
+         > [role=tablist]
+             > button[role=tab][aria-controls][aria-selected]   one per panel
+         > [role=tabpanel][id][aria-labelledby]                 one per tab
+       Variant: section[data-tabs][data-variant=segmented]  — segmented-control appearance.
+       Same ARIA contract; different visual treatment. No separate public API.
+       Panels are hidden via the native `hidden` attribute.
+       Application code owns: arrow-key navigation, roving tabindex, panel activation,
+       and toggling `hidden` on tabpanels. lumen.css owns presentation only. */
+        --layout-tabs-gap: var(--space-1);
+        --layout-tabs-padding-inline: var(--space-1);
+        --layout-tabs-panel-padding: var(--space-4);
+
+        /* Command menu (details[data-menu])  ← PUBLIC API
+       Host contract: details[data-menu]
+         > summary                                    — trigger button; any content (icon, text, ellipsis)
+         > :is(ul, ol)                                — action list
+             > li > :is(a[href], button[type=button]) — action item
+             > li[role=separator]                     — visual divider between groups
+       Variant: li[data-tone=danger]                  — destructive-action emphasis on a single item.
+       Placement: default is bottom-inline-end; add data-align=start for bottom-inline-start.
+       Application code owns: click handling, outside-click dismissal, and optional arrow-key roving.
+       lumen.css owns: visual surface, placement, and item styling only. */
+        --layout-menu-min-inline-size: 10rem;
+        --layout-menu-padding: var(--space-1);
+        --layout-menu-item-padding-inline: var(--space-3);
+
+        /* Data-view shell (section[data-data-view])  ← PUBLIC API
+       Host contract: section[data-data-view]
+         > header                                 — optional title/action bar
+         > form[data-data-toolbar]                — optional search/filter toolbar
+         > [data-results-summary]                 — optional result count / filter context
+         > [data-data-content]                    — required content region (table, list, cards, or region-state host)
+         > footer                                 — optional pagination / secondary actions
+       Application code owns: query logic, result loading, pagination math,
+         filter state, and aria-live announcements. lumen.css owns framing only. */
+        --layout-data-view-gap: var(--space-4);
+        --layout-data-view-toolbar-gap: var(--space-3);
+        --layout-data-view-summary-font-size: var(--font-size-sm);
+
+        /* Notification-center surface (aside[data-notification-center])  ← PUBLIC API
+       Host contract: aside[data-notification-center][aria-label|aria-labelledby]
+         > header                                    — optional panel header
+         > :is(ul, ol)                               — required notification list
+             > li                                    — one notification item per li
+               > :is(h3, h4, h5, h6)                — notification heading (required)
+               > p                                   — supporting body text (optional)
+               > time                                — timestamp (optional)
+               > a[href] | button[type="button"]     — single primary action (optional)
+               > button[type="button"][data-dismiss] — dismiss or mark-read button (optional)
+         > footer                                    — optional panel footer
+       Compose with the existing region-state API for the empty center:
+         place aside[data-region-state="empty"] inside the host when the list is empty.
+       Unread state: data-unread="true" on the li.
+       Visual tone (optional): data-tone="success|warning|danger" on the li.
+       This surface is persistent browsable content — NOT a live-region toast queue.
+       Application code owns: notification retrieval, unread counts, mark-read
+         behaviour, item dismissal, and persistence. lumen.css owns presentation only. */
+        --layout-notification-center-gap: var(--space-2);
+        --layout-notification-item-padding: var(--space-3);
+        --layout-notification-item-radius: var(--radius-md);
+
+        /* ── Card (article[data-card]) ────────────────────────────────────────
+       Host: article[data-card]
+       Optional attributes: data-tone="neutral|accent|success|warning|danger"
+                            data-density="comfortable|compact"
+                            data-media-position="top|start"
+       Children: figure[data-card-media]? div[data-card-main]
+       Inside div[data-card-main]: header? div[data-card-body] footer?
+       Reuses all surface/border/shadow/typography/tone tokens.
+       Application code owns: navigation destinations, analytics,
+         data loading, media sources, command handlers. ── */
+        --layout-card-padding: var(--space-5);
+        --layout-card-padding-compact: var(--space-3);
+        --layout-card-gap: var(--space-4);
+        --layout-card-gap-compact: var(--space-2);
+        --layout-card-radius: var(--radius-lg);
+        --layout-card-media-inline-size: 10rem;
+        --layout-card-media-aspect-ratio: 16 / 9;
+    }
+
+    /* ── Theme scheme forcing ──────────────────────────────────────────────── */
+    /* Explicit overrides on <html data-theme> force a single scheme, which
+       controls how light-dark() resolves color tokens above. */
+    :root[data-theme="light"] {
+        color-scheme: light;
+    }
+
+    /* ── Dark-theme overrides for non-color tokens ─────────────────────────── */
+    /* Applies when OS preference is dark (and no explicit light override) or
+       when [data-theme="dark"] is set. These properties cannot be expressed
+       via light-dark() because they're full shadow strings or non-color
+       primitives (RGB triplets, masked caret fills). */
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            /* Shadow hue shifts to pure black with stronger alpha on dark bgs */
+            --shadow-color: 0 0 0;
+            --shadow-sm:
+                0 1px 2px 0 rgb(var(--shadow-color) / 0.45),
+                0 1px 1px 0 rgb(var(--shadow-color) / 0.3);
+            --shadow-md:
+                0 4px 8px -2px rgb(var(--shadow-color) / 0.55),
+                0 2px 4px -2px rgb(var(--shadow-color) / 0.4);
+            --shadow-lg:
+                0 12px 24px -6px rgb(var(--shadow-color) / 0.6),
+                0 4px 8px -4px rgb(var(--shadow-color) / 0.45);
+            --shadow-xl:
+                0 24px 40px -12px rgb(var(--shadow-color) / 0.7),
+                0 8px 16px -8px rgb(var(--shadow-color) / 0.5);
+
+            /* Table helpers (not color-only, needs dark alpha) */
+            --table-stripe-bg: var(--_neutral-850);
+            --table-row-hover-bg: rgb(from var(--color-accent) r g b / 0.14);
+            --table-sticky-header-shadow: 0 2px 4px -1px rgb(var(--shadow-color) / 0.5);
+
+            /* Select caret SVG — lighter tint for dark surfaces */
+            --_select-caret:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    }
+
+    :root[data-theme="dark"] {
+        color-scheme: dark;
+
+        --shadow-color: 0 0 0;
+        --shadow-sm:
+            0 1px 2px 0 rgb(var(--shadow-color) / 0.45),
+            0 1px 1px 0 rgb(var(--shadow-color) / 0.3);
+        --shadow-md:
+            0 4px 8px -2px rgb(var(--shadow-color) / 0.55),
+            0 2px 4px -2px rgb(var(--shadow-color) / 0.4);
+        --shadow-lg:
+            0 12px 24px -6px rgb(var(--shadow-color) / 0.6),
+            0 4px 8px -4px rgb(var(--shadow-color) / 0.45);
+        --shadow-xl:
+            0 24px 40px -12px rgb(var(--shadow-color) / 0.7),
+            0 8px 16px -8px rgb(var(--shadow-color) / 0.5);
+        --table-stripe-bg: var(--_neutral-850);
+        --table-row-hover-bg: rgb(from var(--color-accent) r g b / 0.14);
+        --table-sticky-header-shadow: 0 2px 4px -1px rgb(var(--shadow-color) / 0.5);
+        --_select-caret:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: base
+   Establishes the visual baseline for html, body, and common semantic
+   elements. Uses semantic tokens exclusively.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+    html {
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-md);
+        line-height: var(--line-height-normal);
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizelegibility;
+        font-feature-settings:
+            "cv11", "ss01", "ss03"; /* Inter stylistic alts; no-op if unsupported */
+
+        font-synthesis-weight: none;
+        tab-size: 4;
+    }
+
+    body {
+        min-block-size: 100dvb;
+        color: var(--color-text);
+        background-color: var(--color-bg);
+    }
+
+    /* ── Layout shell ─────────────────────────────────────────────────────────
+     Host contract: div[data-layout-shell]
+       > header[data-layout-header]    — optional sticky header
+       > aside[data-layout-sidebar]    — optional primary sidebar (left)
+       > main                          — required primary content region
+       > aside[data-layout-panel]      — optional secondary inspector panel (right)
+       > footer[data-layout-footer]    — optional footer bar
+
+     Supported direct-child combinations (exactly eight):
+       main
+       header + main
+       header + main + panel
+       header + main + footer
+       header + sidebar + main
+       header + sidebar + main + panel
+       header + sidebar + main + footer
+       header + sidebar + main + panel + footer
+
+     Header navigation host:
+       header[data-layout-header]
+         > (optional brand / other header content)
+         > button[data-nav-toggle][aria-expanded][aria-controls]  — optional responsive toggle
+         > nav[data-navbar][id]                                    — primary navigation
+         > div[data-layout-actions]                                — optional header actions (last)
+
+     nav[data-navbar] contains one or two direct <ul> elements:
+       First <ul>  — primary/start group (left-aligned)
+       Second <ul> — secondary/end group (right-aligned, optional)
+     Top-level items: li > a (links) or li > details > summary + ul (grouped navigation).
+     Dropdowns are single-level only. aria-current="page" marks the active link.
+
+     Desktop (> 48em):
+       - Grid columns: sidebar / main / panel.
+       - Grid rows: header / content / footer.
+       - header and footer span all active columns.
+       - nav[data-navbar] is always visible; toggle is hidden.
+       - aside[data-layout-sidebar] and aside[data-layout-panel] scroll independently.
+       - main is the primary scroll region.
+
+     Narrow (≤ 48em):
+       - aside[data-layout-sidebar] goes off-canvas (transform); revealed with [data-open].
+       - aside[data-layout-panel] is hidden; panel track is collapsed.
+       - nav[data-navbar] collapses; revealed as a full-width stacked panel below
+         the header row when sibling toggle has aria-expanded="true".
+       - prefers-reduced-motion: reduce disables transitions.
+
+     Application code owns sidebar open/close state, panel visibility,
+     toggle events, aria-expanded state, and open-state persistence.
+  */
+
+    /* Shell host — CSS Grid governs the full-page track layout */
+    div[data-layout-shell] {
+        display: grid;
+        grid-template-columns:
+            0 /* sidebar track: collapses when no sidebar present */
+            minmax(0, 1fr)
+            0; /* panel track: collapses when no panel present */
+
+        grid-template-rows: auto 1fr auto; /* header auto, content area 1fr, footer auto */
+        grid-template-areas:
+            "header  header  header"
+            "sidebar main    panel"
+            "footer  footer  footer";
+        block-size: 100dvb;
+        overflow: hidden;
+        gap: var(--layout-shell-gap);
+    }
+
+    /* When a sidebar is present, expand the sidebar track */
+    div[data-layout-shell]:has(> aside[data-layout-sidebar]) {
+        grid-template-columns:
+            var(--layout-shell-sidebar-width)
+            minmax(0, 1fr)
+            0;
+    }
+
+    /* When a panel is present, expand the panel track */
+    div[data-layout-shell]:has(> aside[data-layout-panel]) {
+        grid-template-columns:
+            0
+            minmax(0, 1fr)
+            var(--layout-shell-panel-width);
+    }
+
+    /* When both sidebar and panel are present */
+    div[data-layout-shell]:has(> aside[data-layout-sidebar]):has(> aside[data-layout-panel]) {
+        grid-template-columns:
+            var(--layout-shell-sidebar-width)
+            minmax(0, 1fr)
+            var(--layout-shell-panel-width);
+    }
+
+    /* Shell header — spans the full top row */
+    div[data-layout-shell] > header[data-layout-header] {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding-inline: var(--layout-navbar-padding-inline);
+        min-block-size: var(--layout-shell-header-height);
+        background-color: var(--layout-navbar-surface);
+        border-block-end: var(--border-width) var(--border-style) var(--layout-navbar-border-color);
+        box-shadow: var(--layout-navbar-shadow);
+        position: sticky;
+        inset-block-start: 0;
+        z-index: var(--layout-navbar-z-index);
+        flex-shrink: 0;
+    }
+
+    /* Primary sidebar — fixed-width, independently scrollable */
+    div[data-layout-shell] > aside[data-layout-sidebar] {
+        grid-area: sidebar;
+        background-color: var(--color-surface);
+        border-inline-end: var(--border-width) var(--border-style) var(--color-border-subtle);
+        overflow-y: auto;
+        min-block-size: 0;
+        padding: var(--space-4);
+    }
+
+    /* Main content area — the sole vertical scroll region */
+    div[data-layout-shell] > main {
+        grid-area: main;
+        overflow-y: auto;
+        min-block-size: 0;
+        padding: var(--space-6);
+    }
+
+    /* Optional secondary panel — fixed-width inspector, independently scrollable */
+    div[data-layout-shell] > aside[data-layout-panel] {
+        grid-area: panel;
+        background-color: var(--color-surface);
+        border-inline-start: var(--border-width) var(--border-style) var(--color-border-subtle);
+        overflow-y: auto;
+        min-block-size: 0;
+        padding: var(--space-4);
+    }
+
+    /* Shell footer — spans the full bottom row */
+    div[data-layout-shell] > footer[data-layout-footer] {
+        grid-area: footer;
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding-inline: var(--space-4);
+        min-block-size: 3rem;
+        background-color: var(--color-bg);
+        border-block-start: var(--border-width) var(--border-style) var(--color-border);
+        flex-shrink: 0;
+    }
+
+    /* ── nav[data-navbar] — primary header navigation ──────────────────────────
+     Canonical composition inside header[data-layout-header]:
+       optional brand/content first
+       button[data-nav-toggle] (optional, for responsive collapse)
+       nav[data-navbar][id]
+       div[data-layout-actions] (optional, last)
+
+     nav[data-navbar] > ul (primary group, left-aligned)
+     nav[data-navbar] > ul:nth-child(2) (secondary group, right-aligned, optional)
+
+     Top-level items:
+       li > a                           — plain navigation link
+       li > details > summary + ul      — single-level grouped navigation (hover/focus-driven)
+
+     Wide viewport (> 48em): navbar always visible inline; toggle hidden.
+     Narrow viewport (≤ 48em): toggle visible; nav collapses; reveals as
+       full-width stacked panel below the header row when toggle aria-expanded="true".
+  */
+
+    /* Navbar — always a flex row at wide viewports */
+    nav[data-navbar] {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: var(--layout-navbar-item-gap);
+        margin: 0;
+        padding: 0;
+        flex: 1; /* fill remaining header space */
+    }
+
+    /* List groups — horizontal row */
+    nav[data-navbar] > ul {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: var(--layout-navbar-item-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* Right-align the second list group */
+    nav[data-navbar] > ul:nth-child(2) {
+        margin-inline-start: auto;
+    }
+
+    /* Top-level list items */
+    nav[data-navbar] > ul > li {
+        display: flex;
+        align-items: stretch;
+        position: relative;
+    }
+
+    /* Plain top-level links */
+    nav[data-navbar] > ul > li > a {
+        display: inline-flex;
+        align-items: center;
+        padding-inline: var(--space-3);
+        text-decoration: none;
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: 0;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    nav[data-navbar] > ul > li > a:is(:hover, :focus-visible) {
+        color: var(--color-text);
+        background-color: var(--color-surface-sunken);
+    }
+
+    nav[data-navbar] > ul > li > a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* Grouped navigation: li > a + ul (single-level dropdown)
+     The li is the hover/focus container; the a is the visible trigger and
+     optionally a real navigation link; the ul is a sibling so CSS can
+     show/hide it freely via :hover/:focus-within on the li. */
+    nav[data-navbar] > ul > li:has(> a + ul) {
+        position: relative;
+    }
+
+    nav[data-navbar] :where(ul > li > a:has(+ ul)) {
+        display: inline-flex;
+        align-items: center;
+        padding-inline: var(--space-3);
+        text-decoration: none;
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        white-space: nowrap;
+        border-radius: var(--radius-sm);
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    nav[data-navbar] :where(ul > li > a:has(+ ul)):is(:hover, :focus-visible) {
+        color: var(--color-text);
+        background-color: var(--color-surface-sunken);
+    }
+
+    /* Dropdown panel — hidden by default, shown on li hover or focus-within */
+    nav[data-navbar] :where(ul > li > a + ul) {
+        display: none;
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block-start: 100%;
+        min-inline-size: var(--layout-navbar-dropdown-min-inline-size);
+        margin: 0;
+        padding: var(--space-1);
+        list-style: none;
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        z-index: calc(var(--layout-navbar-z-index) + 1);
+    }
+
+    /* Show dropdown on hover or when focus moves anywhere inside the li —
+     wide viewports only; narrow viewports always show sub-lists (see below). */
+    @media (width > 48em) {
+        nav[data-navbar] > ul > li:is(:hover, :focus-within) :where(a + ul) {
+            display: block;
+        }
+
+        /* Dropdown entry animation — only when the user has not requested reduced motion */
+        @media (prefers-reduced-motion: no-preference) {
+            nav[data-navbar] :where(ul > li > a + ul) {
+                opacity: 0;
+                translate: 0 calc(-1 * var(--space-1));
+                transition:
+                    opacity var(--transition-fast),
+                    translate var(--transition-fast),
+                    display var(--transition-fast) allow-discrete;
+            }
+
+            nav[data-navbar] > ul > li:is(:hover, :focus-within) :where(a + ul) {
+                opacity: 1;
+                translate: 0 0;
+            }
+
+            @starting-style {
+                nav[data-navbar] > ul > li:is(:hover, :focus-within) :where(a + ul) {
+                    opacity: 0;
+                    translate: 0 calc(-1 * var(--space-1));
+                }
+            }
+        }
+    }
+
+    /* Dropdown link styling */
+    :where(:where(nav[data-navbar] > ul > li > a) + ul > li > a) {
+        display: flex;
+        align-items: center;
+        inline-size: 100%;
+        padding: var(--space-2) var(--space-3);
+        text-decoration: none;
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    :where(:where(nav[data-navbar] > ul > li > a) + ul > li > a):is(:hover, :focus-visible) {
+        color: var(--color-text);
+        background-color: var(--color-surface-sunken);
+    }
+
+    :where(:where(nav[data-navbar] > ul > li > a) + ul > li > a[aria-current="page"]) {
+        color: var(--color-accent);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* Optional header actions container — pushed to inline-end if no secondary ul present */
+    div[data-layout-header] > div[data-layout-actions],
+    header[data-layout-header] > div[data-layout-actions] {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-inline-start: auto;
+        flex-shrink: 0;
+    }
+
+    /* Responsive toggle — hidden at wide viewports */
+    [data-nav-toggle] {
+        display: none;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-2);
+        background: none;
+        border: none;
+        border-radius: var(--radius-md);
+        color: var(--color-text);
+        cursor: pointer;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    [data-nav-toggle]:is(:hover, :focus-visible) {
+        background-color: var(--color-surface-sunken);
+    }
+
+    /* Icon glyphs rendered via ::before so no visible text is needed in the
+     button element — aria-label carries the accessible name.
+     ☰ (hamburger) when collapsed, ✕ (close) when expanded. */
+    [data-nav-toggle]::before {
+        content: "\2630";
+        font-size: 1.125rem;
+        line-height: 1;
+        display: block;
+        color: currentColor;
+    }
+
+    [data-nav-toggle][aria-expanded="true"]::before {
+        content: "\2715";
+    }
+
+    /* ── Semantic icon-nav layout contract ─────────────────────────────────────
+     Icon navigation: nav:has(> ul > li > a > img) — detected by structure.
+
+     Any <nav> whose list items contain an <a> with a direct <img> child is
+     treated as an icon nav automatically. No class is required.
+
+     The first <ul> is left-aligned; the second <ul> is right-aligned.
+     Add class "vertical" to the <nav> to switch to a column icon rail.
+     No dropdown support — single-level only.
+
+     Items are square (--layout-icon-nav-item-size) with the icon above
+     the label text. The img and span inside each <a> are laid out with
+     flex-direction: column.
+
+     Customise via the --layout-icon-nav-* tokens.
+  */
+
+    /* Container */
+    nav:has(> ul > li > a > img) {
+        position: sticky;
+        z-index: var(--layout-icon-nav-z-index);
+        display: flex;
+        align-items: stretch;
+        gap: var(--layout-icon-nav-gap);
+        padding-inline: var(--layout-icon-nav-padding-inline);
+        padding-block: var(--layout-icon-nav-padding-block);
+        background-color: var(--layout-icon-nav-surface);
+        border-block-end: var(--border-width) var(--border-style)
+            var(--layout-icon-nav-border-color);
+        box-shadow: var(--layout-icon-nav-shadow);
+    }
+
+    /* List groups */
+    nav:has(> ul > li > a > img) > ul {
+        display: flex;
+        align-items: center;
+        gap: var(--layout-icon-nav-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* Right-align the second list group */
+    nav:has(> ul > li > a > img) > ul:nth-child(2) {
+        margin-inline-start: auto;
+    }
+
+    /* List items */
+    nav:has(> ul > li > a > img) > ul > li {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Icon link — square, icon above label */
+    nav:has(> ul > li > a > img) > ul > li > a {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        inline-size: var(--layout-icon-nav-item-size);
+        block-size: var(--layout-icon-nav-item-size);
+        gap: var(--space-1);
+        text-decoration: none;
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-md);
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    nav:has(> ul > li > a > img) > ul > li > a:is(:hover, :focus-visible) {
+        color: var(--color-text);
+        background-color: var(--color-surface-sunken);
+    }
+
+    nav:has(> ul > li > a > img) > ul > li > a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* Icon image — fixed size, no border-radius from base reset.
+     :where() wraps the ancestor chain so the depth stays within 4 compound
+     selectors (stylelint selector-max-compound-selectors). */
+    :where(nav:has(> ul > li > a > img) > ul > li > a) > img {
+        display: block;
+        inline-size: var(--layout-icon-nav-icon-size);
+        block-size: var(--layout-icon-nav-icon-size);
+        object-fit: contain;
+        border-radius: 0;
+        flex-shrink: 0;
+    }
+
+    /* Label text */
+    :where(nav:has(> ul > li > a > img) > ul > li > a) > span {
+        display: block;
+        font-size: var(--layout-icon-nav-label-size);
+        line-height: var(--line-height-tight);
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Vertical modifier — nav becomes a narrow column icon rail */
+    .vertical:has(> ul > li > a > img) {
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        inline-size: calc(
+            var(--layout-icon-nav-item-size) + 2 * var(--layout-icon-nav-padding-block)
+        );
+        padding-inline: var(--layout-icon-nav-padding-block);
+        padding-block: var(--layout-icon-nav-padding-inline);
+        border-block-end: none;
+        border-inline-end: var(--border-width) var(--border-style)
+            var(--layout-icon-nav-border-color);
+        box-shadow: none;
+    }
+
+    .vertical:has(> ul > li > a > img) > ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* In vertical mode the second group pushes to the block-end */
+    .vertical:has(> ul > li > a > img) > ul:nth-child(2) {
+        margin-inline-start: 0;
+        margin-block-start: auto;
+    }
+
+    /* In vertical mode anchors fill the rail width so labels are not clipped */
+    .vertical:has(> ul > li > a > img) > ul > li > a {
+        inline-size: 100%;
+        block-size: var(--layout-icon-nav-item-size);
+    }
+
+    /* ── Layout shell: responsive fallback ────────────────────────────────────
+     At ≤ 48em:
+       - nav[data-navbar] collapses; visible only when sibling toggle has
+         aria-expanded="true" (full-width stacked panel below the header row).
+       - aside[data-layout-sidebar] slides off-screen via transform; revealed with [data-open].
+       - aside[data-layout-panel] is hidden.
+       - prefers-reduced-motion: reduce disables transitions.
+  */
+    @media (width <= 48em) {
+        /* Show toggle */
+        [data-nav-toggle] {
+            display: inline-flex;
+        }
+
+        /* Collapse the navbar — hidden until toggle is activated */
+        nav[data-navbar] {
+            display: none;
+            position: absolute;
+            inset-block-start: var(--layout-shell-header-height);
+            inset-inline: 0;
+            flex-direction: column;
+            align-items: stretch;
+            background-color: var(--color-surface);
+            border-block-end: var(--border-width) var(--border-style)
+                var(--layout-navbar-border-color);
+            padding: var(--space-4);
+            gap: var(--layout-navbar-item-gap);
+            overflow-y: auto;
+            max-block-size: calc(100dvb - var(--layout-shell-header-height));
+            box-shadow: var(--shadow-md);
+            z-index: var(--layout-navbar-z-index);
+        }
+
+        /* Reveal navbar panel when toggle is expanded */
+        :where(header[data-layout-header]:has([data-nav-toggle][aria-expanded="true"]))
+            > nav[data-navbar] {
+            display: flex;
+        }
+
+        /* Stack lists vertically inside the open navbar panel */
+        nav[data-navbar] > ul {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        /* Reset the second list's auto margin so it stacks naturally */
+        nav[data-navbar] > ul:nth-child(2) {
+            margin-inline-start: 0;
+        }
+
+        /* Full-width links for touch targets */
+        nav[data-navbar] > ul > li > a {
+            display: flex;
+            inline-size: 100%;
+            white-space: normal;
+            padding-block: var(--space-3);
+        }
+
+        /* a+ul groups: full-width trigger and stacked sub-list on narrow */
+        nav[data-navbar] > ul > li:has(> a + ul) {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        nav[data-navbar] :where(ul > li > a:has(+ ul)) {
+            display: flex;
+            inline-size: 100%;
+            padding-block: var(--space-3);
+            white-space: normal;
+        }
+
+        /* Sub-lists are always expanded in the stacked narrow panel —
+       no hover or focus-within interaction needed here. */
+        nav[data-navbar] :where(ul > li > a + ul) {
+            display: block;
+            position: static;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+            padding-inline-start: var(--space-4);
+            min-inline-size: 0;
+        }
+
+        :where(:where(nav[data-navbar] > ul > li > a) + ul > li > a) {
+            inline-size: 100%;
+            padding-block: var(--space-3);
+            white-space: normal;
+        }
+
+        /* Shell responsive: sidebar off-canvas, panel hidden */
+        div[data-layout-shell]:has(> aside[data-layout-sidebar]) {
+            grid-template-columns: var(--layout-shell-sidebar-width) minmax(0, 1fr);
+            grid-template-areas:
+                "header  header"
+                "sidebar main"
+                "footer  footer";
+        }
+
+        div[data-layout-shell]:has(> aside[data-layout-sidebar]):has(> aside[data-layout-panel]) {
+            grid-template-columns: var(--layout-shell-sidebar-width) minmax(0, 1fr);
+        }
+
+        /* Collapse the panel track when no sidebar is present — main fills full width */
+        div[data-layout-shell]:has(> aside[data-layout-panel]):not(
+                :has(> aside[data-layout-sidebar])
+            ) {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-areas:
+                "header"
+                "main"
+                "footer";
+        }
+
+        /* Sidebar: fixed off-screen by default; slides in when [data-open] is present */
+        div[data-layout-shell] > aside[data-layout-sidebar] {
+            position: fixed;
+            inset-block: 0;
+            inset-inline-start: 0;
+            inline-size: var(--layout-shell-sidebar-width);
+            block-size: 100dvb;
+            z-index: var(--z-overlay);
+            transform: translateX(-100%);
+            transition: transform var(--transition-base);
+        }
+
+        div[data-layout-shell] > aside[data-layout-sidebar][data-open] {
+            transform: translateX(0);
+        }
+
+        /* Main fills the full viewport width when sidebar is off-screen */
+        div[data-layout-shell] > main {
+            grid-column: 1 / -1;
+        }
+
+        /* Panel hidden at narrow viewports */
+        div[data-layout-shell] > aside[data-layout-panel] {
+            display: none;
+        }
+
+        div[data-layout-shell] > footer[data-layout-footer] {
+            grid-column: 1 / -1;
+        }
+
+        /* Suppress transitions when reduced motion is preferred */
+        @media (prefers-reduced-motion: reduce) {
+            div[data-layout-shell] > aside[data-layout-sidebar],
+            nav[data-navbar] {
+                transition: none;
+            }
+        }
+    }
+
+    /* Focus ring — single canonical definition used across all interactive
+     elements. Override via --focus-ring-* tokens. Intentionally does NOT set
+     border-radius, so focus never mutates an element's shape. Each element
+     keeps its own radius; the outline traces whatever radius is already set. */
+    :focus-visible {
+        outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+    }
+
+    /* Remove default focus for elements that manage focus themselves */
+    :focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* Horizontal rule */
+    hr {
+        border: none;
+        border-block-start: var(--border-width) var(--border-style) var(--color-border);
+        margin-block: var(--space-6);
+    }
+
+    /* Inline media */
+    img,
+    video {
+        block-size: auto;
+        border-radius: var(--radius-md);
+    }
+
+    /* SVG icons inherit colour by default */
+    svg {
+        fill: currentColor;
+    }
+
+    /* Address element */
+    address {
+        font-style: normal;
+        line-height: var(--line-height-normal);
+    }
+
+    /* Abbreviation */
+    abbr[title] {
+        text-decoration: underline dotted;
+        cursor: help;
+    }
+
+    /* Marked / highlighted text */
+    mark {
+        background-color: var(--color-warning-subtle);
+        color: var(--color-warning-text);
+        padding-inline: var(--space-1);
+        border-radius: var(--radius-sm);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: typography
+   Styles text-heavy semantic elements for readable, dense business
+   application defaults. No utility classes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer typography {
+    /* ── Headings ─────────────────────────────────────────────────────────── */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: var(--font-family-base);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        color: var(--color-text);
+        margin-block-end: var(--space-4);
+    }
+
+    h1 {
+        /* Fluid ramp: 1.875rem at ≤40em viewport → 2.25rem at ≥64em */
+        font-size: clamp(var(--font-size-3xl), 1.5rem + 1.875vw, var(--font-size-4xl));
+        font-weight: var(--font-weight-bold);
+        letter-spacing: -0.02em;
+        margin-block-end: var(--space-6);
+    }
+
+    h2 {
+        /* 1.5rem → 1.875rem */
+        font-size: clamp(var(--font-size-2xl), 1.3125rem + 0.9375vw, var(--font-size-3xl));
+        margin-block-end: var(--space-5);
+    }
+
+    h3 {
+        /* 1.25rem → 1.5rem */
+        font-size: clamp(var(--font-size-xl), 1.125rem + 0.625vw, var(--font-size-2xl));
+    }
+
+    h4 {
+        font-size: var(--font-size-xl);
+    }
+
+    h5 {
+        font-size: var(--font-size-lg);
+    }
+
+    h6 {
+        font-size: var(--font-size-md);
+        letter-spacing: var(--letter-spacing-wide);
+        text-transform: uppercase;
+        color: var(--color-text-secondary);
+    }
+
+    /* ── Body text ───────────────────────────────────────────────────────── */
+    p {
+        line-height: var(--line-height-relaxed);
+        margin-block-end: var(--space-4);
+        max-inline-size: 72ch;
+    }
+
+    /* Last paragraph in a group should not add extra space */
+    p:last-child {
+        margin-block-end: 0;
+    }
+
+    /* ── Lists ───────────────────────────────────────────────────────────── */
+    /* The exclusion list (nav/toast/pagination/breadcrumbs/navbar/form-summary/
+       menu/notification-center/card) is declared once on the outer rule; the
+       nested ul/ol and li rules inherit that scope via CSS nesting. */
+    :where(ul, ol):not(
+        [role="list"],
+        nav *,
+        nav:has(> ul > li > a > img) *,
+        aside[data-toast-region] *,
+        nav[data-pagination] *,
+        nav[data-breadcrumbs] *,
+        nav[data-navbar] *,
+        [data-form-summary] *,
+        details[data-menu] *,
+        aside[data-notification-center] *,
+        article[data-card] *
+    ) {
+        padding-inline-start: var(--space-6);
+        margin-block-end: var(--space-4);
+        line-height: var(--line-height-relaxed);
+
+        :where(ul, ol) {
+            margin-block: var(--space-2);
+        }
+
+        > li {
+            margin-block-end: var(--space-1);
+
+            &:last-child {
+                margin-block-end: 0;
+            }
+        }
+    }
+
+    /* Definition list */
+    dl {
+        margin-block-end: var(--space-4);
+    }
+
+    dt {
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text);
+        margin-block-start: var(--space-3);
+    }
+
+    dt:first-child {
+        margin-block-start: 0;
+    }
+
+    dd {
+        margin-inline-start: var(--space-6);
+        color: var(--color-text-secondary);
+        line-height: var(--line-height-relaxed);
+    }
+
+    /* ── Links ───────────────────────────────────────────────────────────── */
+    /* Exclusion list declared once; :visited and :hover nested under it. */
+    a:not(
+        nav:has(> ul > li > a > img) *,
+        nav[data-pagination] *,
+        nav[data-breadcrumbs] *,
+        nav[data-navbar] *,
+        aside[data-notification-center] *
+    ) {
+        color: var(--color-link);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.15em;
+        transition: color var(--transition-fast);
+
+        &:visited {
+            color: var(--color-link-visited);
+        }
+
+        &:hover {
+            color: var(--color-link-hover);
+            text-decoration-thickness: 2px;
+        }
+    }
+
+    /* ── Inline code and pre ─────────────────────────────────────────────── */
+    code,
+    kbd,
+    samp {
+        font-family: var(--font-family-mono);
+        font-size: 0.9em;
+        background-color: var(--color-surface-sunken);
+        color: var(--color-text);
+        padding-inline: var(--space-1);
+        border-radius: var(--radius-sm);
+        border: var(--border-width) var(--border-style) var(--color-border-subtle);
+    }
+
+    kbd {
+        border-color: var(--color-border);
+        box-shadow: var(--shadow-sm);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        padding-block: 1px;
+        padding-inline: var(--space-2);
+    }
+
+    pre {
+        font-family: var(--font-family-mono);
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-relaxed);
+        background-color: var(--color-surface-sunken);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-6);
+        overflow-x: auto;
+        margin-block-end: var(--space-4);
+        tab-size: 2;
+    }
+
+    /* Reset inline code inside pre */
+    pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: inherit;
+        border-radius: 0;
+    }
+
+    /* ── Blockquote ──────────────────────────────────────────────────────── */
+    blockquote {
+        border-inline-start: var(--border-width-2) var(--border-style) var(--color-accent);
+        margin-inline: 0;
+        margin-block-end: var(--space-4);
+        padding-inline: var(--space-6);
+        padding-block: var(--space-2);
+        color: var(--color-text-secondary);
+        font-style: italic;
+    }
+
+    blockquote cite {
+        display: block;
+        margin-block-start: var(--space-2);
+        font-style: normal;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-tertiary);
+    }
+
+    /* ── Small, strong, em ───────────────────────────────────────────────── */
+    small {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+    }
+
+    strong {
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* ── Figures ─────────────────────────────────────────────────────────── */
+    figure {
+        margin-inline: 0;
+        margin-block-end: var(--space-4);
+    }
+
+    figcaption {
+        font-size: var(--font-size-sm);
+        color: var(--color-text-tertiary);
+        margin-block-start: var(--space-2);
+        text-align: center;
+    }
+
+    /* ── Section / article spacing ───────────────────────────────────────── */
+    /* Apply container sizing to section/article/aside only. Excluding nav
+     prevents navigation components (eg. pagination) from becoming container
+     query hosts which can alter their internal layout (causes vertical
+     pagination inside data shells). */
+    :where(section, article, aside) {
+        container-type: inline-size;
+    }
+
+    /* ── Time / date ─────────────────────────────────────────────────────── */
+    time {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: controls
+   Styles all native interactive form controls and buttons with polished
+   business-application defaults. States are expressed through native,
+   ARIA, and type attributes — no modifier classes required.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer controls {
+    /* Spinner rotation keyframe — used by indeterminate progress, busy button, and busy region */
+    @keyframes cascade-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ── Shared control foundation ──────────────────────────────────────── */
+    :where(button, input:not([type="range"], [type="color"]), select, textarea) {
+        display: inline-flex;
+        align-items: center;
+        appearance: none;
+        -webkit-appearance: none;
+        font-family: var(--font-family-base);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--line-height-tight);
+        color: var(--color-text);
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-md);
+        padding-block: var(--space-2);
+        padding-inline: var(--space-3);
+        transition:
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast),
+            background-color var(--transition-fast),
+            color var(--transition-fast);
+        vertical-align: middle;
+    }
+
+    /* controls layer overrides the shared :where(button) foundation above, so
+     re-assert the toggle's bare-button appearance here to prevent the control
+     background, border, and button-variant tokens from obscuring the icon glyph. */
+    [data-nav-toggle] {
+        display: none;
+        background: none;
+        border: none;
+        box-shadow: none;
+        color: var(--color-text);
+
+        --_button-bg: transparent;
+        --_button-bg-hover: transparent;
+        --_button-bg-active: transparent;
+        --_button-text: var(--color-text);
+        --_button-border: transparent;
+    }
+
+    @media (width <= 48em) {
+        [data-nav-toggle] {
+            display: inline-flex;
+        }
+    }
+
+    /* ── Label ──────────────────────────────────────────────────────────── */
+    label {
+        display: block;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-text-secondary);
+        margin-block-end: var(--space-1);
+    }
+
+    label:has(+ :required)::after,
+    label:has(+ [required])::after {
+        content: " *";
+        color: var(--color-danger);
+    }
+
+    /* ── Inputs and select ──────────────────────────────────────────────── */
+    :where(
+        input:not(
+            [type="range"],
+            [type="color"],
+            [type="checkbox"],
+            [type="radio"],
+            [type="file"],
+            [type="submit"],
+            [type="button"],
+            [type="reset"]
+        ),
+        select,
+        textarea
+    ) {
+        inline-size: 100%;
+        min-block-size: 2.25rem;
+        background-color: var(--color-surface);
+        color: var(--color-text);
+    }
+
+    :where(input, select, textarea):hover:not(:disabled, [readonly]) {
+        border-color: var(--color-border-strong);
+    }
+
+    :where(input, select, textarea):focus-visible {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgb(from var(--color-accent) r g b / 0.22), inset 0 1px 2px -1px rgb(var(--shadow-color) / 0.04);
+        outline: none;
+    }
+
+    /* Placeholder */
+    ::placeholder {
+        color: var(--color-text-tertiary);
+        opacity: 1;
+    }
+
+    /* Autofill style override to match theme */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+        -webkit-text-fill-color: var(--color-text);
+        -webkit-box-shadow: 0 0 0 1000px var(--color-surface-sunken) inset;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* Disabled */
+    :where(input, select, textarea):disabled,
+    :where(input, select, textarea)[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: var(--color-surface-sunken);
+    }
+
+    /* Read-only inputs */
+    :where(input, textarea)[readonly] {
+        background-color: var(--color-surface-sunken);
+        color: var(--color-text-secondary);
+        cursor: default;
+    }
+
+    /* Invalid / error state via native validity or aria-invalid */
+    :where(input, select, textarea):where(:invalid:not(:placeholder-shown, :focus)),
+    :where(input, select, textarea)[aria-invalid="true"] {
+        border-color: var(--color-danger);
+        background-color: var(--color-danger-subtle);
+    }
+
+    :where(input, select, textarea):where(:invalid:not(:placeholder-shown, :focus)):focus-visible,
+    :where(input, select, textarea)[aria-invalid="true"]:focus-visible {
+        box-shadow: 0 0 0 3px rgb(from var(--color-danger) r g b / 0.22);
+    }
+
+    /* Required indicator on the input itself */
+    :where(input, select, textarea):required {
+        border-inline-start-width: var(--border-width-2);
+    }
+
+    /* Textarea */
+    textarea {
+        align-items: flex-start;
+        min-block-size: 6rem;
+        line-height: var(--line-height-relaxed);
+    }
+
+    /* Select arrow — inline SVG data-URIs can't inherit currentColor, so the
+       caret is themed by swapping the whole URL. --_select-caret defaults to
+       the light-mode tint; the dark-scope tokens block overrides it. */
+    select {
+        --_select-caret:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+
+        padding-inline-end: var(--space-8);
+        background-image: var(--_select-caret);
+        background-repeat: no-repeat;
+        background-position: right var(--space-3) center;
+        background-size: 1rem 1rem;
+        cursor: pointer;
+        inline-size: 100%;
+    }
+
+    /* ── Fieldset and legend ────────────────────────────────────────────── */
+    fieldset {
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-4) var(--space-6);
+        margin-block-end: var(--space-6);
+    }
+
+    legend {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        padding-inline: var(--space-2);
+        letter-spacing: var(--letter-spacing-wide);
+        text-transform: uppercase;
+    }
+
+    /* ── Checkbox and radio ─────────────────────────────────────────────── */
+    :where(input[type="checkbox"], input[type="radio"]) {
+        appearance: none;
+        -webkit-appearance: none;
+        display: inline-grid;
+        place-content: center;
+        inline-size: 1rem;
+        block-size: 1rem;
+        min-block-size: unset;
+        padding: 0;
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border-strong);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition:
+            background-color var(--transition-fast),
+            border-color var(--transition-fast);
+    }
+
+    /* Label wrapping a checkbox or radio — align control and text on the
+     same center line. Scoped to labels that directly contain the input
+     so standalone <label for="…"> labels are not affected. */
+    :where(label:has(> input[type="checkbox"]), label:has(> input[type="radio"])) {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        cursor: pointer;
+    }
+
+    input[type="radio"] {
+        border-radius: var(--radius-full);
+    }
+
+    input[type="checkbox"] {
+        border-radius: var(--radius-sm);
+    }
+
+    :where(input[type="checkbox"], input[type="radio"]):checked {
+        background-color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+    /* Checkmark */
+    input[type="checkbox"]:checked::before {
+        content: "";
+        inline-size: 0.65em;
+        block-size: 0.65em;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        background-color: var(--color-text-on-accent);
+    }
+
+    /* Radio dot — always present so the grid track size never changes across
+     checked/unchecked transitions, preventing vertical layout shift. */
+    input[type="radio"]::before {
+        content: "";
+        inline-size: 0.45em;
+        block-size: 0.45em;
+        border-radius: var(--radius-full);
+        background-color: transparent;
+    }
+
+    input[type="radio"]:checked::before {
+        background-color: var(--color-text-on-accent);
+    }
+
+    :where(input[type="checkbox"], input[type="radio"]):disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ── Range input ────────────────────────────────────────────────────── */
+    input[type="range"] {
+        appearance: none;
+        -webkit-appearance: none;
+        inline-size: 100%;
+        block-size: 1.5rem;
+        background: transparent;
+        cursor: pointer;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        block-size: 0.375rem;
+        border-radius: var(--radius-full);
+        background-color: var(--color-border);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        -webkit-appearance: none;
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        border-radius: var(--radius-full);
+        background-color: var(--color-accent);
+        margin-block-start: -0.375rem;
+        transition: transform var(--transition-fast);
+    }
+
+    input[type="range"]::-moz-range-track {
+        block-size: 0.375rem;
+        border-radius: var(--radius-full);
+        background-color: var(--color-border);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        border-radius: var(--radius-full);
+        background-color: var(--color-accent);
+        border: none;
+        transition: transform var(--transition-fast);
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+        transform: scale(1.15);
+    }
+
+    input[type="range"]:hover::-moz-range-thumb {
+        transform: scale(1.15);
+    }
+
+    input[type="range"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* ── Progress ───────────────────────────────────────────────────────── */
+
+    /* Determinate progress: linear track with accent fill */
+    progress[value] {
+        appearance: none;
+        -webkit-appearance: none;
+        display: block;
+        inline-size: 100%;
+        block-size: 0.5rem;
+        border: none;
+        border-radius: var(--radius-full);
+        background-color: var(--layout-spinner-track-color);
+        overflow: hidden;
+    }
+
+    progress[value]::-webkit-progress-bar {
+        background-color: var(--layout-spinner-track-color);
+        border-radius: var(--radius-full);
+    }
+
+    progress[value]::-webkit-progress-value {
+        background-color: var(--layout-spinner-color);
+        border-radius: var(--radius-full);
+        transition: inline-size var(--transition-base);
+    }
+
+    progress[value]::-moz-progress-bar {
+        background-color: var(--layout-spinner-color);
+        border-radius: var(--radius-full);
+        transition: inline-size var(--transition-base);
+    }
+
+    /* Indeterminate progress: circular spinner ring applied directly on the element.
+     <progress> is a replaced element; ::after is not reliably painted on it in
+     Chromium or Safari, so the ring is rendered via border + border-radius on the
+     element itself, which works consistently across all engines. */
+    progress:not([value]) {
+        appearance: none;
+        -webkit-appearance: none;
+        display: inline-block;
+        inline-size: var(--layout-spinner-size);
+        block-size: var(--layout-spinner-size);
+        border-radius: var(--radius-full);
+        border: var(--layout-spinner-stroke-width) solid var(--layout-spinner-track-color);
+        border-block-start-color: var(--layout-spinner-color);
+        background-color: transparent;
+        color: transparent;
+        animation: cascade-spin var(--layout-spinner-duration) linear infinite;
+        vertical-align: middle;
+    }
+
+    /* ── Meter ──────────────────────────────────────────────────────────── */
+    meter {
+        appearance: none;
+        -webkit-appearance: none;
+        display: block;
+        inline-size: 100%;
+        block-size: 0.5rem;
+        border: none;
+        border-radius: var(--radius-full);
+        background-color: var(--color-border);
+        overflow: hidden;
+    }
+
+    meter::-webkit-meter-bar {
+        background-color: var(--color-border);
+        border-radius: var(--radius-full);
+        border: none;
+    }
+
+    meter::-webkit-meter-optimum-value {
+        background-color: var(--color-success);
+        border-radius: var(--radius-full);
+    }
+
+    meter::-webkit-meter-suboptimum-value {
+        background-color: var(--color-warning);
+        border-radius: var(--radius-full);
+    }
+
+    meter::-webkit-meter-even-less-good-value {
+        background-color: var(--color-danger);
+        border-radius: var(--radius-full);
+    }
+
+    /* ── Color input ────────────────────────────────────────────────────── */
+    input[type="color"] {
+        appearance: none;
+        -webkit-appearance: none;
+        block-size: 2.25rem;
+        inline-size: 3.5rem;
+        padding: var(--space-1);
+        cursor: pointer;
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-md);
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+        border-radius: var(--radius-sm);
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+        border: none;
+        border-radius: var(--radius-sm);
+    }
+
+    /* ── File input ─────────────────────────────────────────────────────── */
+    input[type="file"] {
+        display: block;
+        inline-size: 100%;
+        min-block-size: 2.25rem;
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--font-size-sm);
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    input[type="file"]::file-selector-button {
+        appearance: none;
+        font: inherit;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        padding-block: var(--space-1);
+        padding-inline: var(--space-3);
+        background-color: var(--color-surface-sunken);
+        color: var(--color-text);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        margin-inline-end: var(--space-3);
+        transition: background-color var(--transition-fast);
+    }
+
+    input[type="file"]::file-selector-button:hover {
+        background-color: var(--color-border);
+    }
+
+    /* ── Button ─────────────────────────────────────────────────────────── */
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"]) {
+        --_button-bg: var(--color-button-accent-bg);
+        --_button-bg-hover: var(--color-button-accent-hover);
+        --_button-bg-active: var(--color-button-accent-active);
+        --_button-text: var(--color-button-accent-text);
+        --_button-border: var(--color-button-accent-border);
+        --_button-tone-color: var(--color-accent);
+        --_button-tone-subtle: var(--color-accent-subtle);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        padding-block: var(--space-2);
+        padding-inline: var(--space-4);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        line-height: var(--line-height-tight);
+        color: var(--_button-text);
+        background-color: var(--_button-bg);
+        border: var(--border-width) var(--border-style) var(--_button-border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        text-decoration: none;
+        transition:
+            background-color var(--transition-fast),
+            box-shadow var(--transition-fast),
+            border-color var(--transition-fast),
+            color var(--transition-fast),
+            transform 80ms ease;
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"]):hover:not(
+            :disabled
+        ) {
+        background-color: var(--_button-bg-hover);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"]):active:not(
+            :disabled
+        ) {
+        background-color: var(--_button-bg-active);
+        transform: translateY(0.5px) scale(0.985);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"]):disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Reset button gets a muted appearance */
+    :where(input[type="reset"]) {
+        --_button-bg: var(--color-button-neutral-bg);
+        --_button-bg-hover: var(--color-button-neutral-hover);
+        --_button-bg-active: var(--color-button-neutral-active);
+        --_button-text: var(--color-text-secondary);
+        --_button-border: var(--color-button-neutral-border);
+        --_button-tone-color: var(--color-text-secondary);
+        --_button-tone-subtle: var(--color-surface-sunken);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-tone="neutral"] {
+        --_button-bg: var(--color-button-neutral-bg);
+        --_button-bg-hover: var(--color-button-neutral-hover);
+        --_button-bg-active: var(--color-button-neutral-active);
+        --_button-text: var(--color-button-neutral-text);
+        --_button-border: var(--color-button-neutral-border);
+        --_button-tone-color: var(--color-text-secondary);
+        --_button-tone-subtle: var(--color-surface-sunken);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-tone="accent"] {
+        --_button-bg: var(--color-button-accent-bg);
+        --_button-bg-hover: var(--color-button-accent-hover);
+        --_button-bg-active: var(--color-button-accent-active);
+        --_button-text: var(--color-button-accent-text);
+        --_button-border: var(--color-button-accent-border);
+        --_button-tone-color: var(--color-accent);
+        --_button-tone-subtle: var(--color-accent-subtle);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-tone="success"] {
+        --_button-bg: var(--color-button-success-bg);
+        --_button-bg-hover: var(--color-button-success-hover);
+        --_button-bg-active: var(--color-button-success-active);
+        --_button-text: var(--color-button-success-text);
+        --_button-border: var(--color-button-success-border);
+        --_button-tone-color: var(--color-success);
+        --_button-tone-subtle: var(--color-success-subtle);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-tone="warning"] {
+        --_button-bg: var(--color-button-warning-bg);
+        --_button-bg-hover: var(--color-button-warning-hover);
+        --_button-bg-active: var(--color-button-warning-active);
+        --_button-text: var(--color-button-warning-text);
+        --_button-border: var(--color-button-warning-border);
+        --_button-tone-color: var(--color-warning);
+        --_button-tone-subtle: var(--color-warning-subtle);
+    }
+
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-tone="danger"] {
+        --_button-bg: var(--color-button-danger-bg);
+        --_button-bg-hover: var(--color-button-danger-hover);
+        --_button-bg-active: var(--color-button-danger-active);
+        --_button-text: var(--color-button-danger-text);
+        --_button-border: var(--color-button-danger-border);
+        --_button-tone-color: var(--color-danger);
+        --_button-tone-subtle: var(--color-danger-subtle);
+    }
+
+    /* Variant: outlined — transparent fill with tone-colored border + text.
+       Composes with [data-tone]: the tone sets tone-color/subtle, and this
+       block inverts fill into outline. */
+    :where(button, input[type="submit"], input[type="button"], input[type="reset"])[data-variant="outlined"] {
+        --_button-bg: transparent;
+        --_button-bg-hover: var(--_button-tone-subtle);
+        --_button-bg-active: color-mix(
+            in srgb,
+            var(--_button-tone-subtle) 70%,
+            var(--_button-tone-color)
+        );
+        --_button-text: var(--_button-tone-color);
+        --_button-border: var(--_button-tone-color);
+    }
+
+    /* ── Field composition primitives ──────────────────────────────────────
+     Public authoring contract (v1):
+
+       Single-field wrapper (div):
+         <div data-field>
+           <label for="…">Label</label>
+           <input … />                    ← any native control
+           <span data-help>Help text</span>          (optional)
+           <span data-error>Error message</span>     (optional)
+           <span data-success>Success message</span> (optional)
+         </div>
+
+       Grouped-choice wrapper (fieldset):
+         <fieldset data-field>
+           <legend>Group label</legend>
+           <label><input type="radio" … /> Choice A</label>
+           <label><input type="radio" … /> Choice B</label>
+           <span data-help>Help text</span>          (optional)
+           <span data-error>Error message</span>     (optional)
+           <span data-success>Success message</span> (optional)
+         </fieldset>
+
+       Inline field row:
+         <div data-field-row>
+           <div data-field>…</div>
+           <div data-field>…</div>
+         </div>
+
+     Contract rules:
+       - [data-field] and [data-field-row] are narrow opt-in composition
+         primitives for form field layout. They are NOT general layout utilities.
+       - [data-help], [data-error], and [data-success] must be direct children
+         of [data-field] and are the only supported marker attributes.
+       - Invalid state is reinforced when the wrapped control is
+         :invalid (and not empty/placeholder) or [aria-invalid="true"].
+       - Application code owns validation logic, ARIA wiring, and visibility
+         management of the marker elements.
+
+     v1 non-goals (intentionally deferred):
+       - Multi-column forms (use data-field-row for that).
+       - Floating labels, input groups, or prefix/suffix addons.
+       - Selector dependence on specific label or help text content.
+  */
+
+    /* Single-field and grouped-field wrapper — vertical stack */
+    :where(div, fieldset)[data-field] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-field-gap);
+    }
+
+    /* Fieldset wrapper: strip the default border/padding already removed by reset;
+     the composition primitive's own visual weight comes from the control itself */
+    fieldset[data-field] {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Legend inside a fieldset[data-field] — matches label sizing for visual parity */
+    fieldset[data-field] > legend {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-text-secondary);
+        padding: 0;
+        letter-spacing: 0;
+        text-transform: none;
+        margin-block-end: var(--layout-field-gap);
+        float: left; /* keeps legend in normal flow within the fieldset */
+    }
+
+    /* Required marker on legend when any sibling control inside the group is required */
+    fieldset[data-field]:has(:required) > legend::after {
+        content: " *";
+        color: var(--color-danger);
+    }
+
+    /* Help text — secondary supporting copy, smaller and muted */
+    :where(div, fieldset)[data-field] > [data-help] {
+        font-size: var(--layout-field-help-size);
+        color: var(--color-text-tertiary);
+        line-height: var(--line-height-snug);
+    }
+
+    /* Error message — danger tone, shown alongside or instead of help text */
+    :where(div, fieldset)[data-field] > [data-error] {
+        font-size: var(--layout-field-help-size);
+        color: var(--color-danger-text);
+        line-height: var(--line-height-snug);
+    }
+
+    /* Success message — success tone */
+    :where(div, fieldset)[data-field] > [data-success] {
+        font-size: var(--layout-field-help-size);
+        color: var(--color-success-text);
+        line-height: var(--line-height-snug);
+    }
+
+    /* Error-state reinforcement on the field wrapper when the wrapped control
+     is invalid through :invalid (ignoring empty/placeholder state) or
+     aria-invalid="true". Only the label/legend color changes at the wrapper
+     level — border and background reinforcement lives on the control itself
+     via the existing :invalid / aria-invalid rules above. */
+    div[data-field]:has(
+            :is(input, select, textarea):where(
+                :invalid:not(:placeholder-shown, :focus),
+                [aria-invalid="true"]
+            )
+        )
+        > label {
+        color: var(--color-danger-text);
+    }
+
+    fieldset[data-field]:has(:is(input, select, textarea)[aria-invalid="true"]) > legend {
+        color: var(--color-danger-text);
+    }
+
+    /* ── Form-level validation summary ─────────────────────────────────────
+     Public authoring contract (v1):
+
+       <form data-form-errors>
+         <div data-form-summary role="alert" aria-labelledby="fs-heading">
+           <h2 id="fs-heading">2 errors found</h2>
+           <ul>
+             <li><a href="#email">Email address — Please enter a valid email address.</a></li>
+             <li><a href="#plan-legend">Plan — Please select a plan.</a></li>
+           </ul>
+         </div>
+
+         <div data-field>
+           <label for="email">Email address</label>
+           <input type="email" id="email" aria-invalid="true"
+                  aria-describedby="email-error" />
+           <span data-error id="email-error">Please enter a valid email address.</span>
+         </div>
+
+         <fieldset data-field aria-invalid="true" aria-describedby="plan-error">
+           <legend id="plan-legend">Plan</legend>
+           <label><input type="radio" name="plan" value="starter" /> Starter</label>
+           <label><input type="radio" name="plan" value="pro" /> Pro</label>
+           <span data-error id="plan-error">Please select a plan.</span>
+         </fieldset>
+       </form>
+
+     Contract rules:
+       - [data-form-summary] must be a direct child of form[data-form-errors].
+       - role="alert" (assertive) or role="status" (polite) is required on [data-form-summary].
+       - [data-form-summary] must contain exactly one heading child and one direct <ul> or <ol>.
+       - Each <li> in the summary list must contain an <a> targeting a control id or legend id.
+       - Grouped fieldset errors: add aria-invalid="true" to fieldset[data-field]; this adds group
+         border reinforcement. Individual controls inside keep their own aria-invalid state.
+       - Application code owns: when to run validation, populating the summary list, moving
+         focus after submit, and setting all aria-invalid attributes.
+
+     v1 non-goals (intentionally deferred):
+       - Auto-populating summary text or generating error messages.
+       - Multi-column summary layouts.
+       - Animated reveal of the summary block.
+  */
+
+    /* Summary host — anchors the visual error region inside the form */
+    form[data-form-errors] > [data-form-summary] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-form-summary-gap);
+        padding: var(--layout-form-summary-padding);
+        max-inline-size: var(--layout-form-summary-max-inline-size);
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border: var(--border-width) var(--border-style) var(--color-danger-border);
+        border-radius: var(--radius-lg);
+        margin-block-end: var(--space-6);
+    }
+
+    /* Summary heading — compact, no extra margin */
+    form[data-form-errors] > [data-form-summary] > :is(h2, h3, h4) {
+        margin: 0;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-danger-text);
+        line-height: var(--line-height-tight);
+    }
+
+    /* Summary link list — strip list chrome; the gap on the host handles rhythm */
+    form[data-form-errors] > [data-form-summary] > :is(ul, ol) {
+        margin: 0;
+        padding: 0;
+        padding-inline-start: var(--space-5);
+        line-height: var(--line-height-snug);
+    }
+
+    /* Summary list items — compact spacing */
+    form[data-form-errors] > [data-form-summary] > :is(ul, ol) > li {
+        margin-block-end: var(--space-1);
+        font-size: var(--font-size-sm);
+    }
+
+    form[data-form-errors] > [data-form-summary] > :is(ul, ol) > li:last-child {
+        margin-block-end: 0;
+    }
+
+    /* Summary anchor links — danger tone so they read as error context, not generic navigation.
+     :where() wraps the ancestor chain so compound-selector depth stays within 4. */
+    :where(form[data-form-errors] > [data-form-summary] > :is(ul, ol) > li) > a {
+        color: var(--color-danger-text);
+        font-weight: var(--font-weight-medium);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.15em;
+    }
+
+    :where(form[data-form-errors] > [data-form-summary] > :is(ul, ol) > li) > a:hover {
+        text-decoration-thickness: 2px;
+    }
+
+    /* Grouped fieldset invalid state — border reinforcement and legend emphasis.
+     Extends the existing fieldset[data-field] composition primitive.
+     The grouped pattern adds group-level orientation; field-level controls inside
+     continue using their own aria-invalid / :invalid styling. */
+    fieldset[data-field][aria-invalid="true"] {
+        border: var(--border-width) var(--border-style) var(--color-danger-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-3) var(--space-4);
+        background-color: var(--color-danger-subtle);
+    }
+
+    fieldset[data-field][aria-invalid="true"] > legend {
+        color: var(--color-danger-text);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* Inline field row — responsive auto-fit grid of field wrappers.
+     Intentionally limited to direct div[data-field] children so this
+     primitive cannot silently become a general layout system. */
+    div[data-field-row] {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(var(--layout-field-row-min-column-size), 1fr)
+        );
+        gap: var(--layout-field-row-gap);
+    }
+
+    /* ── Input-group composition primitive ─────────────────────────────────
+     Public authoring contract (v1):
+
+       Leading icon search field:
+         <div data-input-group>
+           <span data-icon aria-hidden="true">⌕</span>
+           <input type="search" placeholder="Search…" />
+           <button type="submit" aria-label="Search">Search</button>
+         </div>
+
+       Currency prefix field:
+         <div data-input-group>
+           <span data-prefix aria-hidden="true">$</span>
+           <input type="number" inputmode="decimal" />
+         </div>
+
+       Suffix unit field:
+         <div data-input-group>
+           <input type="number" inputmode="decimal" />
+           <span data-suffix aria-hidden="true">kg</span>
+         </div>
+
+       Trailing action button field:
+         <div data-input-group>
+           <input type="text" />
+           <button type="button" aria-label="Copy value">Copy</button>
+         </div>
+
+     Contract rules:
+       - Host must be div[data-input-group].
+       - Exactly one text-like control per group: input (excluding checkbox,
+         radio, range, file, color), select, or button as the primary element.
+       - [data-prefix], [data-suffix], and [data-icon] must be non-interactive
+         (span, abbr, etc.) and carry aria-hidden="true" when decorative.
+       - Trailing action buttons are scoped as direct button children.
+       - The wrapper presents focus, invalid, and disabled states as one
+         cohesive surface via :has().
+       - Textareas, fieldsets, and arbitrary nested wrappers are out of scope.
+
+     v1 non-goals (intentionally deferred):
+       - Multiple action buttons or split-button patterns.
+       - Floating labels inside input groups.
+       - Arbitrary nested wrappers or multi-row groups.
+
+     Ownership boundary:
+       lumen.css owns the visual composition shell only. Application code
+       owns search submission, clear-button behaviour, unit conversion,
+       masking, and validation messaging. data-input-group must not be used
+       as a general-purpose horizontal layout primitive.
+  */
+
+    /* Wrapper — clips the joined surface and enforces the border token */
+    div[data-input-group] {
+        display: flex;
+        align-items: stretch;
+        gap: var(--layout-input-group-gap);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface);
+        overflow: hidden;
+        transition:
+            border-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+    }
+
+    /* Focus propagation — the group border and ring respond to any focused child */
+    div[data-input-group]:has(:focus-visible) {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 var(--focus-ring-width) rgb(from var(--color-accent) r g b / 0.25);
+    }
+
+    /* Invalid propagation — mirrors the existing :invalid / aria-invalid control rules */
+    div[data-input-group]:has(
+            :is(input, select):where(
+                :invalid:not(:placeholder-shown, :focus),
+                [aria-invalid="true"]
+            )
+        ) {
+        border-color: var(--color-danger);
+        background-color: var(--color-danger-subtle);
+    }
+
+    div[data-input-group]:has(
+            :is(input, select):where(
+                :invalid:not(:placeholder-shown, :focus),
+                [aria-invalid="true"]
+            )
+        ):has(:focus-visible) {
+        box-shadow: 0 0 0 var(--focus-ring-width) rgb(from var(--color-danger) r g b / 0.25);
+    }
+
+    /* Disabled propagation — the group reads as unavailable when its control is disabled */
+    div[data-input-group]:has(:is(input, select, button):disabled) {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Suppress the individual control's own border, background, shadow, and radius
+     so the wrapper owns the full visual surface */
+    :where(div[data-input-group])
+        > :is(
+            input:not(
+                [type="checkbox"],
+                [type="radio"],
+                [type="range"],
+                [type="file"],
+                [type="color"]
+            ),
+            select
+        ) {
+        flex: 1 1 0;
+        min-inline-size: 0;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        box-shadow: none;
+        outline: none;
+    }
+
+    /* Suppress the control's own focus ring — the wrapper manages it */
+    :where(div[data-input-group])
+        > :is(
+            input:not(
+                [type="checkbox"],
+                [type="radio"],
+                [type="range"],
+                [type="file"],
+                [type="color"]
+            ),
+            select
+        ):focus-visible {
+        outline: none;
+        box-shadow: none;
+        border-color: transparent;
+    }
+
+    /* Prefix / suffix / icon slots — non-interactive, purely presentational */
+    :where(div[data-input-group]) > :is([data-prefix], [data-suffix], [data-icon]) {
+        display: inline-flex;
+        align-items: center;
+        padding-inline: var(--layout-input-group-padding-inline);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-tertiary);
+        background-color: var(--color-surface-sunken);
+        white-space: nowrap;
+        flex-shrink: 0;
+        user-select: none;
+        pointer-events: none;
+        border-inline-end: var(--border-width) var(--border-style) var(--color-border);
+    }
+
+    /* Suffix slot: border is on the inline-start side */
+    :where(div[data-input-group]) > [data-suffix] {
+        border-inline-end: none;
+        border-inline-start: var(--border-width) var(--border-style) var(--color-border);
+    }
+
+    /* Icon slot: no background to keep it visually light */
+    :where(div[data-input-group]) > [data-icon] {
+        background-color: transparent;
+        border-inline-end: none;
+        padding-inline-start: var(--layout-input-group-padding-inline);
+        padding-inline-end: var(--space-2);
+    }
+
+    /* Trailing action button — visually attached to the control without a gap */
+    :where(div[data-input-group]) > button {
+        flex-shrink: 0;
+        min-inline-size: var(--layout-input-group-action-min-inline-size);
+        border-radius: 0;
+        border: none;
+        border-inline-start: var(--border-width) var(--border-style) var(--color-border);
+        padding-inline: var(--space-3);
+    }
+
+    /* Suppress the trailing button's own focus ring — wrapper manages it */
+    :where(div[data-input-group]) > button:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: data
+   Polished defaults for table, caption, thead/tbody/tfoot, th, td,
+   details, summary, and dialog. Prioritises dense data review.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer data {
+    /* ── Table ──────────────────────────────────────────────────────────── */
+    table {
+        inline-size: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: var(--font-size-sm);
+        font-variant-numeric: tabular-nums;
+        margin-block-end: var(--space-4);
+        background-color: var(--color-surface);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    /* When a table contains a command menu the overflow clip must be lifted so
+     the absolutely-positioned dropdown can escape the table boundary. */
+    table:has(details[data-menu]) {
+        overflow: visible;
+    }
+
+    caption {
+        caption-side: top;
+        text-align: start;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        padding-block: var(--space-4);
+        padding-inline: var(--space-4);
+    }
+
+    thead {
+        background-color: var(--color-surface-sunken);
+        background-image: linear-gradient(
+            to bottom,
+            rgb(from var(--color-surface-sunken) r g b / 0.65),
+            var(--color-surface-sunken)
+        );
+        border-block-end: var(--border-width) var(--border-style) var(--color-border);
+    }
+
+    th {
+        text-align: start;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+        letter-spacing: var(--letter-spacing-wide);
+        text-transform: uppercase;
+        padding-block: var(--table-cell-padding-block);
+        padding-inline: var(--table-cell-padding-inline);
+        white-space: nowrap;
+    }
+
+    td {
+        padding-block: var(--table-cell-padding-block);
+        padding-inline: var(--table-cell-padding-inline);
+        color: var(--color-text);
+        border-block-end: var(--border-width) var(--border-style) var(--color-border-subtle);
+        vertical-align: middle;
+        line-height: var(--line-height-snug);
+    }
+
+    tr:last-child td {
+        border-block-end: none;
+    }
+
+    /* Alternating row stripe */
+    tbody tr:nth-child(even) {
+        background-color: var(--table-stripe-bg);
+    }
+
+    /* Row hover */
+    tbody tr:hover {
+        background-color: var(--table-row-hover-bg);
+    }
+
+    /* Column-header sorted indicators via aria-sort */
+    th[aria-sort="ascending"]::after {
+        content: " ↑";
+        font-size: 0.8em;
+        opacity: 0.7;
+    }
+
+    th[aria-sort="descending"]::after {
+        content: " ↓";
+        font-size: 0.8em;
+        opacity: 0.7;
+    }
+
+    th[aria-sort="ascending"],
+    th[aria-sort="descending"] {
+        color: var(--color-accent);
+    }
+
+    tfoot {
+        background-color: var(--color-surface-sunken);
+        border-block-start: var(--border-width-2) var(--border-style) var(--color-border);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    /* ── Row-state polish (selected, current) ────────────────────────────── */
+
+    /* Selected rows: stronger accent background so it reads clearly over stripes */
+    tbody tr[aria-selected="true"] {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+    }
+
+    /* Current row: left-edge accent bar for directional emphasis */
+    tbody tr[aria-current="true"],
+    tbody tr[aria-current="row"] {
+        background-color: color-mix(in srgb, var(--color-accent-subtle) 60%, transparent);
+        box-shadow: inset var(--border-width-2) 0 0 0 var(--color-accent);
+    }
+
+    /* Ensure row hover doesn't fully erase selected/current distinction */
+    tbody tr[aria-selected="true"]:hover {
+        background-color: color-mix(in srgb, var(--color-accent-subtle) 80%, var(--color-accent));
+    }
+
+    /* ── Overflow container ──────────────────────────────────────────────── */
+
+    /* Horizontal scroll host for wide datasets.
+     - overflow-x: auto  → scrolls only when content overflows
+     - overflow-y: visible → does NOT clip vertically, preserving focus rings
+       and sticky headers that could protrude above/below the container
+     - The border-radius and border are moved here from table so the container
+       owns the visual frame when present
+     - Do NOT put overflow: hidden on the container — it would break sticky headers */
+    /* Avoid clipping absolutely-positioned command menus (details[data-menu]) by
+     not forcing overflow on containers that contain them. Uses :has() to
+     opt-out containers that host menus from becoming the scroll host. This
+     keeps the horizontal-scroll host behavior for tables that need it while
+     preventing the menu-clipping issue in modern browsers that support :has().
+     See README for the non-CSS workarounds (portal / Popover API) for older
+     browsers. */
+    div[data-table-container]:not(:has(details[data-menu])) {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        margin-block-end: var(--space-4);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+    }
+
+    /* When a table lives inside an overflow container, delegate the visual
+     frame to the container so borders and radius stay outside the scroll area */
+    div[data-table-container] > table {
+        margin-block-end: 0;
+        border: none;
+        border-radius: 0;
+    }
+
+    /* ── Sticky header ───────────────────────────────────────────────────── */
+
+    /* Sticky header cells need:
+     1. position: sticky + top: 0 so they pin inside the overflow container
+     2. An explicit background (inherit from thead) so underlying rows don't
+        show through while scrolling
+     3. z-index: 1 to sit above body rows
+     4. A bottom shadow for depth separation
+     Note: the table already has overflow: hidden globally — when data-sticky-header
+     is used the container (not the table) owns overflow, so sticky can work. */
+    table[data-sticky-header] {
+        /* Remove own overflow so sticky children can function */
+        overflow: visible;
+    }
+
+    table[data-sticky-header] thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: var(--color-surface-sunken);
+        box-shadow: var(--table-sticky-header-shadow);
+    }
+
+    /* ── Compact density (opt-in only) ──────────────────────────────────── */
+
+    /* Reduce row height without touching font-size or line-height so numeric
+     data stays readable in dense monitoring or data-grid contexts.
+     Applied only when the author explicitly opts in via data-density=compact. */
+    table[data-density="compact"] th,
+    table[data-density="compact"] td {
+        padding-block: var(--table-cell-padding-block-compact);
+    }
+
+    /* ── Details and Summary ────────────────────────────────────────────── */
+    details:not(nav[data-navbar] *, [data-menu]) {
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        background-color: var(--color-surface);
+        margin-block-end: var(--space-3);
+        overflow: hidden;
+    }
+
+    summary:not(nav[data-navbar] *) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--space-3) var(--space-4);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+        color: var(--color-text);
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+        transition: background-color var(--transition-fast);
+    }
+
+    summary:not(nav[data-navbar] *)::-webkit-details-marker {
+        display: none;
+    }
+
+    summary:not(nav[data-navbar] *)::after {
+        content: "";
+        display: block;
+        inline-size: 1rem;
+        block-size: 1rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23868e96'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 1rem 1rem;
+        flex-shrink: 0;
+        transition: transform var(--transition-fast);
+    }
+
+    details[open] summary:not(nav[data-navbar] *)::after {
+        transform: rotate(180deg);
+    }
+
+    summary:not(nav[data-navbar] *):hover {
+        background-color: var(--color-surface-sunken);
+    }
+
+    /* Details body — the divider lives on the open summary so it always spans
+     the full container width, regardless of the content element's max-inline-size. */
+    details:not(nav[data-navbar] *, [data-menu])[open] > summary {
+        border-block-end: var(--border-width) var(--border-style) var(--color-border);
+    }
+
+    details:not(nav[data-navbar] *, [data-menu]) > :not(summary) {
+        padding: var(--space-4);
+    }
+
+    /* ── Command menu (details[data-menu]) ──────────────────────────────── */
+    /* Override the standard details card appearance for the menu variant */
+    details[data-menu] {
+        position: relative;
+        display: inline-block;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        margin-block-end: 0;
+        overflow: visible;
+    }
+
+    /* Trigger: suppress the card summary styles and chevron icon */
+    details[data-menu] > summary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-1) var(--space-2);
+        font-weight: var(--font-weight-normal);
+        border-radius: var(--radius-md);
+    }
+
+    details[data-menu] > summary::after {
+        display: none;
+    }
+
+    details[data-menu] > summary:hover {
+        background-color: var(--color-surface-sunken);
+    }
+
+    /* Suppress the open-summary divider that the base details contract applies */
+    details[data-menu][open] > summary {
+        border-block-end: none;
+    }
+
+    /* Menu list: overlay surface anchored to the trigger.
+     padding-block overrides the generic details > :not(summary) padding rule. */
+    details[data-menu] > :is(ul, ol) {
+        position: absolute;
+        inset-block-start: 100%;
+        inset-inline-end: 0;
+        inset-inline-start: auto;
+        z-index: var(--z-dropdown);
+        min-inline-size: var(--layout-menu-min-inline-size);
+        padding-block: var(--layout-menu-padding);
+        padding-inline: 0;
+        margin: 0;
+        list-style: none;
+        background-color: var(--color-surface-raised);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        details[data-menu][open] > :is(ul, ol) {
+            animation: cascade-menu-slide-down var(--transition-fast) both;
+        }
+    }
+
+    @keyframes cascade-menu-slide-down {
+        from {
+            opacity: 0;
+            transform: translateY(calc(-1 * var(--space-1)));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Alignment variant: anchor to inline-start edge instead */
+    details[data-menu][data-align="start"] > :is(ul, ol) {
+        inset-inline-start: 0;
+        inset-inline-end: auto;
+    }
+
+    /* Action items: shared contract for a[href] and button[type=button].
+     :where() keeps specificity at (0,1,0) so app overrides remain easy. */
+    :where(details[data-menu] > :is(ul, ol) > li > :is(a[href], button[type="button"])) {
+        display: flex;
+        align-items: center;
+        inline-size: 100%;
+        padding-block: var(--space-2);
+        padding-inline: var(--layout-menu-item-padding-inline);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+        color: var(--color-text);
+        background: none;
+        border: none;
+        border-radius: 0;
+        text-decoration: none;
+        text-align: start;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color var(--transition-fast);
+    }
+
+    :where(details[data-menu] > :is(ul, ol) > li > :is(a[href], button[type="button"])):hover,
+    :where(
+        details[data-menu] > :is(ul, ol) > li > :is(a[href], button[type="button"])
+    ):focus-visible {
+        background-color: var(--color-surface-sunken);
+        outline: none;
+    }
+
+    :where(
+        details[data-menu] > :is(ul, ol) > li > :is(a[href], button[type="button"])
+    ):focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: -2px;
+    }
+
+    /* Destructive action emphasis via data-tone=danger on the li */
+    :where(
+        details[data-menu]
+            > :is(ul, ol)
+            > li[data-tone="danger"]
+            > :is(a[href], button[type="button"])
+    ) {
+        color: var(--color-danger);
+    }
+
+    :where(
+        details[data-menu]
+            > :is(ul, ol)
+            > li[data-tone="danger"]
+            > :is(a[href], button[type="button"])
+    ):hover,
+    :where(
+        details[data-menu]
+            > :is(ul, ol)
+            > li[data-tone="danger"]
+            > :is(a[href], button[type="button"])
+    ):focus-visible {
+        background-color: var(--color-danger-subtle);
+    }
+
+    /* Separator */
+    :where(details[data-menu] > :is(ul, ol) > li[role="separator"]) {
+        block-size: var(--border-width);
+        margin-block: var(--layout-menu-padding);
+        background-color: var(--color-border);
+        padding: 0;
+    }
+
+    /* ── Dialog ─────────────────────────────────────────────────────────── */
+    dialog {
+        display: none;
+        position: fixed;
+        inset: 0;
+        inline-size: min(90vw, 36rem);
+        max-block-size: min(90dvb, 48rem);
+        margin: auto;
+        padding: var(--space-6);
+        background-color: var(--color-surface-raised);
+        color: var(--color-text);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        overflow-y: auto;
+    }
+
+    dialog[open] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    dialog::backdrop {
+        background-color: rgb(15 23 42 / 0.6);
+        backdrop-filter: blur(4px) saturate(1.2);
+    }
+
+    dialog > header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--space-4);
+    }
+
+    dialog > header h2,
+    dialog > header h3,
+    dialog > header h4 {
+        margin: 0;
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    dialog > footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: var(--space-3);
+        padding-block-start: var(--space-4);
+        border-block-start: var(--border-width) var(--border-style) var(--color-border);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER: state
+   Attribute- and ARIA-driven state styling. Low-specificity patterns
+   applied through native, ARIA, and semantic attributes. No required
+   modifier classes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer state {
+    /* ── Disabled (non-form, e.g. links, interactive regions) ────────────── */
+    [disabled],
+    [aria-disabled="true"] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    /* Re-enable pointer-events for focusable disabled elements so keyboard
+     can still reach them and users understand why they are disabled */
+    button[disabled],
+    input[disabled],
+    select[disabled],
+    textarea[disabled] {
+        pointer-events: auto;
+    }
+
+    /* ── Selected (e.g. list options, tabs, menu items) ──────────────────── */
+    [aria-selected="true"] {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        font-weight: var(--font-weight-medium);
+    }
+
+    /* ── Current (e.g. navigation links, breadcrumbs) ────────────────────── */
+    [aria-current="page"],
+    [aria-current="step"],
+    [aria-current="location"],
+    [aria-current="date"],
+    [aria-current="time"] {
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+    /* ── Expanded (accordion, tree, menu) ───────────────────────────────── */
+    [aria-expanded="true"] {
+        color: var(--color-accent);
+    }
+
+    /* ── Pressed (toggle buttons) ───────────────────────────────────────── */
+    [aria-pressed="true"] {
+        background-color: var(--color-accent);
+        color: var(--color-text-on-accent);
+        border-color: var(--color-accent);
+    }
+
+    [aria-pressed="false"] {
+        background-color: var(--color-surface);
+        color: var(--color-text);
+        border-color: var(--color-border);
+    }
+
+    /* ── Checked (custom toggles, listbox options) ───────────────────────── */
+    [aria-checked="true"] {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+    }
+
+    [aria-checked="mixed"] {
+        background-color: var(--color-warning-subtle);
+        color: var(--color-warning-text);
+    }
+
+    /* ── Busy / loading ─────────────────────────────────────────────────── */
+    [aria-busy="true"] {
+        cursor: wait;
+        opacity: 0.7;
+    }
+
+    /* Inline action spinner: appended after the button label via ::after.
+     Text remains visible so the action meaning stays clear while loading.
+     Pair aria-busy with disabled when repeat submission must be prevented.
+     Scoped to <button> only — input[type=submit|button|reset] do not support
+     ::after reliably because they are replaced elements in some browsers. */
+    button[aria-busy="true"] {
+        opacity: 1;
+        cursor: wait;
+        gap: var(--space-2);
+    }
+
+    button[aria-busy="true"]::after {
+        content: "";
+        display: inline-block;
+        inline-size: var(--layout-spinner-button-size);
+        block-size: var(--layout-spinner-button-size);
+        border-radius: var(--radius-full);
+        border: var(--layout-spinner-stroke-width) solid currentColor;
+        border-block-start-color: transparent;
+        animation: cascade-spin var(--layout-spinner-duration) linear infinite;
+        flex-shrink: 0;
+        vertical-align: middle;
+    }
+
+    button[aria-busy="true"]:disabled::after,
+    button[aria-busy="true"][disabled]::after {
+        opacity: 0.5;
+    }
+
+    /* Busy-region overlay spinner: centered pseudo-element over the host.
+     Applies to semantic sectioning and form elements only — not generic divs.
+     The host gains a positioning context and a dimmed backdrop.
+     Content remains visible and accessible; the overlay is purely decorative.
+     Authors are responsible for live-region / status copy for AT announcements. */
+    :where(form, fieldset, section, article, main, aside, dialog)[aria-busy="true"] {
+        position: relative;
+        opacity: 1;
+        cursor: wait;
+    }
+
+    :where(form, fieldset, section, article, main, aside, dialog)[aria-busy="true"]::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: var(--layout-spinner-region-backdrop);
+        border-radius: inherit;
+        z-index: 1;
+    }
+
+    :where(form, fieldset, section, article, main, aside, dialog)[aria-busy="true"]::after {
+        content: "";
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 50%;
+        inline-size: var(--layout-spinner-region-size);
+        block-size: var(--layout-spinner-region-size);
+        margin-block-start: calc(var(--layout-spinner-region-size) / -2);
+        margin-inline-start: calc(var(--layout-spinner-region-size) / -2);
+        border-radius: var(--radius-full);
+        border: var(--layout-spinner-stroke-width) solid var(--layout-spinner-track-color);
+        border-block-start-color: var(--layout-spinner-color);
+        animation: cascade-spin var(--layout-spinner-duration) linear infinite;
+        z-index: 2;
+    }
+
+    /* ── Invalid (supplement to native :invalid, applied via JS/ARIA) ─────── */
+    [aria-invalid="true"] {
+        border-color: var(--color-danger);
+        color: var(--color-danger-text);
+    }
+
+    /* Error message following an invalid field */
+    [aria-invalid="true"] + :where(small, p, span) {
+        color: var(--color-danger-text);
+        font-size: var(--font-size-xs);
+        display: block;
+        margin-block-start: var(--space-1);
+    }
+
+    /* ── Hidden (skip links, off-screen content) ─────────────────────────── */
+    [hidden]:not([hidden="until-found"]) {
+        display: none !important; /* stylelint-disable-line declaration-no-important */
+    }
+
+    /* Visually hidden but reachable by assistive tech */
+    [data-visually-hidden]:not(:focus, :focus-within) {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    /* ── Role-based status / live region appearance ──────────────────────── */
+    /* Scoped to non-interactive elements so role=alert/status/log on a button
+     or other control does not override its native sizing and styling. */
+    :where([role="status"], [role="alert"], [role="log"]):not(button, input, select, textarea, a) {
+        display: block;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-snug);
+        border: var(--border-width) var(--border-style) transparent;
+    }
+
+    [role="status"]:not(button, input, select, textarea, a) {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-text);
+        border-color: var(--color-border);
+    }
+
+    [role="alert"]:not(button, input, select, textarea, a) {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border-color: var(--color-danger-border);
+    }
+
+    [role="log"]:not(button, input, select, textarea, a) {
+        background-color: var(--color-surface-sunken);
+        color: var(--color-text-secondary);
+        border-color: var(--color-border);
+        font-family: var(--font-family-mono);
+        font-size: var(--font-size-xs);
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+
+    /* ── Toast notification region ───────────────────────────────────────────
+     Public authoring contract (v1):
+
+       <aside data-toast-region aria-label="Notifications">
+         <ul>
+           <li><div role="status">Polite update — announced at the next opportunity.</div></li>
+           <li><div role="alert">Assertive alert — announced immediately.</div></li>
+           <li data-tone="success"><div role="status">Record saved.</div></li>
+           <li data-tone="danger"><div role="alert">
+             <strong>Connection lost.</strong>
+             <p>Reconnecting…</p>
+             <button type="button" data-dismiss aria-label="Close">…</button>
+           </div></li>
+         </ul>
+       </aside>
+
+     The li is a structural list item styled by lumen.css.
+     The inner div carries the live-region role (role="status"|"alert").
+     This keeps <li> semantics valid (ARIA does not permit role="status" on <li>).
+
+     Two optional button roles inside a toast div:
+       button[type="button"][data-dismiss]  — close icon, positioned in the
+           top-inline-end corner of the toast; application code removes the li.
+       button[type="button"]:not([data-dismiss]) — trailing CTA/action button,
+           bottom-aligned; e.g. "Retry", "Review storage".
+
+     Scope: presentation only. Application code is responsible for
+     insertion, removal, queueing, deduplication, timing, and focus
+     management after a toast action. v1 supports one fixed top-end
+     stack only. Use inline messages or dialogs for blocking feedback.
+  */
+
+    /* Region host — fixed top-end stack, RTL-safe via logical inset properties */
+    aside[data-toast-region] {
+        position: fixed;
+        inset-block-start: var(--layout-toast-top);
+        inset-inline-end: var(--layout-toast-inline-end);
+        z-index: var(--layout-toast-z-index);
+        display: flex;
+        flex-direction: column;
+        inline-size: min(
+            var(--layout-toast-max-inline-size),
+            calc(100vw - 2 * var(--layout-toast-inline-end))
+        );
+        pointer-events: none;
+        container-type: normal;
+    }
+
+    /* Direct list — strips all list chrome and becomes the stack container */
+    :where(aside[data-toast-region]) > :is(ul, ol) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-toast-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* Individual toast — role="status"|"alert" div is the direct li child and content wrapper */
+    :where(aside[data-toast-region])
+        > :is(ul, ol)
+        > li:where(:has(> [role="status"]), :has(> [role="alert"])) {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        padding: var(--space-3) var(--space-4);
+        background-color: var(--color-surface-raised);
+        color: var(--color-text);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-snug);
+        pointer-events: auto;
+        animation: cascade-toast-enter var(--transition-slow) ease both;
+    }
+
+    /* When a close button is present, inset the content away from the button */
+    :where(aside[data-toast-region])
+        > :is(ul, ol)
+        > li:has(> :is([role="status"], [role="alert"]) > button[data-dismiss]) {
+        padding-inline-end: calc(var(--space-4) + 1.75rem + var(--space-2));
+    }
+
+    /* Live-region wrapper — flex subcontainer so inner elements inherit column layout.
+       Also resets the generic [role="status"|"alert"] state-layer styles (padding,
+       background, border, color) so the div is visually transparent inside the li. */
+    :where(aside[data-toast-region]) > :is(ul, ol) > li > :is([role="status"], [role="alert"]) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+        min-inline-size: 0;
+        padding: 0;
+        background-color: transparent;
+        border: none;
+        border-radius: 0;
+        color: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
+
+    /* Assertive alert — uses danger tone by default */
+    :where(aside[data-toast-region]) > :is(ul, ol) > li:has(> [role="alert"]) {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border-color: var(--color-danger-border);
+    }
+
+    /* Optional tone refinements — override urgency-driven base colors */
+    :where(aside[data-toast-region]) > :is(ul, ol) > li[data-tone="success"] {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success-text);
+        border-color: var(--color-success-border);
+    }
+
+    :where(aside[data-toast-region]) > :is(ul, ol) > li[data-tone="warning"] {
+        background-color: var(--color-warning-subtle);
+        color: var(--color-warning-text);
+        border-color: var(--color-warning-border);
+    }
+
+    :where(aside[data-toast-region]) > :is(ul, ol) > li[data-tone="danger"] {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border-color: var(--color-danger-border);
+    }
+
+    /* Optional heading inside a toast */
+    :where(aside[data-toast-region])
+        > :is(ul, ol)
+        :is([role="status"], [role="alert"])
+        > :where(strong, b) {
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+    }
+
+    /* Optional body paragraph — compact, no max-inline-size cap inside toast */
+    :where(aside[data-toast-region]) > :is(ul, ol) :is([role="status"], [role="alert"]) > p {
+        margin: 0;
+        max-inline-size: none;
+        line-height: var(--line-height-snug);
+        color: inherit;
+        font-size: inherit;
+    }
+
+    /* Optional trailing action/dismiss button aligned to the inline-end */
+    :where(aside[data-toast-region]) > :is(ul, ol) button[type="button"]:not([data-dismiss]) {
+        align-self: flex-end;
+        margin-block-start: var(--space-1);
+        padding-block: var(--space-1);
+        padding-inline: var(--space-3);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        background-color: transparent;
+        color: inherit;
+        border-color: currentColor;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+    }
+
+    :where(aside[data-toast-region]) > :is(ul, ol) button[type="button"]:not([data-dismiss]):hover {
+        background-color: rgb(from currentColor r g b / 0.1);
+    }
+
+    /* Optional close icon button — positioned in the top-inline-end corner */
+    :where(aside[data-toast-region]) > :is(ul, ol) button[type="button"][data-dismiss] {
+        position: absolute;
+        inset-block-start: var(--space-2);
+        inset-inline-end: var(--space-2);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.75rem;
+        block-size: 1.75rem;
+        padding: 0;
+        background-color: transparent;
+        color: inherit;
+        border-color: transparent;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        opacity: 0.6;
+        transition:
+            opacity var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    :where(aside[data-toast-region]) > :is(ul, ol) button[type="button"][data-dismiss]:hover {
+        opacity: 1;
+        background-color: rgb(from currentColor r g b / 0.1);
+        border-color: transparent;
+    }
+
+    /* Close icon — rendered via ::before using an inline × glyph equivalent */
+    :where(aside[data-toast-region]) > :is(ul, ol) button[type="button"][data-dismiss]::before {
+        content: "\00D7";
+        font-size: 1.125rem;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    /* Subtle slide-in entry — transform/opacity only, no layout shift */
+    @keyframes cascade-toast-enter {
+        from {
+            opacity: 0;
+            transform: translateX(var(--space-4));
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Suppress entry animation when reduced motion is preferred */
+    @media (prefers-reduced-motion: reduce) {
+        :where(aside[data-toast-region])
+            > :is(ul, ol)
+            > li:where(:has(> [role="status"]), :has(> [role="alert"])) {
+            animation: none;
+        }
+    }
+
+    /* ── Persistent notification-center surface ──────────────────────────────
+     Public authoring contract (v1):
+
+       <aside data-notification-center aria-label="Notifications">
+         <header>
+           <h2>Notifications</h2>
+           <button type="button">Mark all read</button>
+         </header>
+         <ul>
+           <li data-unread="true">
+             <h3>Deploy succeeded</h3>
+             <p>Production build v2.4.1 finished without errors.</p>
+             <time datetime="2026-04-14T10:30:00Z">10:30 AM</time>
+             <a href="/deployments/241">View deployment</a>
+             <button type="button" data-dismiss aria-label="Dismiss">…</button>
+           </li>
+           <li data-tone="danger">
+             <h3>Payment failed</h3>
+             <p>Your card ending in 4242 was declined.</p>
+             <time datetime="2026-04-14T09:15:00Z">9:15 AM</time>
+             <button type="button">Update billing</button>
+             <button type="button" data-dismiss aria-label="Dismiss">…</button>
+           </li>
+           <li>
+             <h3>Comment on your post</h3>
+             <p>Sam replied to your comment in "Q3 roadmap".</p>
+             <time datetime="2026-04-13T17:00:00Z">Yesterday</time>
+           </li>
+         </ul>
+         <footer>
+           <a href="/notifications">View all notifications</a>
+         </footer>
+       </aside>
+
+     For the empty center, place an existing region-state host inside:
+       <aside data-notification-center aria-label="Notifications">
+         <aside data-region-state="empty">
+           <h3>No notifications</h3>
+           <p>You're all caught up.</p>
+         </aside>
+       </aside>
+
+     Supported item children (li):
+       :is(h3, h4, h5, h6)                — notification heading (required)
+       p                                  — supporting body text (optional)
+       time                               — timestamp (optional)
+       a[href] | button[type="button"]    — one primary action (optional)
+       button[type="button"][data-dismiss] — dismiss or mark-read button (optional)
+
+     Item state attributes:
+       data-unread="true"                 — marks an unread item with a visual accent
+       data-tone="success|warning|danger" — applies semantic tone (reuses existing families)
+
+     This surface is persistent browsable content — NOT a live-region toast queue.
+     lumen.css owns presentation only. Application code owns notification
+     retrieval, unread counts, mark-read behaviour, item dismissal, and persistence.
+  */
+
+    /* Host — in-flow panel; positioning and open/close toggling are app responsibilities */
+    aside[data-notification-center] {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--color-surface-raised);
+        color: var(--color-text);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        container-type: normal;
+    }
+
+    /* Optional panel header */
+    :where(aside[data-notification-center]) > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-2);
+        padding-block: var(--layout-notification-item-padding);
+        padding-inline: var(--layout-notification-item-padding);
+        border-block-end: var(--border-width) var(--border-style) var(--color-border);
+        background-color: var(--color-surface);
+    }
+
+    :where(aside[data-notification-center]) > header > :is(h1, h2, h3, h4, h5, h6) {
+        margin: 0;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+        color: var(--color-text);
+    }
+
+    /* Optional header action button (e.g. "Mark all read") */
+    :where(aside[data-notification-center]) > header > button[type="button"] {
+        flex-shrink: 0;
+        padding-block: var(--space-1);
+        padding-inline: var(--space-2);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        background-color: transparent;
+        color: var(--color-accent);
+        border-color: transparent;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition:
+            background-color var(--transition-fast),
+            color var(--transition-fast);
+    }
+
+    :where(aside[data-notification-center]) > header > button[type="button"]:hover {
+        background-color: var(--color-accent-subtle);
+        border-color: transparent;
+    }
+
+    /* Notification list — strips list chrome; gap drives vertical rhythm */
+    :where(aside[data-notification-center]) > :is(ul, ol) {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow-y: auto;
+    }
+
+    /* Individual notification item */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto;
+        align-items: start;
+        gap: var(--layout-notification-center-gap);
+        padding: var(--layout-notification-item-padding);
+        border-block-end: var(--border-width) var(--border-style) var(--color-border);
+        background-color: var(--color-surface-raised);
+        transition: background-color var(--transition-fast);
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li:last-child {
+        border-block-end: none;
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li:hover {
+        background-color: var(--color-surface);
+    }
+
+    /* Unread indicator — accent left border and slightly elevated background */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-unread="true"] {
+        background-color: var(--color-accent-subtle);
+        border-inline-start: 3px solid var(--color-accent);
+        padding-inline-start: calc(var(--layout-notification-item-padding) - 3px);
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-unread="true"]:hover {
+        background-color: var(--color-accent-subtle);
+        filter: brightness(0.97);
+    }
+
+    /* Tone variants — reuse semantic token families */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-tone="success"] {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success-text);
+        border-inline-start: 3px solid var(--color-success-border);
+        padding-inline-start: calc(var(--layout-notification-item-padding) - 3px);
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-tone="warning"] {
+        background-color: var(--color-warning-subtle);
+        color: var(--color-warning-text);
+        border-inline-start: 3px solid var(--color-warning-border);
+        padding-inline-start: calc(var(--layout-notification-item-padding) - 3px);
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-tone="danger"] {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border-inline-start: 3px solid var(--color-danger-border);
+        padding-inline-start: calc(var(--layout-notification-item-padding) - 3px);
+    }
+
+    /* Item heading — compact, no margin */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li > :is(h3, h4, h5, h6) {
+        grid-column: 1;
+        margin: 0;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--line-height-tight);
+        color: inherit;
+    }
+
+    /* Item body text */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li > p {
+        grid-column: 1;
+        margin: 0;
+        font-size: var(--font-size-xs);
+        line-height: var(--line-height-snug);
+        color: var(--color-text-secondary);
+        max-inline-size: none;
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-tone] > p {
+        color: inherit;
+        opacity: 0.85;
+    }
+
+    /* Timestamp — secondary metadata, smallest text */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li > time {
+        display: block;
+        grid-column: 1;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-tertiary);
+        line-height: var(--line-height-tight);
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li[data-tone] > time {
+        color: inherit;
+        opacity: 0.7;
+    }
+
+    /* Primary action — link or button, inline text-link style */
+    :where(aside[data-notification-center]) > :is(ul, ol) > li > a[href] {
+        grid-column: 1;
+        display: inline-flex;
+        align-self: start;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-accent);
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
+    }
+
+    :where(aside[data-notification-center]) > :is(ul, ol) > li > a[href]:hover {
+        text-decoration: none;
+    }
+
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li
+        > button[type="button"]:not([data-dismiss]) {
+        grid-column: 1;
+        display: inline-flex;
+        align-self: start;
+        padding-block: var(--space-1);
+        padding-inline: var(--space-2);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-medium);
+        background-color: transparent;
+        color: var(--color-accent);
+        border-color: currentColor;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background-color var(--transition-fast);
+    }
+
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li
+        > button[type="button"]:not([data-dismiss]):hover {
+        background-color: var(--color-accent-subtle);
+        border-color: currentColor;
+    }
+
+    /* Dismiss / mark-read button — spans to the inline-end column across all rows */
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li
+        > button[type="button"][data-dismiss] {
+        grid-column: 2;
+        grid-row: 1 / -1;
+        align-self: start;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+        padding: 0;
+        background-color: transparent;
+        color: var(--color-text-tertiary);
+        border-color: transparent;
+        border-radius: var(--layout-notification-item-radius);
+        cursor: pointer;
+        opacity: 0.7;
+        flex-shrink: 0;
+        transition:
+            opacity var(--transition-fast),
+            background-color var(--transition-fast);
+    }
+
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li
+        > button[type="button"][data-dismiss]:hover {
+        opacity: 1;
+        background-color: rgb(from currentColor r g b / 0.1);
+        color: var(--color-text);
+        border-color: transparent;
+    }
+
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li[data-tone]
+        > button[type="button"][data-dismiss] {
+        color: inherit;
+    }
+
+    /* Dismiss icon — × glyph via ::before, matching the toast dismiss pattern */
+    :where(aside[data-notification-center])
+        > :is(ul, ol)
+        > li
+        > button[type="button"][data-dismiss]::before {
+        content: "\00D7";
+        font-size: 1rem;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    /* Optional panel footer */
+    :where(aside[data-notification-center]) > footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-block: var(--layout-notification-item-padding);
+        padding-inline: var(--layout-notification-item-padding);
+        border-block-start: var(--border-width) var(--border-style) var(--color-border);
+        background-color: var(--color-surface);
+    }
+
+    :where(aside[data-notification-center]) > footer > a {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-accent);
+        text-decoration: none;
+    }
+
+    :where(aside[data-notification-center]) > footer > a:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
+    }
+
+    /* Suppress reduced-motion sensitive transitions */
+    @media (prefers-reduced-motion: reduce) {
+        :where(aside[data-notification-center]) > :is(ul, ol) > li,
+        :where(aside[data-notification-center]) > header > button[type="button"],
+        :where(aside[data-notification-center]) > :is(ul, ol) > li > button[type="button"] {
+            transition: none;
+        }
+    }
+
+    /* ── Semantic pagination component ──────────────────────────────────────
+     Public authoring contract (v1):
+
+       <nav data-pagination aria-label="…" | aria-labelledby="…">
+         <ol>                         <!-- or <ul> -->
+           <li><a href="…">Previous</a></li>
+           <li><a href="…">1</a></li>
+           <li><a href="…" aria-current="page">2</a></li>
+           <li><a href="…">3</a></li>
+           <li><span aria-hidden="true">…</span></li>
+           <li><a href="…">9</a></li>
+           <li><span aria-disabled="true">Next</span></li>
+         </ol>
+       </nav>
+
+     Four recognised child types per <li>:
+       a[href]                 — normal page link (interactive)
+       a[aria-current="page"]  — current page (interactive, visually highlighted)
+       span[aria-disabled="true"] — disabled previous/next control (non-interactive)
+       span[aria-hidden="true"]   — ellipsis gap marker (decorative, unfocusable)
+
+     lumen.css owns presentation only. Application code owns page
+     calculation, URL generation, and disabled-state management.
+  */
+
+    /* Host — inline-level positioning context; no stacking needed in v1 */
+    nav[data-pagination] {
+        display: flex;
+    }
+
+    /* Direct list — horizontal wrapping row, no list chrome */
+    :where(nav[data-pagination]) > :is(ol, ul) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--layout-pagination-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* List items — no extra spacing; the gap on the list handles rhythm */
+    :where(nav[data-pagination]) > :is(ol, ul) > li {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    /* Shared token-driven geometry for all interactive and non-interactive items */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > :is(a, span) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: var(--layout-pagination-item-min-inline-size);
+        block-size: var(--layout-pagination-item-min-inline-size);
+        padding-inline: var(--layout-pagination-item-padding-inline);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--line-height-tight);
+        border-radius: var(--radius-md);
+        border: var(--border-width) var(--border-style) transparent;
+        text-decoration: none;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* Normal page link */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > a[href] {
+        color: var(--color-text-secondary);
+        background-color: transparent;
+        border-color: transparent;
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast),
+            border-color var(--transition-fast);
+    }
+
+    :where(nav[data-pagination]) > :is(ol, ul) > li > a[href]:hover {
+        color: var(--color-text);
+        background-color: var(--color-surface-sunken);
+        border-color: var(--color-border-subtle);
+    }
+
+    /* Current page — accent fill, visually distinct, still interactive */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > a[aria-current="page"] {
+        color: var(--color-text-on-accent);
+        background-color: var(--color-accent);
+        border-color: var(--color-accent);
+        font-weight: var(--font-weight-semibold);
+        cursor: default;
+    }
+
+    /* Prevent hover from overriding current-page accent treatment */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > a[aria-current="page"]:hover {
+        color: var(--color-text-on-accent);
+        background-color: var(--color-accent-hover);
+        border-color: var(--color-accent-hover);
+    }
+
+    /* Disabled previous / next — reads as unavailable, not interactive */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > span[aria-disabled="true"] {
+        color: var(--color-text-disabled);
+        background-color: transparent;
+        border-color: transparent;
+        cursor: not-allowed;
+
+        /* pointer-events kept as default so cursor feedback is visible */
+        user-select: none;
+    }
+
+    /* Ellipsis gap marker — purely decorative, no focus, no border */
+    :where(nav[data-pagination]) > :is(ol, ul) > li > span[aria-hidden="true"] {
+        color: var(--color-text-tertiary);
+        background-color: transparent;
+        border-color: transparent;
+
+        /* min-inline-size applies but padding keeps it visually compact */
+        padding-inline: var(--space-1);
+        cursor: default;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* ── Semantic breadcrumb navigation ─────────────────────────────────────
+     Public authoring contract (v1):
+
+       <nav data-breadcrumbs aria-label="…" | aria-labelledby="…">
+         <ol>
+           <li><a href="…">Home</a></li>
+           <li><a href="…">Section</a></li>
+           <!-- Current page — interactive link: -->
+           <li><a href="…" aria-current="page">Current page</a></li>
+           <!-- Current page — non-interactive span: -->
+           <!-- <li><span aria-current="page">Current page</span></li> -->
+         </ol>
+       </nav>
+
+     Contract rules:
+       - Host must be nav[data-breadcrumbs] with aria-label or aria-labelledby.
+       - Exactly one direct <ol> child.
+       - Each <li> represents one location step.
+       - Ancestor steps use <a href="…"> (interactive).
+       - The final step (current page) uses either:
+           <a href="…" aria-current="page">  (interactive, breadcrumb only)
+           <span aria-current="page">        (non-interactive, breadcrumb only)
+       - Separators are decorative CSS (li + li::before); never written into DOM.
+
+     v1 non-goals (intentionally deferred):
+       - Responsive collapsing or overflow menus.
+       - Dropdown crumbs or multi-level items.
+       - Selector dependence on English labels.
+
+     lumen.css owns presentation only. Application code owns route
+     generation and localized crumb labels.
+  */
+
+    /* Host — inline-level container; no fixed height or overflow truncation */
+    nav[data-breadcrumbs] {
+        display: flex;
+    }
+
+    /* Ordered list — wrapping inline row, no list chrome */
+    :where(nav[data-breadcrumbs]) > ol {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--layout-breadcrumb-gap);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* List items — no extra margin; gap on the list handles rhythm */
+    :where(nav[data-breadcrumbs]) > ol > li {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        margin: 0;
+    }
+
+    /* Decorative separator — generated before every item except the first.
+     Uses a slash (/) which is neutral across LTR and RTL and universally
+     legible without relying on directional arrows or language-specific glyphs.
+     The gap on the ol provides spacing on both sides of the glyph.
+     The content value is wrapped in spaces so CSS speech rendering treats it
+     as punctuation rather than re-reading it as a word. */
+    :where(nav[data-breadcrumbs]) > ol > li + li::before {
+        content: "/";
+        color: var(--layout-breadcrumb-separator-color);
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-tight);
+        margin-inline-end: var(--layout-breadcrumb-gap);
+        user-select: none;
+        pointer-events: none;
+    }
+
+    /* Ancestor links — styled like muted navigation links, no underline */
+    :where(nav[data-breadcrumbs]) > ol > li > a {
+        display: inline-flex;
+        align-items: center;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-tight);
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        border-radius: var(--radius-sm);
+        transition: color var(--transition-fast);
+        white-space: nowrap;
+    }
+
+    :where(nav[data-breadcrumbs]) > ol > li > a:hover {
+        color: var(--color-text);
+    }
+
+    /* Current page — link variant: accent colour, heavier weight, no pointer */
+    :where(nav[data-breadcrumbs]) > ol > li > a[aria-current="page"] {
+        color: var(--color-text);
+        font-weight: var(--layout-breadcrumb-current-font-weight);
+        cursor: default;
+    }
+
+    /* Current page — span variant: same visual treatment, non-interactive */
+    :where(nav[data-breadcrumbs]) > ol > li > span[aria-current="page"] {
+        display: inline-flex;
+        align-items: center;
+        font-size: var(--font-size-sm);
+        line-height: var(--line-height-tight);
+        color: var(--color-text);
+        font-weight: var(--layout-breadcrumb-current-font-weight);
+        white-space: nowrap;
+    }
+
+    /* ── Tooltip hint via data-tooltip ──────────────────────────────────── */
+    [data-tooltip] {
+        position: relative;
+    }
+
+    [data-tooltip]::before {
+        content: attr(data-tooltip);
+        position: absolute;
+        inset-block-end: calc(100% + var(--space-2));
+        inset-inline-start: 50%;
+        transform: translateX(-50%);
+        inline-size: max-content;
+        max-inline-size: 16rem;
+        padding: var(--space-1) var(--space-2);
+        background-color: var(--color-text);
+        color: var(--color-bg);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--line-height-snug);
+        border-radius: var(--radius-sm);
+        pointer-events: none;
+        white-space: normal;
+        text-align: center;
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+        z-index: var(--z-overlay);
+    }
+
+    [data-tooltip]:hover::before,
+    [data-tooltip]:focus-visible::before {
+        opacity: 1;
+    }
+
+    /* ── Region-state patterns (:where(section, article, main, aside)[data-region-state]) ──
+     Public authoring contract (v1):
+
+       Empty state (informational, no live-region role required):
+         <section data-region-state="empty">
+           <h2>No results found</h2>
+           <p>Try adjusting your filters or search terms.</p>
+           <footer>
+             <button type="button">Clear filters</button>
+           </footer>
+         </section>
+
+       Success state (pair with role="status" when AT announcement is needed):
+         <section data-region-state="success" role="status">
+           <h2>Import complete</h2>
+           <p>142 records were imported successfully.</p>
+           <footer>
+             <a href="/records">View records</a>
+           </footer>
+         </section>
+
+       Error state (pair with role="alert" when AT announcement is needed):
+         <section data-region-state="error" role="alert">
+           <h2>Unable to load data</h2>
+           <p>A server error occurred. Your data was not affected.</p>
+           <footer>
+             <button type="button">Try again</button>
+           </footer>
+         </section>
+
+     Contract rules:
+       - Supported hosts: section, article, main, aside.
+       - Supported states: empty, success, error.
+       - data-region-state="empty" is purely informational; no live-region role is required.
+       - data-region-state="success" should carry role="status" when an AT announcement is needed.
+       - data-region-state="error" should carry role="alert" when an AT announcement is needed.
+       - The host may contain a heading, body content (p, ul, ol), and an optional direct footer.
+       - The direct footer holds action buttons or links and aligns them to the inline-start.
+       - Application code owns copy, retry actions, recovery flow, and live-region lifecycle.
+       - These states complement inline alerts, busy overlays, and dialogs — they do not replace them.
+
+     v1 non-goals (intentionally deferred):
+       - Icon or illustration slots.
+       - Centered hero-block layout (regions stay contained, not full-page takeover).
+       - Animated state transitions.
+  */
+
+    /* Base host — centered content column, padded surface, flex-stack internals */
+    :where(section, article, main, aside)[data-region-state] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-region-state-gap);
+        padding: var(--layout-region-state-padding);
+        max-inline-size: var(--layout-region-state-max-inline-size);
+        border-radius: var(--radius-lg);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        background-color: var(--color-surface);
+    }
+
+    /* Remove the default bottom margin that typography adds to headings inside the region */
+    :where(section, article, main, aside)[data-region-state] > :is(h1, h2, h3, h4, h5, h6) {
+        margin-block-end: 0;
+    }
+
+    /* Body paragraphs and lists — remove trailing margin so gap controls spacing */
+    :where(section, article, main, aside)[data-region-state] > :is(p, ul, ol) {
+        margin-block-end: 0;
+        color: var(--color-text-secondary);
+    }
+
+    /* Footer — inline action row; aligns buttons/links to the inline-start */
+    :where(section, article, main, aside)[data-region-state] > footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+        align-items: center;
+        padding-block-start: 0;
+    }
+
+    /* Empty state — neutral surface, no status tint */
+    :where(section, article, main, aside)[data-region-state="empty"] {
+        background-color: var(--color-surface-sunken);
+        border-color: var(--color-border-subtle);
+    }
+
+    /* Success state — derives from existing success semantic tokens */
+    :where(section, article, main, aside)[data-region-state="success"] {
+        background-color: var(--color-success-subtle);
+        border-color: var(--color-success-border);
+        color: var(--color-success-text);
+    }
+
+    :where(section, article, main, aside)[data-region-state="success"]
+        > :is(h1, h2, h3, h4, h5, h6) {
+        color: var(--color-success-text);
+    }
+
+    :where(section, article, main, aside)[data-region-state="success"] > :is(p, ul, ol) {
+        color: var(--color-success-text);
+    }
+
+    /* Error state — derives from existing danger semantic tokens */
+    :where(section, article, main, aside)[data-region-state="error"] {
+        background-color: var(--color-danger-subtle);
+        border-color: var(--color-danger-border);
+        color: var(--color-danger-text);
+    }
+
+    :where(section, article, main, aside)[data-region-state="error"] > :is(h1, h2, h3, h4, h5, h6) {
+        color: var(--color-danger-text);
+    }
+
+    :where(section, article, main, aside)[data-region-state="error"] > :is(p, ul, ol) {
+        color: var(--color-danger-text);
+    }
+
+    /* ── Status badges (:where(span, strong, small)[data-badge]) ────────────
+     Public authoring contract (v1):
+
+       <span data-badge>Label</span>                   neutral (default)
+       <span data-badge data-tone="accent">Label</span>
+       <span data-badge data-tone="success">Label</span>
+       <span data-badge data-tone="warning">Label</span>
+       <span data-badge data-tone="danger">Label</span>
+
+     Badges are purely presentational and non-interactive. Only the phrasing
+     elements span, strong, and small are supported. No size variants, icon
+     slots, or dismissible behavior are provided in v1. ────────────────────── */
+    :where(span, strong, small)[data-badge] {
+        display: inline-flex;
+        align-items: center;
+        padding-block: var(--layout-badge-padding-block);
+        padding-inline: var(--layout-badge-padding-inline);
+        font-size: var(--layout-badge-font-size);
+        font-weight: var(--font-weight-medium);
+        line-height: 1;
+        white-space: nowrap;
+        vertical-align: middle;
+        border-radius: var(--layout-badge-radius);
+        border: var(--border-width) var(--border-style) var(--color-border);
+        background-color: var(--color-surface-sunken);
+        background-image: linear-gradient(
+            to bottom,
+            rgb(from var(--color-surface-sunken) r g b / 0.5),
+            var(--color-surface-sunken)
+        );
+        color: var(--color-text-secondary);
+        box-shadow: 0 1px 1px -1px rgb(var(--shadow-color) / 0.04);
+    }
+
+    :where(span, strong, small)[data-badge][data-tone="neutral"] {
+        background-color: var(--color-surface-sunken);
+        color: var(--color-text-secondary);
+        border-color: var(--color-border);
+    }
+
+    :where(span, strong, small)[data-badge][data-tone="accent"] {
+        background-color: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+    :where(span, strong, small)[data-badge][data-tone="success"] {
+        background-color: var(--color-success-subtle);
+        color: var(--color-success-text);
+        border-color: var(--color-success-border);
+    }
+
+    :where(span, strong, small)[data-badge][data-tone="warning"] {
+        background-color: var(--color-warning-subtle);
+        color: var(--color-warning-text);
+        border-color: var(--color-warning-border);
+    }
+
+    :where(span, strong, small)[data-badge][data-tone="danger"] {
+        background-color: var(--color-danger-subtle);
+        color: var(--color-danger-text);
+        border-color: var(--color-danger-border);
+    }
+
+    /* ── Tabs (section[data-tabs]) ───────────────────────────────────────────
+     Public authoring contract (v1):
+
+       <section data-tabs>
+         <div role="tablist" aria-label="…" | aria-labelledby="…">
+           <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true">Label</button>
+           <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1">Label</button>
+         </div>
+         <div role="tabpanel" id="panel-1" aria-labelledby="tab-1">
+           <!-- active panel content -->
+         </div>
+         <div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+           <!-- inactive panel content -->
+         </div>
+       </section>
+
+     Segmented variant — same contract, different visual treatment:
+       <section data-tabs data-variant="segmented"> … </section>
+
+     Contract rules:
+       - Host must be section[data-tabs]; the data attribute is the scope selector.
+       - Exactly one direct [role=tablist] child with aria-label or aria-labelledby.
+       - Tab triggers are button[role=tab] — not links; this is in-page panel switching.
+       - Each button carries aria-controls (matching panel id) and aria-selected.
+       - Each panel carries role=tabpanel, id, and aria-labelledby (matching tab id).
+       - Inactive panels are hidden by the native `hidden` attribute.
+       - data-variant="segmented" is a visual variant of the same contract, not a
+         separate API. Selector, ARIA roles, and panel mechanics are identical.
+
+     lumen.css owns presentation only. Application code owns:
+       - Arrow-key navigation and roving tabindex management.
+       - Setting aria-selected="true|false" on tab triggers.
+       - Toggling the `hidden` attribute on tabpanels.
+       - Tab activation strategy (manual vs. automatic).
+  */
+
+    /* Host — block container; no overflow clipping; panels flow naturally */
+    section[data-tabs] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Tablist — horizontal scrolling row so long tab bars stay on one line */
+    :where(section[data-tabs]) > [role="tablist"] {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: var(--layout-tabs-gap);
+        padding-inline: var(--layout-tabs-padding-inline);
+        overflow-x: auto;
+        scrollbar-width: none; /* hide decorative scrollbar; tab bar scrolls via keyboard */
+        border-block-end: var(--border-width) var(--border-style) var(--color-border);
+    }
+
+    :where(section[data-tabs]) > [role="tablist"]::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Tab triggers — bare buttons, no inherited button chrome */
+    :where(section[data-tabs]) > [role="tablist"] > [role="tab"] {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding-block: var(--space-3);
+        padding-inline: var(--space-3);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--line-height-tight);
+        color: var(--color-text-secondary);
+        background-color: transparent;
+        border: none;
+        border-block-end: var(--border-width-2) var(--border-style) transparent;
+        margin-block-end: calc(-1 * var(--border-width)); /* overlap the tablist bottom border */
+        white-space: nowrap;
+        cursor: pointer;
+        border-radius: 0;
+        transition:
+            color var(--transition-fast),
+            border-color var(--transition-fast);
+    }
+
+    :where(section[data-tabs]) > [role="tablist"] > [role="tab"]:hover {
+        color: var(--color-text);
+        background-color: transparent;
+    }
+
+    /* Selected tab — underline treatment; overrides global [aria-selected="true"] */
+    :where(section[data-tabs]) > [role="tablist"] > [role="tab"][aria-selected="true"] {
+        color: var(--color-accent);
+        font-weight: var(--font-weight-medium);
+        background-color: transparent;
+        border-block-end-color: var(--color-accent);
+    }
+
+    /* Focus ring */
+    :where(section[data-tabs]) > [role="tablist"] > [role="tab"]:focus-visible {
+        outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+        border-radius: var(--radius-sm);
+    }
+
+    /* Tabpanel — padding and block flow; hidden attribute hides inactive panels */
+    :where(section[data-tabs]) > [role="tabpanel"] {
+        padding: var(--layout-tabs-panel-padding);
+    }
+
+    /* ── Segmented variant (section[data-tabs][data-variant="segmented"]) ── */
+
+    /* Tablist — pill container replacing the underline bar */
+    :where(section[data-tabs][data-variant="segmented"]) > [role="tablist"] {
+        display: inline-flex;
+        align-self: flex-start;
+        gap: var(--layout-tabs-gap);
+        padding: var(--layout-tabs-padding-inline);
+        background-color: var(--color-surface-sunken);
+        border-block-end: none;
+        border-radius: var(--radius-lg);
+    }
+
+    /* Tab triggers — pill buttons */
+    :where(section[data-tabs][data-variant="segmented"]) > [role="tablist"] > [role="tab"] {
+        padding-block: var(--space-2);
+        padding-inline: var(--space-4);
+        font-size: var(--font-size-sm);
+        color: var(--color-text-secondary);
+        background-color: transparent;
+        border: none;
+        border-block-end: none;
+        border-block-end-color: transparent;
+        margin-block-end: 0;
+        border-radius: var(--radius-md);
+        transition:
+            color var(--transition-fast),
+            background-color var(--transition-fast),
+            box-shadow var(--transition-fast);
+    }
+
+    :where(section[data-tabs][data-variant="segmented"]) > [role="tablist"] > [role="tab"]:hover {
+        color: var(--color-text);
+        background-color: transparent;
+    }
+
+    /* Selected segmented tab — raised pill */
+    :where(section[data-tabs][data-variant="segmented"])
+        > [role="tablist"]
+        > [role="tab"][aria-selected="true"] {
+        color: var(--color-text);
+        font-weight: var(--font-weight-medium);
+        background-color: var(--color-surface-raised);
+        border-block-end-color: transparent;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Panel — same padding, no border needed */
+    :where(section[data-tabs][data-variant="segmented"]) > [role="tabpanel"] {
+        padding: var(--layout-tabs-panel-padding);
+    }
+
+    /* ── Data-view shell (section[data-data-view]) ──────────────────────────
+     Public authoring contract (v1):
+
+       <section data-data-view>
+         <header>                               (optional title + primary action row)
+           <h2>Users</h2>
+           <button type="button">Add user</button>
+         </header>
+
+         <form data-data-toolbar>               (optional search / filter / action bar)
+           <div data-input-group>
+             <span data-icon aria-hidden="true">⌕</span>
+             <input type="search" placeholder="Search…" />
+           </div>
+           <select aria-label="Status filter">…</select>
+           <button type="button" data-tone="neutral">Export</button>
+         </form>
+
+         <p data-results-summary>               (optional result count / active-filter copy)
+           Showing 1–20 of 84 results
+         </p>
+
+         <div data-data-content>               (required content region)
+           <table>…</table>                    (or a list, cards, or [data-region-state])
+         </div>
+
+         <footer>                              (optional pagination / secondary actions)
+           <nav data-pagination aria-label="Page navigation">…</nav>
+         </footer>
+       </section>
+
+     Contract rules:
+       - Host must be section[data-data-view].
+       - Exactly one [data-data-content] child; its contents are application-owned.
+       - form[data-data-toolbar] composes existing controls; no new widget semantics.
+       - [data-results-summary] provides status copy only; it must not contain controls.
+       - The footer holds pagination (nav[data-pagination]) or secondary action buttons.
+       - The shell adds framing and spacing only; it must not restyle existing primitives.
+       - [aria-busy="true"], [data-region-state], and nav[data-pagination] inside the
+         shell use their own existing contracts without modification.
+
+     v1 non-goals (intentionally deferred):
+       - Column sort controls.
+       - Bulk-select toolbar.
+       - Infinite-scroll or virtual-scroll framing.
+       - Animated state transitions between loaded, loading, empty, and error.
+
+     Application code owns: query logic, result loading, pagination math, filter
+     state, aria-live announcements, and any dynamic UI behaviour inside the shell.
+     lumen.css owns framing, spacing, and section-separation only.
+  */
+
+    /* Shell host — vertical flex stack; full-width block */
+    section[data-data-view] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-data-view-gap);
+    }
+
+    /* Header — title + optional primary action; space-between when both are present */
+    section[data-data-view] > header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-3);
+    }
+
+    /* Strip the default heading bottom margin inside the data-view header so the
+     shell gap controls vertical rhythm */
+    section[data-data-view] > header > :is(h1, h2, h3, h4, h5, h6) {
+        margin-block-end: 0;
+    }
+
+    /* Toolbar — horizontal row of existing search / filter / action controls */
+    section[data-data-view] > form[data-data-toolbar] {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--layout-data-view-toolbar-gap);
+    }
+
+    /* Results summary — compact secondary copy; no interactive content */
+    section[data-data-view] > [data-results-summary] {
+        font-size: var(--layout-data-view-summary-font-size);
+        color: var(--color-text-secondary);
+        margin-block-end: 0;
+
+        /* max-inline-size cap from typography p rule is removed here so it spans the shell */
+        max-inline-size: none;
+    }
+
+    /* Content region — takes the full inline size; children handle their own layout */
+    section[data-data-view] > [data-data-content] {
+        min-inline-size: 0;
+    }
+
+    /* Strip default bottom margin from tables and region-state blocks directly
+     inside the content region so the shell gap controls spacing */
+    section[data-data-view] > [data-data-content] > table {
+        margin-block-end: 0;
+    }
+
+    section[data-data-view] > [data-data-content] > div[data-table-container] {
+        margin-block-end: 0;
+    }
+
+    /* Footer — pagination or secondary actions, aligned inline-start by default */
+    section[data-data-view] > footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    /* Narrow viewport: toolbar wraps and goes full-width; each item fills available space */
+    @media (width <= 40em) {
+        section[data-data-view]
+            > form[data-data-toolbar]
+            > :is(input, select, div[data-input-group]) {
+            flex: 1 1 100%;
+        }
+    }
+
+    /* ── Card (article[data-card]) ──────────────────────────────────────────
+     Host: article[data-card]
+     Optional host attributes:
+       data-tone="neutral|accent|success|warning|danger"
+       data-density="comfortable|compact"
+       data-media-position="top|start"
+     Required children:
+       figure[data-card-media]?  div[data-card-main]
+     Inside div[data-card-main]:
+       header?  div[data-card-body]  footer?
+     Linked-card: one heading link inside header or div[data-card-body];
+       the host remains non-interactive.
+     ───────────────────────────────────────────────────────────────────── */
+
+    /* Base surface */
+    article[data-card] {
+        display: flex;
+        flex-direction: column;
+        border: var(--border-width) var(--border-style) var(--color-border);
+        border-radius: var(--layout-card-radius);
+        background-color: var(--color-surface);
+        box-shadow: var(--shadow-sm);
+        container-type: inline-size;
+        transition: box-shadow var(--transition-slow), transform var(--transition-slow);
+    }
+
+    article[data-card]:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    article[data-card]:has(figure[data-card-media]):hover {
+        transform: translateY(-2px);
+    }
+
+    /* Primary content region */
+    article[data-card] > div[data-card-main] {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-card-gap);
+        padding: var(--layout-card-padding);
+        flex: 1;
+    }
+
+    /* Optional header inside the main region */
+    article[data-card] > div[data-card-main] > header {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-1);
+
+        /* reset the typography-layer bottom margin dialog/section headers inherit */
+        margin-block-end: 0;
+        padding-block-end: 0;
+        border-block-end: none;
+        background: none;
+    }
+
+    /* Body — no extra margin; gap on div[data-card-main] handles rhythm */
+    article[data-card] > div[data-card-main] > div[data-card-body] {
+        flex: 1;
+        min-block-size: 0;
+    }
+
+    /* Optional footer */
+    article[data-card] > div[data-card-main] > footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-2);
+
+        /* reset typography-layer footer defaults */
+        margin-block-start: 0;
+        padding-block-start: 0;
+        border-block-start: none;
+        background: none;
+    }
+
+    /* Media figure — resets typography-layer figure margin.
+     border-radius clips the figure corners to match the card surface;
+     overflow: hidden keeps the media cropped within those corners. */
+    article[data-card] > figure[data-card-media] {
+        margin-block-end: 0;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        /* Default stacked layout: top two corners follow the card radius,
+       bottom corners stay square so the figure meets div[data-card-main] flush. */
+        border-start-start-radius: var(--layout-card-radius);
+        border-start-end-radius: var(--layout-card-radius);
+        border-end-start-radius: 0;
+        border-end-end-radius: 0;
+    }
+
+    article[data-card] > figure[data-card-media] > :is(img, video, iframe) {
+        display: block;
+        inline-size: 100%;
+        block-size: auto;
+        aspect-ratio: var(--layout-card-media-aspect-ratio);
+        object-fit: cover;
+    }
+
+    /* ── media-position=top (default stacked, figure on top) ─────────────── */
+    article[data-card][data-media-position="top"] {
+        flex-direction: column;
+    }
+
+    /* ── media-position=start (side-by-side at wider container widths) ────── */
+    article[data-card][data-media-position="start"] {
+        flex-direction: row;
+    }
+
+    article[data-card][data-media-position="start"] > figure[data-card-media] {
+        inline-size: var(--layout-card-media-inline-size);
+
+        /* Side-media: inline-start corners follow the card radius, inline-end corners square */
+        border-start-start-radius: var(--layout-card-radius);
+        border-start-end-radius: 0;
+        border-end-start-radius: var(--layout-card-radius);
+        border-end-end-radius: 0;
+    }
+
+    article[data-card][data-media-position="start"]
+        > figure[data-card-media]
+        > :is(img, video, iframe) {
+        block-size: 100%;
+        aspect-ratio: auto;
+    }
+
+    /* Collapse side-media to stacked layout on narrow containers */
+    @container (inline-size < 28rem) {
+        article[data-card][data-media-position="start"] {
+            flex-direction: column;
+        }
+
+        article[data-card][data-media-position="start"] > figure[data-card-media] {
+            inline-size: 100%;
+
+            /* Restore stacked (top-only) corner radii when collapsed */
+            border-start-start-radius: var(--layout-card-radius);
+            border-start-end-radius: var(--layout-card-radius);
+            border-end-start-radius: 0;
+            border-end-end-radius: 0;
+        }
+
+        article[data-card][data-media-position="start"]
+            > figure[data-card-media]
+            > :is(img, video, iframe) {
+            block-size: auto;
+            aspect-ratio: var(--layout-card-media-aspect-ratio);
+        }
+    }
+
+    /* ── Tone variants ────────────────────────────────────────────────────── */
+    /* neutral (default) — no override needed; inherits surface token */
+
+    article[data-card][data-tone="accent"] {
+        border-color: var(--color-accent);
+        background-color: var(--color-accent-subtle);
+    }
+
+    article[data-card][data-tone="success"] {
+        border-color: var(--color-success-border);
+        background-color: var(--color-success-subtle);
+    }
+
+    article[data-card][data-tone="warning"] {
+        border-color: var(--color-warning-border);
+        background-color: var(--color-warning-subtle);
+    }
+
+    article[data-card][data-tone="danger"] {
+        border-color: var(--color-danger-border);
+        background-color: var(--color-danger-subtle);
+    }
+
+    /* ── Density variants ────────────────────────────────────────────────── */
+    article[data-card][data-density="compact"] > div[data-card-main] {
+        padding: var(--layout-card-padding-compact);
+        gap: var(--layout-card-gap-compact);
+    }
+
+    article[data-card][data-density="compact"] > div[data-card-main] > footer {
+        gap: var(--space-1);
+    }
+
+    /* ── Linked-card ─────────────────────────────────────────────────────── */
+    /* The host itself is NOT interactive. One heading link inside header or
+     div[data-card-body] acts as the primary navigation affordance.
+     The link uses standard anchor styling (inherited from typography layer).
+     Secondary controls (buttons, details[data-menu]) stay fully operable. */
+    article[data-card] :where(h1, h2, h3, h4, h5, h6) > a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    article[data-card] :where(h1, h2, h3, h4, h5, h6) > a:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.15em;
+    }
+
+    article[data-card] :where(h1, h2, h3, h4, h5, h6) > a:focus-visible {
+        outline: var(--focus-ring-width) solid var(--focus-ring-color);
+        outline-offset: var(--focus-ring-offset);
+    }
+
+    /* Heading sizes scale fluidly via clamp() on h1/h2/h3 (see typography layer);
+       no stepped media queries are needed. */
+
+    /* ── Print media ─────────────────────────────────────────────────────── */
+    @media print {
+        *,
+        *::before,
+        *::after {
+            background: white !important; /* stylelint-disable-line declaration-no-important */
+            color: black !important; /* stylelint-disable-line declaration-no-important */
+            box-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+            text-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+        }
+
+        a,
+        a:visited {
+            text-decoration: underline;
+            color: black !important; /* stylelint-disable-line declaration-no-important */
+        }
+
+        a[href]::after {
+            content: " (" attr(href) ")";
+            font-size: 0.75em;
+        }
+
+        abbr[title]::after {
+            content: " (" attr(title) ")";
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        /* Undo overflow-container scrolling for print so tables render in full */
+        div[data-table-container] {
+            overflow: visible;
+        }
+
+        tr,
+        img {
+            page-break-inside: avoid;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            page-break-after: avoid;
+        }
+    }
+}

@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="lumen.css browser support — minimum supported versions, feature baseline, and degradation behaviour."
+        />
+        <title>Browser Support — lumen.css</title>
+        <link rel="stylesheet" href="../css/lumen.css" />
+        <style>
+            .doc-page {
+                max-inline-size: 64rem;
+                margin-inline: auto;
+                padding-inline: var(--space-6);
+                padding-block: var(--space-10);
+            }
+            .doc-page h1 {
+                margin-block-end: var(--space-2);
+            }
+            .doc-page .lead {
+                font-size: 1.125rem;
+                color: var(--color-text-secondary);
+                margin-block-end: var(--space-8);
+                max-inline-size: 52ch;
+            }
+            .doc-page section {
+                margin-block-end: var(--space-10);
+            }
+            .doc-page h2 {
+                margin-block-end: var(--space-4);
+            }
+            .doc-page h3 {
+                margin-block-end: var(--space-3);
+            }
+            .degradation {
+                background: var(--color-warning-subtle);
+                border-inline-start: 3px solid var(--color-warning);
+                padding: var(--space-3) var(--space-4);
+                border-radius: 0 var(--radius-md) var(--radius-md) 0;
+                margin-block-start: var(--space-3);
+            }
+            .degradation strong {
+                color: var(--color-warning-fg);
+            }
+            code {
+                font-family: var(--font-family-mono);
+                font-size: 0.875em;
+            }
+            .site-footer p {
+                max-inline-size: none;
+            }
+            .icon {
+                inline-size: 1em;
+                block-size: 1em;
+                display: inline-block;
+                vertical-align: middle;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 1.9;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                flex-shrink: 0;
+            }
+            .icon-label {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-1);
+            }
+        </style>
+        <script>
+            (function () {
+                var saved = localStorage.getItem("lumen-theme");
+                if (saved) document.documentElement.setAttribute("data-theme", saved);
+            })();
+        </script>
+    </head>
+    <body>
+        <svg
+            aria-hidden="true"
+            style="position: absolute; inline-size: 0; block-size: 0; overflow: hidden"
+        >
+            <defs>
+                <symbol id="icon-lucide-sun" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </symbol>
+                <symbol id="icon-lucide-moon" viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>
+                </symbol>
+            </defs>
+        </svg>
+        <div data-layout-shell>
+            <header data-layout-header>
+                <a href="index.html" style="text-decoration: none; flex-shrink: 0"
+                    ><img
+                        src="logo-no-text.png"
+                        alt="lumen.css"
+                        style="display: block; block-size: 2rem; inline-size: auto"
+                /></a>
+                <button
+                    data-nav-toggle
+                    aria-expanded="false"
+                    aria-controls="primary-navbar"
+                    aria-label="Open navigation"
+                    type="button"
+                    onclick="
+                        var btn = this;
+                        var expanded = btn.getAttribute('aria-expanded') === 'true';
+                        btn.setAttribute('aria-expanded', String(!expanded));
+                        btn.setAttribute(
+                            'aria-label',
+                            !expanded ? 'Close navigation' : 'Open navigation',
+                        );
+                    "
+                ></button>
+                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="showcase.html">Showcase</a></li>
+                        <li><a href="recipes.html">Recipes</a></li>
+                        <li>
+                            <a href="browser-support.html" aria-current="page">Browser support</a>
+                        </li>
+                        <li><a href="responsibilities.html">Responsibilities</a></li>
+                    </ul>
+                </nav>
+                <div data-layout-actions>
+                    <button
+                        aria-label="Toggle dark mode"
+                        id="theme-toggle"
+                        onclick="toggleDocsTheme(this)"
+                    >
+                        <span class="icon-label"
+                            ><svg class="icon" aria-hidden="true">
+                                <use href="#icon-lucide-moon"></use></svg
+                            >Dark</span
+                        >
+                    </button>
+                </div>
+            </header>
+
+            <aside data-layout-sidebar>
+                <nav aria-label="On this page">
+                    <ul role="list">
+                        <li><a href="#supported-browsers">Supported browsers</a></li>
+                        <li><a href="#feature-baseline">Feature baseline</a></li>
+                        <li><a href="#has">:has()</a></li>
+                        <li><a href="#color-mix">color-mix()</a></li>
+                        <li><a href="#relative-color">Relative color syntax</a></li>
+                        <li><a href="#cascade-layers">@layer</a></li>
+                        <li><a href="#range-media">Range media queries</a></li>
+                        <li><a href="#sticky">position: sticky</a></li>
+                        <li><a href="#details">details / summary</a></li>
+                        <li><a href="#non-goals">Hard non-goals</a></li>
+                        <li><a href="#effective-minimum">Effective minimum</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main>
+                <div class="doc-page">
+                    <h1 id="top">Browser Support</h1>
+                    <p class="lead">
+                        lumen.css targets <strong>modern evergreen browsers</strong> with a precise
+                        feature baseline. This document lists the minimum supported versions, the
+                        advanced CSS features that set those minimums, and the exact degradation
+                        behaviour when a feature is absent.
+                    </p>
+
+                    <!-- ── Supported browsers ─────────────────────────────────────────── -->
+                    <section id="supported-browsers">
+                        <h2>Supported browsers</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Browser</th>
+                                    <th>Minimum version</th>
+                                    <th>Release date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Chrome / Chromium</td>
+                                    <td>121</td>
+                                    <td>Jan 2024</td>
+                                </tr>
+                                <tr>
+                                    <td>Edge</td>
+                                    <td>121</td>
+                                    <td>Jan 2024</td>
+                                </tr>
+                                <tr>
+                                    <td>Firefox</td>
+                                    <td>121</td>
+                                    <td>Dec 2023</td>
+                                </tr>
+                                <tr>
+                                    <td>Safari / WebKit</td>
+                                    <td>17.2</td>
+                                    <td>Dec 2023</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            Older releases, Internet Explorer, and legacy Edge (EdgeHTML) are
+                            <strong>explicitly unsupported</strong> and out of scope.
+                        </p>
+                    </section>
+
+                    <!-- ── Feature baseline ───────────────────────────────────────────── -->
+                    <section id="feature-baseline">
+                        <h2>Feature baseline</h2>
+
+                        <section id="has">
+                            <h3><code>:has()</code> — relational pseudo-class</h3>
+                            <p>
+                                Used throughout lumen.css to detect layout-shell variants, navbar
+                                collapse state, icon-nav structure, and grouped-navigation dropdown
+                                triggers
+                                <strong
+                                    >without requiring any modifier attribute or class on the host
+                                    element</strong
+                                >.
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>:has()</code></td>
+                                        <td>105</td>
+                                        <td>105</td>
+                                        <td>121</td>
+                                        <td>15.4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> In browsers without
+                                <code>:has()</code> support, the layout-shell variant detection
+                                falls back to the eight-column grid defaulting to the widest variant
+                                (all tracks present). Navbar dropdowns do not open via hover/focus.
+                                Icon-nav structure detection is lost. The framework remains visually
+                                usable but does not adapt automatically to structural composition.
+                            </div>
+                        </section>
+
+                        <section id="color-mix">
+                            <h3><code>color-mix()</code> — color interpolation function</h3>
+                            <p>
+                                Used in the <code>tokens</code> layer to derive button hover and
+                                active colors from the base tone tokens. All
+                                <code>--color-button-*-hover</code> and
+                                <code>--color-button-*-active</code> internal tokens are computed
+                                with <code>color-mix(in srgb, …)</code>.
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>color-mix()</code></td>
+                                        <td>111</td>
+                                        <td>111</td>
+                                        <td>113</td>
+                                        <td>16.2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> In browsers without
+                                <code>color-mix()</code>, button hover/active colors fall back to
+                                the unset default (the <code>color-mix()</code> expression is simply
+                                invalid and the property has no value). Buttons remain functional
+                                but lack the subtle shade shift on hover and press.
+                            </div>
+                        </section>
+
+                        <section id="relative-color">
+                            <h3>Relative color syntax — <code>rgb(from …)</code></h3>
+                            <p>
+                                Used in the <code>tokens</code> layer to derive the busy-region
+                                spinner backdrop color from <code>--color-bg</code>:
+                            </p>
+                            <pre><code>--layout-spinner-region-backdrop: rgb(from var(--color-bg) r g b / 0.65);</code></pre>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Relative color syntax</td>
+                                        <td>119</td>
+                                        <td>119</td>
+                                        <td>128</td>
+                                        <td>16.4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> In browsers without relative color
+                                syntax, the busy-region backdrop falls back to
+                                <code>unset</code> (no backdrop tint). The spinner overlay still
+                                appears; only the semi-transparent background behind it is lost.
+                            </div>
+                        </section>
+
+                        <section id="cascade-layers">
+                            <h3>CSS cascade layers — <code>@layer</code></h3>
+                            <p>
+                                lumen.css uses
+                                <code
+                                    >@layer reset, tokens, base, typography, controls, data,
+                                    state</code
+                                >
+                                to establish an explicit specificity ordering. Consumer overrides
+                                placed in an unlayered block always win over the framework layers.
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>@layer</code></td>
+                                        <td>99</td>
+                                        <td>99</td>
+                                        <td>97</td>
+                                        <td>15.4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> In browsers without
+                                <code>@layer</code>, the entire file is treated as unlayered, and
+                                the layer declarations are ignored. The cascade order of the rules
+                                still reflects the intended sequence (reset → tokens → … → state)
+                                because the rules are written in that order. Consumer overrides
+                                placed after the framework import still win by source order, but
+                                they do so without layer isolation, so high-specificity selectors
+                                inside the framework could win over low-specificity consumer
+                                overrides in unexpected ways.
+                            </div>
+                        </section>
+
+                        <section id="range-media">
+                            <h3>
+                                <code>@media (width &gt; …)</code> /
+                                <code>@media (width &lt;= …)</code> — range media queries
+                            </h3>
+                            <p>
+                                Used for responsive breakpoints throughout the layout-shell and
+                                navbar sections.
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Range media queries</td>
+                                        <td>104</td>
+                                        <td>104</td>
+                                        <td>63</td>
+                                        <td>16.4</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> Browsers without range media query
+                                syntax ignore those <code>@media</code> blocks entirely.
+                                Layout-shell responsive behavior and navbar collapse/expand
+                                transitions are lost; the desktop layout and the always-visible
+                                navbar are shown at all widths.
+                            </div>
+                        </section>
+
+                        <section id="sticky">
+                            <h3><code>position: sticky</code> — sticky positioning</h3>
+                            <p>
+                                Used for the layout-shell header, footer, and sticky table headers.
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>position: sticky</code></td>
+                                        <td>56</td>
+                                        <td>16</td>
+                                        <td>59</td>
+                                        <td>13</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="degradation">
+                                <strong>Degradation:</strong> Falls back to
+                                <code>position: static</code>. Headers and footers scroll with
+                                content; table headers do not stay visible when scrolling long
+                                tables.
+                            </div>
+                        </section>
+
+                        <section id="details">
+                            <h3>
+                                <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code> —
+                                interactive disclosure
+                            </h3>
+                            <p>
+                                Used for navbar grouped-navigation dropdown triggers (<code
+                                    >li &gt; a + ul</code
+                                >
+                                with <code>details</code>/<code>summary</code>) and command menus
+                                (<code>details[data-menu]</code>).
+                            </p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Chrome</th>
+                                        <th>Edge</th>
+                                        <th>Firefox</th>
+                                        <th>Safari</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <code>&lt;details&gt;</code> /
+                                            <code>&lt;summary&gt;</code>
+                                        </td>
+                                        <td>12</td>
+                                        <td>79</td>
+                                        <td>49</td>
+                                        <td>6</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p>
+                                All supported browser versions have had
+                                <code>&lt;details&gt;</code> support for years; this feature does
+                                not raise the minimum version.
+                            </p>
+                        </section>
+                    </section>
+
+                    <!-- ── Hard non-goals ─────────────────────────────────────────────── -->
+                    <section id="non-goals">
+                        <h2>Hard non-goals</h2>
+                        <p>
+                            The following browsers and environments are explicitly
+                            <strong>not supported</strong> and receive no compatibility effort:
+                        </p>
+                        <ul>
+                            <li>Internet Explorer (all versions)</li>
+                            <li>Legacy Edge (EdgeHTML engine, pre-Chromium)</li>
+                            <li>Opera Mini (extreme data-saving mode)</li>
+                            <li>Browsers that predate the feature baseline table above</li>
+                        </ul>
+                    </section>
+
+                    <!-- ── Effective minimum ──────────────────────────────────────────── -->
+                    <section id="effective-minimum">
+                        <h2>Determining the effective minimum</h2>
+                        <p>
+                            The binding minimums for full framework support are set by the
+                            intersection of the feature table above:
+                        </p>
+                        <ul>
+                            <li>
+                                <strong><code>:has()</code></strong> requires Firefox 121 (Dec 2023)
+                                — this is the binding lower bound.
+                            </li>
+                            <li>
+                                The overall minimum is therefore
+                                <strong>Chrome/Edge 121, Firefox 121, Safari 17.2</strong>.
+                            </li>
+                        </ul>
+                        <p>
+                            Adopters targeting slightly older releases can use the framework with
+                            the degradation notes above as the documented trade-off.
+                        </p>
+                    </section>
+                </div>
+                <!-- /doc-page -->
+            </main>
+
+            <footer
+                class="site-footer"
+                style="
+                    padding: var(--space-6) var(--space-8);
+                    border-block-start: 1px solid var(--color-border-subtle);
+                "
+            >
+                <p style="max-inline-size: none">
+                    <strong>lumen.css</strong> — CSS-only · Semantic-first · Token-driven
+                    &nbsp;·&nbsp;
+                    <a href="index.html">Home</a>
+                    &nbsp;·&nbsp;
+                    <a href="showcase.html">Showcase</a>
+                    &nbsp;·&nbsp;
+                    <a href="recipes.html">Recipes</a>
+                    &nbsp;·&nbsp;
+                    <a href="browser-support.html" aria-current="page">Browser support</a>
+                    &nbsp;·&nbsp;
+                    <a href="responsibilities.html">Responsibilities</a>
+                </p>
+            </footer>
+        </div>
+        <!-- /data-layout-shell -->
+
+        <script>
+            // Theme toggle + persistence
+            (function () {
+                function getEffectiveTheme() {
+                    var explicit = document.documentElement.getAttribute("data-theme");
+                    if (explicit === "dark" || explicit === "light") return explicit;
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                }
+
+                function setToggleLabel(button) {
+                    if (!button) return;
+                    var current = getEffectiveTheme();
+                    var action = current === "dark" ? "light" : "dark";
+                    button.innerHTML =
+                        action === "light"
+                            ? '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-sun"></use></svg>Light</span>'
+                            : '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-moon"></use></svg>Dark</span>';
+                }
+
+                window.toggleDocsTheme = function (button) {
+                    var current = getEffectiveTheme();
+                    var next = current === "dark" ? "light" : "dark";
+                    document.documentElement.setAttribute("data-theme", next);
+                    localStorage.setItem("lumen-theme", next);
+                    setToggleLabel(button);
+                };
+
+                var btn = document.getElementById("theme-toggle");
+                var saved = localStorage.getItem("lumen-theme");
+                if (saved === "dark" || saved === "light") {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+
+                setToggleLabel(btn);
+
+                var media = window.matchMedia("(prefers-color-scheme: dark)");
+                var sync = function () {
+                    if (!localStorage.getItem("lumen-theme")) setToggleLabel(btn);
+                };
+                if (typeof media.addEventListener === "function") {
+                    media.addEventListener("change", sync);
+                }
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Build & attach artefacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Cache Nix store
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Install dependencies
+        run: nix develop -c npm ci
+
+      - name: Lint
+        run: nix develop -c npm run lint
+
+      - name: Build minified artefact
+        run: nix develop -c npm run build
+
+      - name: Accessibility tests
+        run: nix develop -c npm run test:a11y
+
+      - name: Release sanity check
+        run: nix develop -c npm run check:release
+
+      - name: Upload lumen.css to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: css/lumen.css
+
+      - name: Upload lumen.min.css to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: css/lumen.min.css
+
+      - name: Upload lumen.min.css.map to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: css/lumen.min.css.map

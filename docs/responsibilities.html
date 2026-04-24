@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="lumen.css responsibilities — what the framework owns vs. what application code must implement for every interactive pattern."
+        />
+        <title>Framework vs. Application Responsibilities — lumen.css</title>
+        <link rel="stylesheet" href="../css/lumen.css" />
+        <style>
+            .doc-page {
+                max-inline-size: 64rem;
+                margin-inline: auto;
+                padding-inline: var(--space-6);
+                padding-block: var(--space-10);
+            }
+            .doc-page h1 {
+                margin-block-end: var(--space-2);
+            }
+            .doc-page .lead {
+                font-size: 1.125rem;
+                color: var(--color-text-secondary);
+                margin-block-end: var(--space-8);
+                max-inline-size: 58ch;
+            }
+            .doc-page section {
+                margin-block-end: var(--space-10);
+            }
+            .doc-page h2 {
+                margin-block-end: var(--space-4);
+            }
+            /* Responsibility table: tighten the tick/dash columns */
+            .resp-table th:nth-child(2),
+            .resp-table th:nth-child(3),
+            .resp-table td:nth-child(2),
+            .resp-table td:nth-child(3) {
+                white-space: nowrap;
+                text-align: center;
+                inline-size: 1%;
+            }
+            .tick {
+                color: var(--color-success);
+                font-weight: var(--font-weight-bold);
+            }
+            .dash {
+                color: var(--color-text-subtle);
+            }
+            code {
+                font-family: var(--font-family-mono);
+                font-size: 0.875em;
+            }
+            .callout {
+                background: var(--color-accent-subtle);
+                border-inline-start: 3px solid var(--color-accent);
+                padding: var(--space-3) var(--space-4);
+                border-radius: 0 var(--radius-md) var(--radius-md) 0;
+                margin-block-end: var(--space-6);
+            }
+            .site-footer p {
+                max-inline-size: none;
+            }
+            .icon {
+                inline-size: 1em;
+                block-size: 1em;
+                display: inline-block;
+                vertical-align: middle;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 1.9;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                flex-shrink: 0;
+            }
+            .icon-label {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-1);
+            }
+        </style>
+        <script>
+            (function () {
+                var saved = localStorage.getItem("lumen-theme");
+                if (saved) document.documentElement.setAttribute("data-theme", saved);
+            })();
+        </script>
+    </head>
+    <body>
+        <svg
+            aria-hidden="true"
+            style="position: absolute; inline-size: 0; block-size: 0; overflow: hidden"
+        >
+            <defs>
+                <symbol id="icon-lucide-sun" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </symbol>
+                <symbol id="icon-lucide-moon" viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>
+                </symbol>
+            </defs>
+        </svg>
+        <div data-layout-shell>
+            <header data-layout-header>
+                <a href="index.html" style="text-decoration: none; flex-shrink: 0"
+                    ><img
+                        src="logo-no-text.png"
+                        alt="lumen.css"
+                        style="display: block; block-size: 2rem; inline-size: auto"
+                /></a>
+                <button
+                    data-nav-toggle
+                    aria-expanded="false"
+                    aria-controls="primary-navbar"
+                    aria-label="Open navigation"
+                    type="button"
+                    onclick="
+                        var btn = this;
+                        var expanded = btn.getAttribute('aria-expanded') === 'true';
+                        btn.setAttribute('aria-expanded', String(!expanded));
+                        btn.setAttribute(
+                            'aria-label',
+                            !expanded ? 'Close navigation' : 'Open navigation',
+                        );
+                    "
+                ></button>
+                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="showcase.html">Showcase</a></li>
+                        <li><a href="recipes.html">Recipes</a></li>
+                        <li><a href="browser-support.html">Browser support</a></li>
+                        <li>
+                            <a href="responsibilities.html" aria-current="page">Responsibilities</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div data-layout-actions>
+                    <button
+                        aria-label="Toggle dark mode"
+                        id="theme-toggle"
+                        onclick="toggleDocsTheme(this)"
+                    >
+                        <span class="icon-label"
+                            ><svg class="icon" aria-hidden="true">
+                                <use href="#icon-lucide-moon"></use></svg
+                            >Dark</span
+                        >
+                    </button>
+                </div>
+            </header>
+
+            <aside data-layout-sidebar>
+                <nav aria-label="On this page">
+                    <ul role="list">
+                        <li><a href="#layout-shell">Layout shell</a></li>
+                        <li><a href="#navbar">Navbar</a></li>
+                        <li><a href="#tabs">Tabs</a></li>
+                        <li><a href="#command-menu">Command menu</a></li>
+                        <li><a href="#form-validation">Form validation</a></li>
+                        <li><a href="#toasts">Toast notifications</a></li>
+                        <li><a href="#notification-center">Notification center</a></li>
+                        <li><a href="#pagination">Pagination</a></li>
+                        <li><a href="#breadcrumbs">Breadcrumbs</a></li>
+                        <li><a href="#loading">Loading patterns</a></li>
+                        <li><a href="#field">Field composition</a></li>
+                        <li><a href="#input-group">Input group</a></li>
+                        <li><a href="#cards">Cards</a></li>
+                        <li><a href="#data-view">Data-view shell</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main>
+                <div class="doc-page">
+                    <h1 id="top">Framework vs. Application Responsibilities</h1>
+                    <p class="lead">
+                        This document is the single authoritative reference for what
+                        <strong>lumen.css owns</strong> and what
+                        <strong>application code must implement</strong> for every interactive or
+                        stateful production pattern.
+                    </p>
+
+                    <div class="callout">
+                        lumen.css is a <strong>CSS-only runtime</strong>. It styles ARIA states,
+                        data attributes, and semantic HTML. It never reads or writes DOM state,
+                        registers event listeners, or manages focus programmatically. Everything in
+                        the <em>"Application code"</em> column must be wired by the consuming
+                        application.
+                    </div>
+
+                    <!-- ── Layout shell ───────────────────────────────────────────────── -->
+                    <section id="layout-shell">
+                        <h2>Layout shell (<code>div[data-layout-shell]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Shell grid layout (header / sidebar / main / panel / footer)
+                                    </td>
+                                    <td class="tick">
+                                        ✅ Detects variants automatically via <code>:has()</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Sidebar off-canvas slide animation</td>
+                                    <td class="tick">
+                                        ✅ Translates sidebar when <code>data-open</code> is absent
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Reduced-motion sidebar transition</td>
+                                    <td class="tick">
+                                        ✅ Freezes transition when
+                                        <code>prefers-reduced-motion: reduce</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Sidebar open / close toggle</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Add/remove <code>data-open</code> on
+                                        <code>aside[data-layout-sidebar]</code>; manage
+                                        <code>aria-expanded</code> on the toggle button
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Sidebar overlay / scrim</td>
+                                    <td class="dash">—</td>
+                                    <td>Provide a backdrop element and wire its click-to-close</td>
+                                </tr>
+                                <tr>
+                                    <td>Panel show / hide</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Include or remove <code>aside[data-layout-panel]</code> from
+                                        the DOM
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Focus management after sidebar open/close</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Return focus to the trigger or move it into the opened panel
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Navbar ─────────────────────────────────────────────────────── -->
+                    <section id="navbar">
+                        <h2>
+                            Navbar (<code>nav[data-navbar]</code> inside
+                            <code>header[data-layout-header]</code>)
+                        </h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Desktop inline layout</td>
+                                    <td class="tick">✅ Rendered inline above <code>48em</code></td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Grouped dropdown (hover / focus-within)</td>
+                                    <td class="tick">
+                                        ✅ Opens on <code>:hover</code> and
+                                        <code>:focus-within</code>; no JS required
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Responsive collapse below <code>48em</code></td>
+                                    <td class="tick">
+                                        ✅ Collapses when <code>aria-expanded="false"</code> on
+                                        toggle
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Navbar open state on narrow viewports</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Set <code>aria-expanded="true"/"false"</code> on
+                                        <code>button[data-nav-toggle]</code> on click
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Escape-to-close keyboard handler</td>
+                                    <td class="dash">—</td>
+                                    <td>Add <code>keydown</code> listener to close on Escape</td>
+                                </tr>
+                                <tr>
+                                    <td>Roving focus / arrow-key navigation inside open panel</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Implement keyboard navigation within the expanded navbar
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Open-state persistence across page loads</td>
+                                    <td class="dash">—</td>
+                                    <td>Store and restore open state in application session</td>
+                                </tr>
+                                <tr>
+                                    <td><code>aria-current="page"</code> on the active link</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Set the attribute on the matching link for the current route
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Tabs ───────────────────────────────────────────────────────── -->
+                    <section id="tabs">
+                        <h2>Tabs (<code>section[data-tabs]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Active tab visual highlight</td>
+                                    <td class="tick">
+                                        ✅ Styles <code>[aria-selected="true"]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Active/inactive tab button appearance</td>
+                                    <td class="tick">✅ Derived from <code>aria-selected</code></td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Segmented variant appearance</td>
+                                    <td class="tick">
+                                        ✅ Applied via <code>data-variant="segmented"</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow-key navigation between tab triggers</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Handle <code>ArrowLeft</code> /
+                                        <code>ArrowRight</code> keydown on the tablist
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Roving tabindex</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Set <code>tabindex="0"</code> on active tab;
+                                        <code>tabindex="-1"</code> on all others
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tab activation (focus or explicit)</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Choose automatic (activate on focus) or manual (activate on
+                                        Enter/Space)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Panel visibility</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Toggle <code>hidden</code> attribute on
+                                        <code>[role="tabpanel"]</code> elements
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><code>aria-selected</code> state updates</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Set <code>aria-selected="true"</code> on active tab;
+                                        <code>false</code> on others
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Command menu ───────────────────────────────────────────────── -->
+                    <section id="command-menu">
+                        <h2>Command menu (<code>details[data-menu]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dropdown panel layout and positioning</td>
+                                    <td class="tick">
+                                        ✅ <code>bottom-inline-end</code> or
+                                        <code>bottom-inline-start</code> via
+                                        <code>data-align="start"</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Menu open/close via <code>&lt;details&gt;</code> native
+                                        toggle
+                                    </td>
+                                    <td class="tick">
+                                        ✅ CSS-only via native <code>details</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Outside-click dismissal</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Add <code>click</code> listener on <code>document</code> to
+                                        close open menus
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Arrow-key roving focus inside menu</td>
+                                    <td class="dash">—</td>
+                                    <td>Implement keyboard navigation (optional enhancement)</td>
+                                </tr>
+                                <tr>
+                                    <td>Dynamic item generation</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code generates and inserts
+                                        <code>&lt;li&gt;</code> items
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Action callbacks</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Wire <code>click</code> handlers on <code>&lt;a&gt;</code> /
+                                        <code>&lt;button&gt;</code> items
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Form validation ────────────────────────────────────────────── -->
+                    <section id="form-validation">
+                        <h2>
+                            Form validation summary (<code>form[data-form-errors]</code> +
+                            <code>[data-form-summary]</code>)
+                        </h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Summary block visual treatment (danger surface, heading,
+                                        link list)
+                                    </td>
+                                    <td class="tick">
+                                        ✅ Styled when <code>data-form-errors</code> is on
+                                        <code>&lt;form&gt;</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Field invalid-state visual reinforcement</td>
+                                    <td class="tick">
+                                        ✅ Reacts to <code>aria-invalid="true"</code> and
+                                        <code>:invalid</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Triggering validation</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Decide when to run validation (on submit, on blur, on input)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Populating the summary link list</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Generate <code>&lt;a href="#id"&gt;</code> entries for each
+                                        invalid control
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Focus management after failed submit</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Move focus to the summary heading or the first invalid field
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Setting <code>aria-invalid</code> on controls</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        The framework reacts to this attribute but never sets it
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Clearing <code>data-form-errors</code> on success</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Remove the attribute and clear the summary when errors
+                                        resolve
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Error message copy</td>
+                                    <td class="dash">—</td>
+                                    <td>All visible text is application-provided</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Toasts ─────────────────────────────────────────────────────── -->
+                    <section id="toasts">
+                        <h2>Toast notifications (<code>aside[data-toast-region]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Fixed top-end stack layout</td>
+                                    <td class="tick">
+                                        ✅ Positions and stacks <code>&lt;li&gt;</code> items
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Toast visual surface (tone, close button position)</td>
+                                    <td class="tick">
+                                        ✅ Via <code>data-tone</code> and
+                                        <code>[data-dismiss]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <code>role="status"</code> /
+                                        <code>role="alert"</code> announcement
+                                    </td>
+                                    <td class="tick">
+                                        ✅ Preserved — framework never changes <code>role</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Reduced-motion animation behaviour</td>
+                                    <td class="tick">
+                                        ✅ Entry animations respect
+                                        <code>prefers-reduced-motion</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Inserting toasts</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code appends <code>&lt;li&gt;</code> to the
+                                        <code>&lt;ul&gt;</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Removing toasts (dismiss button, auto-dismiss)</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code removes the <code>&lt;li&gt;</code> on
+                                        click or after timeout
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Queueing and deduplication</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code limits stack depth and deduplicates</td>
+                                </tr>
+                                <tr>
+                                    <td>Focus management after dismiss</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code manages focus after the
+                                        <code>&lt;li&gt;</code> is removed
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Notification center ────────────────────────────────────────── -->
+                    <section id="notification-center">
+                        <h2>Notification center (<code>aside[data-notification-center]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Panel layout (header / list / footer)</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Unread visual indicator</td>
+                                    <td class="tick">
+                                        ✅ Applied when <code>data-unread="true"</code> is on
+                                        <code>&lt;li&gt;</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Tone variant per item</td>
+                                    <td class="tick">
+                                        ✅ Applied via <code>data-tone</code> on
+                                        <code>&lt;li&gt;</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Dismiss button position</td>
+                                    <td class="tick">
+                                        ✅ Absolutely positioned in top-inline-end of item
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Notification retrieval</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code fetches and renders
+                                        <code>&lt;li&gt;</code> items
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Unread count badge</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code maintains and displays the badge</td>
+                                </tr>
+                                <tr>
+                                    <td>Mark-read behaviour</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code removes <code>data-unread="true"</code> on
+                                        interaction
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Item dismissal</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code removes the <code>&lt;li&gt;</code> on
+                                        dismiss click
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Persistence (read/dismissed state)</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code stores and syncs state</td>
+                                </tr>
+                                <tr>
+                                    <td>Panel open / close / positioning</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code toggles visibility (dialog, popover,
+                                        off-canvas)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Pagination ─────────────────────────────────────────────────── -->
+                    <section id="pagination">
+                        <h2>Pagination (<code>nav[data-pagination]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item layout and hit-target sizing</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Current-page visual highlight</td>
+                                    <td class="tick">
+                                        ✅ Applied to <code>a[aria-current="page"]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Disabled previous/next appearance</td>
+                                    <td class="tick">
+                                        ✅ Applied to <code>span[aria-disabled="true"]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Page calculation (total pages, current index)</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code computes and renders the correct links</td>
+                                </tr>
+                                <tr>
+                                    <td><code>href</code> generation</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code constructs page URLs</td>
+                                </tr>
+                                <tr>
+                                    <td>Disabled state decision</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code decides when previous/next are disabled
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Page-window collapsing / ellipsis placement</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code decides which pages to show (v1 has no
+                                        built-in collapsing)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Breadcrumbs ────────────────────────────────────────────────── -->
+                    <section id="breadcrumbs">
+                        <h2>Breadcrumbs (<code>nav[data-breadcrumbs]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item layout and CSS-only separators</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Current-step highlight</td>
+                                    <td class="tick">
+                                        ✅ Applied to <code>[aria-current="page"]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Route generation</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code constructs <code>href</code> values</td>
+                                </tr>
+                                <tr>
+                                    <td>Localized crumb labels</td>
+                                    <td class="dash">—</td>
+                                    <td>All text is application-provided</td>
+                                </tr>
+                                <tr>
+                                    <td>Responsive collapsing / overflow menus</td>
+                                    <td class="dash">—</td>
+                                    <td>Not provided in v1; application code may add</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Loading ────────────────────────────────────────────────────── -->
+                    <section id="loading">
+                        <h2>
+                            Loading patterns (<code>progress</code>, <code>button[aria-busy]</code>,
+                            region <code>[aria-busy]</code>)
+                        </h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Spinner and progress bar rendering</td>
+                                    <td class="tick">✅ Owned for all four patterns</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Reduced-motion freeze</td>
+                                    <td class="tick">✅ Spinner freezes at initial frame</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Toggling <code>aria-busy</code></td>
+                                    <td class="dash">—</td>
+                                    <td>Application code sets and removes the attribute</td>
+                                </tr>
+                                <tr>
+                                    <td>Live-region announcement copy</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code provides <code>role="status"</code> copy
+                                        inside busy regions
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Pairing <code>aria-busy="true"</code> with
+                                        <code>disabled</code> on buttons
+                                    </td>
+                                    <td class="dash">—</td>
+                                    <td>Application responsibility to prevent repeat submission</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Field composition ──────────────────────────────────────────── -->
+                    <section id="field">
+                        <h2>
+                            Field composition (<code>[data-field]</code>,
+                            <code>[data-field-row]</code>)
+                        </h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Label / control / help / error / success layout</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Invalid-state visual reinforcement</td>
+                                    <td class="tick">
+                                        ✅ Reacts to <code>aria-invalid="true"</code> and
+                                        <code>:invalid</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Validation logic</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code decides when a field is invalid</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Marker visibility (<code>[data-error]</code>,
+                                        <code>[data-success]</code>)
+                                    </td>
+                                    <td class="dash">—</td>
+                                    <td>Application code shows/hides markers at the right time</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <code>aria-invalid</code> and
+                                        <code>aria-describedby</code> wiring
+                                    </td>
+                                    <td class="dash">—</td>
+                                    <td>Application code sets these attributes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Input group ────────────────────────────────────────────────── -->
+                    <section id="input-group">
+                        <h2>Input group (<code>div[data-input-group]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Joined visual shell (icon / prefix / control / suffix /
+                                        action)
+                                    </td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Focus, invalid, and disabled state propagation to wrapper
+                                    </td>
+                                    <td class="tick">✅ Owned via <code>:has()</code></td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Search submission</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code wires the form or button click</td>
+                                </tr>
+                                <tr>
+                                    <td>Clear-button behaviour</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code resets/clears the field</td>
+                                </tr>
+                                <tr>
+                                    <td>Unit conversion</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Suffix label is decorative; conversion is application logic
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Input masking</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code provides masking libraries</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Cards ──────────────────────────────────────────────────────── -->
+                    <section id="cards">
+                        <h2>Cards (<code>article[data-card]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Layout, spacing, border, tone styling</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Media slot layout and aspect ratio</td>
+                                    <td class="tick">
+                                        ✅ Owned via <code>figure[data-card-media]</code>
+                                    </td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Navigation destination</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code provides <code>href</code> on heading links
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Analytics / tracking</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code adds click handlers and data attributes
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Data loading / dynamic content</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code populates card content</td>
+                                </tr>
+                                <tr>
+                                    <td>Media <code>src</code>, <code>alt</code>, lazy-loading</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code provides all media attributes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- ── Data-view shell ────────────────────────────────────────────── -->
+                    <section id="data-view">
+                        <h2>Data-view shell (<code>section[data-data-view]</code>)</h2>
+                        <table class="resp-table">
+                            <thead>
+                                <tr>
+                                    <th>Concern</th>
+                                    <th>lumen.css</th>
+                                    <th>Application code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Section framing and region spacing</td>
+                                    <td class="tick">✅ Owned</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Loading overlay via <code>[aria-busy="true"]</code> on
+                                        <code>[data-data-content]</code>
+                                    </td>
+                                    <td class="tick">✅ Uses existing loading pattern</td>
+                                    <td class="dash">—</td>
+                                </tr>
+                                <tr>
+                                    <td>Search and filter logic</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code wires toolbar and updates content</td>
+                                </tr>
+                                <tr>
+                                    <td>Pagination math and link generation</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        Application code computes and renders
+                                        <code>nav[data-pagination]</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Result count copy</td>
+                                    <td class="dash">—</td>
+                                    <td>
+                                        All text inside <code>[data-results-summary]</code> is
+                                        application-provided
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Focus management after content updates</td>
+                                    <td class="dash">—</td>
+                                    <td>Application code manages focus after dynamic changes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+                <!-- /doc-page -->
+            </main>
+
+            <footer
+                class="site-footer"
+                style="
+                    padding: var(--space-6) var(--space-8);
+                    border-block-start: 1px solid var(--color-border-subtle);
+                "
+            >
+                <p style="max-inline-size: none">
+                    <strong>lumen.css</strong> — CSS-only · Semantic-first · Token-driven
+                    &nbsp;·&nbsp;
+                    <a href="index.html">Home</a>
+                    &nbsp;·&nbsp;
+                    <a href="showcase.html">Showcase</a>
+                    &nbsp;·&nbsp;
+                    <a href="recipes.html">Recipes</a>
+                    &nbsp;·&nbsp;
+                    <a href="browser-support.html">Browser support</a>
+                    &nbsp;·&nbsp;
+                    <a href="responsibilities.html" aria-current="page">Responsibilities</a>
+                </p>
+            </footer>
+        </div>
+        <!-- /data-layout-shell -->
+
+        <script>
+            (function () {
+                function getEffectiveTheme() {
+                    var explicit = document.documentElement.getAttribute("data-theme");
+                    if (explicit === "dark" || explicit === "light") return explicit;
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                }
+
+                function setToggleLabel(button) {
+                    if (!button) return;
+                    var current = getEffectiveTheme();
+                    var action = current === "dark" ? "light" : "dark";
+                    button.innerHTML =
+                        action === "light"
+                            ? '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-sun"></use></svg>Light</span>'
+                            : '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-moon"></use></svg>Dark</span>';
+                }
+
+                window.toggleDocsTheme = function (button) {
+                    var current = getEffectiveTheme();
+                    var next = current === "dark" ? "light" : "dark";
+                    document.documentElement.setAttribute("data-theme", next);
+                    localStorage.setItem("lumen-theme", next);
+                    setToggleLabel(button);
+                };
+
+                var btn = document.getElementById("theme-toggle");
+                var saved = localStorage.getItem("lumen-theme");
+                if (saved === "dark" || saved === "light") {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+
+                setToggleLabel(btn);
+
+                var media = window.matchMedia("(prefers-color-scheme: dark)");
+                var sync = function () {
+                    if (!localStorage.getItem("lumen-theme")) setToggleLabel(btn);
+                };
+                if (typeof media.addEventListener === "function") {
+                    media.addEventListener("change", sync);
+                }
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,1399 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>lumen.css — Application Recipes</title>
+        <link rel="stylesheet" href="../css/lumen.css" />
+        <style>
+            /* Recipes-only styles — not part of the framework */
+
+            .recipe-section {
+                scroll-margin-top: calc(var(--layout-shell-header-height, 3.5rem) + var(--space-2));
+            }
+            .recipe-intro {
+                color: var(--color-text-secondary);
+                max-inline-size: 60ch;
+            }
+            .recipe-note {
+                font-size: var(--font-size-sm);
+                color: var(--color-text-secondary);
+                border-inline-start: 3px solid var(--color-border-strong);
+                padding-inline-start: var(--space-3);
+                margin-block: var(--space-4);
+            }
+            .recipe-frame {
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                overflow: hidden;
+                background: var(--color-bg);
+                padding: var(--space-6);
+                margin-block: var(--space-4);
+            }
+            .recipe-frame + p {
+                font-size: var(--font-size-sm);
+                color: var(--color-text-tertiary);
+            }
+            .contracts-list {
+                font-size: var(--font-size-sm);
+            }
+            .contracts-list code {
+                font-family: var(--font-family-mono);
+                font-size: 0.875em;
+                background: var(--color-surface-sunken);
+                border-radius: var(--radius-sm);
+                padding-inline: var(--space-1);
+            }
+            .recipe-divider {
+                border: 0;
+                border-block-start: 1px solid var(--color-border-subtle);
+                margin-block: var(--space-10);
+            }
+            .icon {
+                inline-size: 1em;
+                block-size: 1em;
+                display: inline-block;
+                vertical-align: middle;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 1.9;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                flex-shrink: 0;
+            }
+            .icon-label {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-1);
+            }
+            [data-icon] > .icon {
+                inline-size: 1rem;
+                block-size: 1rem;
+            }
+            details[data-menu] > summary > .icon {
+                inline-size: 1rem;
+                block-size: 1rem;
+            }
+        </style>
+        <script>
+            // Restore saved theme before first paint to avoid flash
+            (function () {
+                var saved = localStorage.getItem("lumen-theme");
+                if (saved) {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        <svg
+            aria-hidden="true"
+            style="position: absolute; inline-size: 0; block-size: 0; overflow: hidden"
+        >
+            <defs>
+                <symbol id="icon-lucide-sun" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </symbol>
+                <symbol id="icon-lucide-moon" viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>
+                </symbol>
+                <symbol id="icon-lucide-search" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </symbol>
+                <symbol id="icon-lucide-ellipsis-vertical" viewBox="0 0 24 24">
+                    <circle cx="12" cy="5" r="1.5" fill="currentColor"></circle>
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor"></circle>
+                    <circle cx="12" cy="19" r="1.5" fill="currentColor"></circle>
+                </symbol>
+            </defs>
+        </svg>
+        <div data-layout-shell>
+            <header data-layout-header>
+                <a href="../README.md" style="text-decoration: none; flex-shrink: 0"
+                    ><img
+                        src="logo-no-text.png"
+                        alt="lumen.css"
+                        style="display: block; block-size: 2rem; inline-size: auto"
+                /></a>
+                <button
+                    data-nav-toggle
+                    aria-expanded="false"
+                    aria-controls="primary-navbar"
+                    aria-label="Open navigation"
+                    type="button"
+                    onclick="
+                        var btn = this;
+                        var expanded = btn.getAttribute('aria-expanded') === 'true';
+                        btn.setAttribute('aria-expanded', String(!expanded));
+                        btn.setAttribute(
+                            'aria-label',
+                            !expanded ? 'Close navigation' : 'Open navigation',
+                        );
+                    "
+                ></button>
+                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="showcase.html">Showcase</a></li>
+                        <li><a href="recipes.html" aria-current="page">Recipes</a></li>
+                        <li><a href="browser-support.html">Browser support</a></li>
+                        <li><a href="responsibilities.html">Responsibilities</a></li>
+                    </ul>
+                </nav>
+                <div data-layout-actions>
+                    <button aria-label="Toggle dark mode" onclick="toggleDocsTheme(this)">
+                        <span class="icon-label"
+                            ><svg class="icon" aria-hidden="true">
+                                <use href="#icon-lucide-moon"></use></svg
+                            >Dark</span
+                        >
+                    </button>
+                </div>
+            </header>
+
+            <aside data-layout-sidebar aria-label="Recipe navigation">
+                <nav aria-label="Recipes">
+                    <ul role="list">
+                        <li><a href="#sign-in">Sign-in form</a></li>
+                        <li><a href="#settings-tabs">Settings with tabs</a></li>
+                        <li><a href="#records-list">Records list</a></li>
+                        <li><a href="#record-detail">Record detail</a></li>
+                        <li><a href="#notification-center">Notification center</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main>
+                <section id="recipes" class="recipe-section">
+                    <h1>Application Recipes</h1>
+                    <p class="recipe-intro">
+                        Copy-pasteable full-page examples that compose lumen.css primitives into
+                        common production application pages. Every recipe uses only
+                        <a href="../README.md">documented framework contracts</a> — no hidden
+                        classes or one-off markup.
+                    </p>
+                    <p class="recipe-intro">
+                        Each recipe shows the complete landmark and heading structure required for
+                        accessibility, identifies which application behavior is
+                        <strong>not owned by lumen.css</strong>, and cross-links to the relevant
+                        primitive documentation.
+                    </p>
+                </section>
+
+                <hr class="recipe-divider" />
+
+                <!-- =====================================================================
+       RECIPE 1 — Sign-in form
+       Primitives used:
+         · layout shell (variant 2: header + main)  → README § Layout shell
+         · div[data-field]                           → README § Field composition primitives
+         · div[data-field-row]                       → README § Field composition primitives
+         · form[data-form-errors] / [data-form-summary] → README § Form validation summary
+       ===================================================================== -->
+                <section id="sign-in" class="recipe-section">
+                    <h2>Recipe 1 — Sign-in form</h2>
+                    <p class="recipe-intro">
+                        A standalone authentication page with accessible field composition, inline
+                        validation, and a form-level validation summary. Suitable for a dedicated
+                        <code>/sign-in</code> route rendered inside the full layout shell.
+                    </p>
+
+                    <p class="recipe-note">
+                        <strong>Application owns:</strong> form submission, validation logic,
+                        setting <code>aria-invalid</code>, populating the error summary, and moving
+                        focus to the summary heading after a failed submit. See
+                        <a href="../README.md#form-validation-summary">Form validation summary</a>
+                        and
+                        <a href="../README.md#field-composition-primitives"
+                            >Field composition primitives</a
+                        >.
+                    </p>
+
+                    <div class="recipe-frame">
+                        <!--
+        Layout shell — variant 2 (header + main) is the minimal production shell.
+        The sign-in form itself lives inside <main>.
+      -->
+                        <div data-layout-shell style="min-block-size: 30rem; position: relative">
+                            <header data-layout-header>
+                                <a
+                                    href="/"
+                                    style="
+                                        font-weight: var(--font-weight-semibold);
+                                        text-decoration: none;
+                                        color: inherit;
+                                    "
+                                    >Acme</a
+                                >
+                                <nav data-navbar aria-label="Primary">
+                                    <ul>
+                                        <li><a href="/pricing">Pricing</a></li>
+                                        <li><a href="/docs">Docs</a></li>
+                                    </ul>
+                                </nav>
+                            </header>
+                            <main
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: var(--space-8);
+                                "
+                            >
+                                <article
+                                    data-card
+                                    style="max-inline-size: 28rem; inline-size: 100%"
+                                >
+                                    <div data-card-main>
+                                        <header>
+                                            <h1 style="font-size: var(--font-size-xl)">
+                                                Sign in to Acme
+                                            </h1>
+                                            <p>
+                                                Don&rsquo;t have an account?
+                                                <a href="/register">Create one</a>
+                                            </p>
+                                        </header>
+                                        <div data-card-body>
+                                            <!--
+                  Show form[data-form-errors] only after a failed submit.
+                  Application code adds data-form-errors to the form element,
+                  populates the summary list, and moves focus to #sign-in-summary-heading.
+                -->
+                                            <form method="post" action="/sign-in" data-form-errors>
+                                                <div
+                                                    data-form-summary
+                                                    role="alert"
+                                                    aria-labelledby="sign-in-summary-heading"
+                                                >
+                                                    <h2 id="sign-in-summary-heading">
+                                                        2 errors prevented sign-in
+                                                    </h2>
+                                                    <ul>
+                                                        <li>
+                                                            <a href="#sign-in-email"
+                                                                >Email address — enter a valid email
+                                                                address</a
+                                                            >
+                                                        </li>
+                                                        <li>
+                                                            <a href="#sign-in-password"
+                                                                >Password — enter your password</a
+                                                            >
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <div data-field>
+                                                    <label for="sign-in-email">Email address</label>
+                                                    <input
+                                                        type="email"
+                                                        id="sign-in-email"
+                                                        name="email"
+                                                        autocomplete="email"
+                                                        aria-invalid="true"
+                                                        aria-describedby="sign-in-email-error"
+                                                        value="not-an-email"
+                                                    />
+                                                    <span data-error id="sign-in-email-error"
+                                                        >Enter a valid email address.</span
+                                                    >
+                                                </div>
+
+                                                <div data-field>
+                                                    <label for="sign-in-password">Password</label>
+                                                    <input
+                                                        type="password"
+                                                        id="sign-in-password"
+                                                        name="password"
+                                                        autocomplete="current-password"
+                                                        aria-invalid="true"
+                                                        aria-describedby="sign-in-password-error"
+                                                    />
+                                                    <span data-error id="sign-in-password-error"
+                                                        >Enter your password.</span
+                                                    >
+                                                    <span data-help
+                                                        ><a href="/reset-password"
+                                                            >Forgot your password?</a
+                                                        ></span
+                                                    >
+                                                </div>
+
+                                                <div style="margin-block-start: var(--space-4)">
+                                                    <button
+                                                        type="submit"
+                                                        data-tone="accent"
+                                                        style="inline-size: 100%"
+                                                    >
+                                                        Sign in
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </article>
+                            </main>
+                        </div>
+                    </div>
+
+                    <ul class="contracts-list">
+                        <li>
+                            Layout shell variant 2 —
+                            <code>div[data-layout-shell] &gt; header + main</code>
+                        </li>
+                        <li>Card — <code>article[data-card] &gt; div[data-card-main]</code></li>
+                        <li>
+                            Field composition — <code>div[data-field]</code>,
+                            <code>[data-error]</code>, <code>[data-help]</code>
+                        </li>
+                        <li>
+                            Form validation summary — <code>form[data-form-errors]</code>,
+                            <code>[data-form-summary]</code>
+                        </li>
+                        <li>Button tone — <code>button.accent</code></li>
+                    </ul>
+                </section>
+
+                <hr class="recipe-divider" />
+
+                <!-- =====================================================================
+       RECIPE 2 — Settings page with tabs
+       Primitives used:
+         · layout shell (variant 5: header + sidebar + main) → README § Layout shell
+         · section[data-tabs]                               → README § Tabs
+         · div[data-field], div[data-field-row]             → README § Field composition primitives
+         · div[data-input-group]                            → README § Input group composition
+       ===================================================================== -->
+                <section id="settings-tabs" class="recipe-section">
+                    <h2>Recipe 2 — Settings page with tabs</h2>
+                    <p class="recipe-intro">
+                        An account settings page using the full sidebar shell and an accessible
+                        tabbed panel for Profile, Security, and Notifications sections.
+                    </p>
+
+                    <p class="recipe-note">
+                        <strong>Application owns:</strong> tab keyboard navigation (arrow keys,
+                        roving <code>tabindex</code>), toggling <code>aria-selected</code> and the
+                        <code>hidden</code> attribute on panels when switching tabs, form save
+                        logic, and validation state. See <a href="../README.md#tabs">Tabs</a>.
+                    </p>
+
+                    <div class="recipe-frame">
+                        <div data-layout-shell style="min-block-size: 34rem; position: relative">
+                            <header data-layout-header>
+                                <a
+                                    href="/"
+                                    style="
+                                        font-weight: var(--font-weight-semibold);
+                                        text-decoration: none;
+                                        color: inherit;
+                                    "
+                                    >Acme</a
+                                >
+                                <nav data-navbar aria-label="Primary">
+                                    <ul>
+                                        <li><a href="/dashboard">Dashboard</a></li>
+                                        <li><a href="/users">Users</a></li>
+                                        <li>
+                                            <a href="/settings" aria-current="page">Settings</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </header>
+                            <aside data-layout-sidebar aria-label="Settings navigation">
+                                <nav aria-label="Settings">
+                                    <ul role="list">
+                                        <li>
+                                            <a href="/settings/account" aria-current="page"
+                                                >Account</a
+                                            >
+                                        </li>
+                                        <li><a href="/settings/billing">Billing</a></li>
+                                        <li><a href="/settings/team">Team</a></li>
+                                        <li><a href="/settings/integrations">Integrations</a></li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                            <main>
+                                <nav data-breadcrumbs aria-label="Page location">
+                                    <ol>
+                                        <li><a href="/dashboard">Home</a></li>
+                                        <li>
+                                            <a href="/settings/account" aria-current="page"
+                                                >Account settings</a
+                                            >
+                                        </li>
+                                    </ol>
+                                </nav>
+                                <h1>Account settings</h1>
+
+                                <!--
+            Tabs: application code manages keyboard navigation, aria-selected, and panel hidden state.
+            The framework styles aria-selected="true|false" and the tabpanel layout.
+          -->
+                                <section data-tabs>
+                                    <div role="tablist" aria-label="Settings sections">
+                                        <button
+                                            role="tab"
+                                            id="tab-profile"
+                                            aria-controls="panel-profile"
+                                            aria-selected="true"
+                                            tabindex="0"
+                                        >
+                                            Profile
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-security"
+                                            aria-controls="panel-security"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                        >
+                                            Security
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-notifications"
+                                            aria-controls="panel-notifications"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                        >
+                                            Notifications
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-profile"
+                                        aria-labelledby="tab-profile"
+                                    >
+                                        <form method="post" action="/settings/account/profile">
+                                            <div data-field-row>
+                                                <div data-field>
+                                                    <label for="settings-first">First name</label>
+                                                    <input
+                                                        type="text"
+                                                        id="settings-first"
+                                                        name="first_name"
+                                                        autocomplete="given-name"
+                                                        value="Alex"
+                                                    />
+                                                </div>
+                                                <div data-field>
+                                                    <label for="settings-last">Last name</label>
+                                                    <input
+                                                        type="text"
+                                                        id="settings-last"
+                                                        name="last_name"
+                                                        autocomplete="family-name"
+                                                        value="Chen"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div data-field>
+                                                <label for="settings-email">Email address</label>
+                                                <input
+                                                    type="email"
+                                                    id="settings-email"
+                                                    name="email"
+                                                    autocomplete="email"
+                                                    value="alex@acme.com"
+                                                />
+                                                <span data-help
+                                                    >Used for account notifications and
+                                                    sign-in.</span
+                                                >
+                                            </div>
+                                            <div style="margin-block-start: var(--space-4)">
+                                                <button type="submit" data-tone="accent">
+                                                    Save changes
+                                                </button>
+                                                <button
+                                                    type="reset"
+                                                    data-tone="neutral"
+                                                    data-variant="outlined"
+                                                >
+                                                    Discard
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-security"
+                                        aria-labelledby="tab-security"
+                                        hidden
+                                    >
+                                        <form method="post" action="/settings/account/security">
+                                            <div data-field>
+                                                <label for="settings-current-pw"
+                                                    >Current password</label
+                                                >
+                                                <input
+                                                    type="password"
+                                                    id="settings-current-pw"
+                                                    name="current_password"
+                                                    autocomplete="current-password"
+                                                />
+                                            </div>
+                                            <div data-field>
+                                                <label for="settings-new-pw">New password</label>
+                                                <input
+                                                    type="password"
+                                                    id="settings-new-pw"
+                                                    name="new_password"
+                                                    autocomplete="new-password"
+                                                />
+                                                <span data-help
+                                                    >Minimum 12 characters, one uppercase letter,
+                                                    one number.</span
+                                                >
+                                            </div>
+                                            <div data-field>
+                                                <label for="settings-confirm-pw"
+                                                    >Confirm new password</label
+                                                >
+                                                <input
+                                                    type="password"
+                                                    id="settings-confirm-pw"
+                                                    name="confirm_password"
+                                                    autocomplete="new-password"
+                                                />
+                                            </div>
+                                            <div style="margin-block-start: var(--space-4)">
+                                                <button type="submit" data-tone="accent">
+                                                    Update password
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-notifications"
+                                        aria-labelledby="tab-notifications"
+                                        hidden
+                                    >
+                                        <form
+                                            method="post"
+                                            action="/settings/account/notifications"
+                                        >
+                                            <fieldset data-field>
+                                                <legend>Email notifications</legend>
+                                                <label
+                                                    ><input
+                                                        type="checkbox"
+                                                        name="notify_deploy"
+                                                        checked
+                                                    />
+                                                    Deployment alerts</label
+                                                >
+                                                <label
+                                                    ><input
+                                                        type="checkbox"
+                                                        name="notify_billing"
+                                                        checked
+                                                    />
+                                                    Billing updates</label
+                                                >
+                                                <label
+                                                    ><input type="checkbox" name="notify_team" />
+                                                    Team activity</label
+                                                >
+                                                <span data-help
+                                                    >Digest emails are sent at 08:00 in your local
+                                                    timezone.</span
+                                                >
+                                            </fieldset>
+                                            <div style="margin-block-start: var(--space-4)">
+                                                <button type="submit" data-tone="accent">
+                                                    Save preferences
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </main>
+                        </div>
+                    </div>
+
+                    <ul class="contracts-list">
+                        <li>
+                            Layout shell variant 5 —
+                            <code
+                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                main</code
+                            >
+                        </li>
+                        <li>Breadcrumbs — <code>nav[data-breadcrumbs]</code></li>
+                        <li>
+                            Tabs — <code>section[data-tabs]</code>, <code>[role=tablist]</code>,
+                            <code>[role=tab]</code>, <code>[role=tabpanel]</code>
+                        </li>
+                        <li>
+                            Field composition — <code>div[data-field]</code>,
+                            <code>div[data-field-row]</code>, <code>fieldset[data-field]</code>
+                        </li>
+                        <li>
+                            Button variants — <code>button.accent</code>,
+                            <code>button.outlined.neutral</code>
+                        </li>
+                    </ul>
+                </section>
+
+                <hr class="recipe-divider" />
+
+                <!-- =====================================================================
+       RECIPE 3 — Records list page with data-view shell
+       Primitives used:
+         · layout shell (variant 5: header + sidebar + main) → README § Layout shell
+         · section[data-data-view]                           → README § Data-view shell
+         · table with data-sticky-header                     → README § Data tables
+         · div[data-input-group]                             → README § Input group composition
+         · nav[data-pagination]                              → README § Pagination
+         · span[data-badge]                                  → README § Status badges
+         · details[data-menu]                                → README § Command menu
+       ===================================================================== -->
+                <section id="records-list" class="recipe-section">
+                    <h2>Recipe 3 — Records list</h2>
+                    <p class="recipe-intro">
+                        A production list/admin screen using the data-view shell to frame a search
+                        toolbar, results summary, sortable sticky-header table with status badges
+                        and command menus, and pagination.
+                    </p>
+
+                    <p class="recipe-note">
+                        <strong>Application owns:</strong> search/filter logic, sort implementation,
+                        pagination math and <code>href</code> construction, badge text and tone
+                        selection, row selection state, and command menu click handlers. See
+                        <a href="../README.md#data-view-shell">Data-view shell</a>,
+                        <a href="../README.md#data-tables">Data tables</a>,
+                        <a href="../README.md#pagination">Pagination</a>, and
+                        <a href="../README.md#command-menu">Command menu</a>.
+                    </p>
+
+                    <div class="recipe-frame">
+                        <div data-layout-shell style="min-block-size: 36rem; position: relative">
+                            <header data-layout-header>
+                                <a
+                                    href="/"
+                                    style="
+                                        font-weight: var(--font-weight-semibold);
+                                        text-decoration: none;
+                                        color: inherit;
+                                    "
+                                    >Acme</a
+                                >
+                                <nav data-navbar aria-label="Primary">
+                                    <ul>
+                                        <li><a href="/dashboard">Dashboard</a></li>
+                                        <li><a href="/users" aria-current="page">Users</a></li>
+                                        <li><a href="/settings">Settings</a></li>
+                                    </ul>
+                                </nav>
+                            </header>
+                            <aside data-layout-sidebar aria-label="Primary navigation">
+                                <nav aria-label="Main">
+                                    <ul role="list">
+                                        <li><a href="/dashboard">Dashboard</a></li>
+                                        <li><a href="/users" aria-current="page">Users</a></li>
+                                        <li><a href="/organizations">Organizations</a></li>
+                                        <li><a href="/billing">Billing</a></li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                            <main>
+                                <section data-data-view>
+                                    <header>
+                                        <h1>Users</h1>
+                                        <button type="button" data-tone="accent">
+                                            Invite user
+                                        </button>
+                                    </header>
+
+                                    <form data-data-toolbar>
+                                        <div data-input-group>
+                                            <span data-icon aria-hidden="true"
+                                                ><svg class="icon" aria-hidden="true">
+                                                    <use href="#icon-lucide-search"></use></svg
+                                            ></span>
+                                            <input
+                                                type="search"
+                                                placeholder="Search users&hellip;"
+                                                aria-label="Search users"
+                                            />
+                                            <button type="submit" aria-label="Search">
+                                                Search
+                                            </button>
+                                        </div>
+                                        <select aria-label="Status filter">
+                                            <option value="">All statuses</option>
+                                            <option value="active" selected>Active</option>
+                                            <option value="inactive">Inactive</option>
+                                            <option value="pending">Pending</option>
+                                        </select>
+                                    </form>
+
+                                    <p data-results-summary>Showing 1&ndash;25 of 142 users</p>
+
+                                    <div data-data-content>
+                                        <div data-table-container>
+                                            <table data-sticky-header>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" aria-sort="ascending">
+                                                            Name
+                                                        </th>
+                                                        <th scope="col">Email</th>
+                                                        <th scope="col">Role</th>
+                                                        <th scope="col">Status</th>
+                                                        <th scope="col">
+                                                            <span data-visually-hidden
+                                                                >Actions</span
+                                                            >
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Alex Chen</td>
+                                                        <td>alex@acme.com</td>
+                                                        <td>Admin</td>
+                                                        <td>
+                                                            <span data-badge data-tone="success"
+                                                                >Active</span
+                                                            >
+                                                        </td>
+                                                        <td>
+                                                            <details data-menu data-align="start">
+                                                                <summary
+                                                                    aria-label="Actions for Alex Chen"
+                                                                >
+                                                                    <svg
+                                                                        class="icon"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <use
+                                                                            href="#icon-lucide-ellipsis-vertical"
+                                                                        ></use>
+                                                                    </svg>
+                                                                </summary>
+                                                                <ul>
+                                                                    <li>
+                                                                        <a href="/users/1/edit"
+                                                                            >Edit</a
+                                                                        >
+                                                                    </li>
+                                                                    <li>
+                                                                        <button type="button">
+                                                                            Reset password
+                                                                        </button>
+                                                                    </li>
+                                                                    <li role="separator"></li>
+                                                                    <li data-tone="danger">
+                                                                        <button type="button">
+                                                                            Remove user
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </details>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sam Rivera</td>
+                                                        <td>sam@acme.com</td>
+                                                        <td>Member</td>
+                                                        <td>
+                                                            <span data-badge data-tone="warning"
+                                                                >Pending</span
+                                                            >
+                                                        </td>
+                                                        <td>
+                                                            <details data-menu data-align="start">
+                                                                <summary
+                                                                    aria-label="Actions for Sam Rivera"
+                                                                >
+                                                                    <svg
+                                                                        class="icon"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <use
+                                                                            href="#icon-lucide-ellipsis-vertical"
+                                                                        ></use>
+                                                                    </svg>
+                                                                </summary>
+                                                                <ul>
+                                                                    <li>
+                                                                        <a href="/users/2/edit"
+                                                                            >Edit</a
+                                                                        >
+                                                                    </li>
+                                                                    <li>
+                                                                        <button type="button">
+                                                                            Resend invite
+                                                                        </button>
+                                                                    </li>
+                                                                    <li role="separator"></li>
+                                                                    <li data-tone="danger">
+                                                                        <button type="button">
+                                                                            Remove user
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </details>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jordan Lee</td>
+                                                        <td>jordan@acme.com</td>
+                                                        <td>Member</td>
+                                                        <td><span data-badge>Inactive</span></td>
+                                                        <td>
+                                                            <details data-menu data-align="start">
+                                                                <summary
+                                                                    aria-label="Actions for Jordan Lee"
+                                                                >
+                                                                    <svg
+                                                                        class="icon"
+                                                                        aria-hidden="true"
+                                                                    >
+                                                                        <use
+                                                                            href="#icon-lucide-ellipsis-vertical"
+                                                                        ></use>
+                                                                    </svg>
+                                                                </summary>
+                                                                <ul>
+                                                                    <li>
+                                                                        <a href="/users/3/edit"
+                                                                            >Edit</a
+                                                                        >
+                                                                    </li>
+                                                                    <li>
+                                                                        <button type="button">
+                                                                            Reactivate
+                                                                        </button>
+                                                                    </li>
+                                                                    <li role="separator"></li>
+                                                                    <li data-tone="danger">
+                                                                        <button type="button">
+                                                                            Remove user
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </details>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <footer>
+                                        <nav data-pagination aria-label="Users pagination">
+                                            <ol>
+                                                <li><span aria-disabled="true">Previous</span></li>
+                                                <li>
+                                                    <a href="/users?page=1" aria-current="page"
+                                                        >1</a
+                                                    >
+                                                </li>
+                                                <li><a href="/users?page=2">2</a></li>
+                                                <li><a href="/users?page=3">3</a></li>
+                                                <span aria-hidden="true">&hellip;</span>
+                                                <li><a href="/users?page=6">6</a></li>
+                                                <li><a href="/users?page=2">Next</a></li>
+                                            </ol>
+                                        </nav>
+                                    </footer>
+                                </section>
+                            </main>
+                        </div>
+                    </div>
+
+                    <ul class="contracts-list">
+                        <li>
+                            Layout shell variant 5 —
+                            <code
+                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                main</code
+                            >
+                        </li>
+                        <li>
+                            Data-view shell — <code>section[data-data-view]</code>,
+                            <code>form[data-data-toolbar]</code>, <code>[data-data-content]</code>
+                        </li>
+                        <li>
+                            Input group — <code>div[data-input-group]</code> with
+                            <code>[data-icon]</code>
+                        </li>
+                        <li>
+                            Table — <code>table[data-sticky-header]</code> inside
+                            <code>div[data-table-container]</code>
+                        </li>
+                        <li>Badges — <code>span[data-badge][data-tone]</code></li>
+                        <li>Command menu — <code>details[data-menu][data-align="start"]</code></li>
+                        <li>Pagination — <code>nav[data-pagination]</code></li>
+                    </ul>
+                </section>
+
+                <hr class="recipe-divider" />
+
+                <!-- =====================================================================
+       RECIPE 4 — Record detail with app shell
+       Primitives used:
+         · layout shell (variant 6: header + sidebar + main + panel) → README § Layout shell
+         · nav[data-breadcrumbs]                                     → README § Breadcrumb navigation
+         · section[data-tabs]                                        → README § Tabs
+         · span[data-badge]                                          → README § Status badges
+         · details[data-menu]                                        → README § Command menu
+         · aside[data-layout-panel]                                  → README § Layout shell
+       ===================================================================== -->
+                <section id="record-detail" class="recipe-section">
+                    <h2>Recipe 4 — Record detail</h2>
+                    <p class="recipe-intro">
+                        A record detail page using the full shell with a right inspector panel. The
+                        main area shows the record with a tabbed detail view; the panel shows
+                        contextual metadata.
+                    </p>
+
+                    <p class="recipe-note">
+                        <strong>Application owns:</strong> panel show/hide (include or remove the
+                        <code>aside[data-layout-panel]</code> from the DOM), tab keyboard navigation
+                        and activation, badge text and tone, and command menu action handlers. See
+                        <a href="../README.md#layout-shell">Layout shell</a> and
+                        <a href="../README.md#tabs">Tabs</a>.
+                    </p>
+
+                    <div class="recipe-frame">
+                        <div data-layout-shell style="min-block-size: 38rem; position: relative">
+                            <header data-layout-header>
+                                <a
+                                    href="/"
+                                    style="
+                                        font-weight: var(--font-weight-semibold);
+                                        text-decoration: none;
+                                        color: inherit;
+                                    "
+                                    >Acme</a
+                                >
+                                <nav data-navbar aria-label="Primary">
+                                    <ul>
+                                        <li><a href="/dashboard">Dashboard</a></li>
+                                        <li><a href="/users" aria-current="page">Users</a></li>
+                                    </ul>
+                                </nav>
+                            </header>
+                            <aside data-layout-sidebar aria-label="Primary navigation">
+                                <nav aria-label="Main">
+                                    <ul role="list">
+                                        <li><a href="/dashboard">Dashboard</a></li>
+                                        <li><a href="/users" aria-current="page">Users</a></li>
+                                        <li><a href="/settings">Settings</a></li>
+                                    </ul>
+                                </nav>
+                            </aside>
+                            <main>
+                                <nav data-breadcrumbs aria-label="Page location">
+                                    <ol>
+                                        <li><a href="/dashboard">Home</a></li>
+                                        <li><a href="/users">Users</a></li>
+                                        <li><span aria-current="page">Alex Chen</span></li>
+                                    </ol>
+                                </nav>
+
+                                <div
+                                    style="
+                                        display: flex;
+                                        align-items: baseline;
+                                        gap: var(--space-3);
+                                        flex-wrap: wrap;
+                                        margin-block-end: var(--space-2);
+                                    "
+                                >
+                                    <h1 style="margin: 0">Alex Chen</h1>
+                                    <span data-badge data-tone="success">Active</span>
+                                    <details data-menu>
+                                        <summary aria-label="User actions">
+                                            <svg class="icon" aria-hidden="true">
+                                                <use href="#icon-lucide-ellipsis-vertical"></use>
+                                            </svg>
+                                        </summary>
+                                        <ul>
+                                            <li><a href="/users/1/edit">Edit profile</a></li>
+                                            <li><button type="button">Reset password</button></li>
+                                            <li><button type="button">Impersonate</button></li>
+                                            <li role="separator"></li>
+                                            <li data-tone="danger">
+                                                <button type="button">Remove user</button>
+                                            </li>
+                                        </ul>
+                                    </details>
+                                </div>
+                                <p
+                                    style="
+                                        color: var(--color-text-secondary);
+                                        margin-block-end: var(--space-6);
+                                    "
+                                >
+                                    alex@acme.com &mdash; Admin &mdash; Member since Jan 2024
+                                </p>
+
+                                <section data-tabs>
+                                    <div role="tablist" aria-label="User details">
+                                        <button
+                                            role="tab"
+                                            id="detail-tab-activity"
+                                            aria-controls="detail-panel-activity"
+                                            aria-selected="true"
+                                            tabindex="0"
+                                        >
+                                            Activity
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="detail-tab-permissions"
+                                            aria-controls="detail-panel-permissions"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                        >
+                                            Permissions
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="detail-tab-audit"
+                                            aria-controls="detail-panel-audit"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                        >
+                                            Audit log
+                                        </button>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="detail-panel-activity"
+                                        aria-labelledby="detail-tab-activity"
+                                    >
+                                        <p>Last sign-in: today at 09:14</p>
+                                        <p>Last action: updated billing address</p>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Event</th>
+                                                    <th scope="col">IP address</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>2026-04-15</td>
+                                                    <td>Signed in</td>
+                                                    <td>203.0.113.1</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2026-04-14</td>
+                                                    <td>Updated billing</td>
+                                                    <td>203.0.113.1</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="detail-panel-permissions"
+                                        aria-labelledby="detail-tab-permissions"
+                                        hidden
+                                    >
+                                        <p>Role: <strong>Admin</strong></p>
+                                        <p>Can manage billing, users, and organization settings.</p>
+                                    </div>
+
+                                    <div
+                                        role="tabpanel"
+                                        id="detail-panel-audit"
+                                        aria-labelledby="detail-tab-audit"
+                                        hidden
+                                    >
+                                        <p>Full audit log is available via the API.</p>
+                                    </div>
+                                </section>
+                            </main>
+                            <aside data-layout-panel aria-label="User metadata">
+                                <h2>Details</h2>
+                                <dl>
+                                    <dt>User ID</dt>
+                                    <dd><code>usr_01H…</code></dd>
+                                    <dt>Organization</dt>
+                                    <dd><a href="/organizations/1">Acme Corp</a></dd>
+                                    <dt>Timezone</dt>
+                                    <dd>America/New_York</dd>
+                                    <dt>2FA</dt>
+                                    <dd><span data-badge data-tone="success">Enabled</span></dd>
+                                </dl>
+                            </aside>
+                        </div>
+                    </div>
+
+                    <ul class="contracts-list">
+                        <li>
+                            Layout shell variant 6 —
+                            <code
+                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                main + aside[data-layout-panel]</code
+                            >
+                        </li>
+                        <li>Breadcrumbs — <code>nav[data-breadcrumbs]</code></li>
+                        <li>Badge — <code>span[data-badge][data-tone]</code></li>
+                        <li>Command menu — <code>details[data-menu]</code></li>
+                        <li>Tabs — <code>section[data-tabs]</code></li>
+                    </ul>
+                </section>
+
+                <hr class="recipe-divider" />
+
+                <!-- =====================================================================
+       RECIPE 5 — Notification center usage
+       Primitives used:
+         · layout shell (variant 5: header + sidebar + main) → README § Layout shell
+         · aside[data-notification-center]                   → README § Notification center
+         · aside[data-toast-region]                          → README § Toast notifications
+         · [data-region-state="empty"]                       → README § Region states
+       ===================================================================== -->
+                <section id="notification-center" class="recipe-section">
+                    <h2>Recipe 5 — Notification center</h2>
+                    <p class="recipe-intro">
+                        A dashboard page that hosts both a persistent notification center panel in
+                        an inspector slot and a transient toast stack for real-time alerts. Shows
+                        the filled state and the empty state side by side.
+                    </p>
+
+                    <p class="recipe-note">
+                        <strong>Application owns:</strong> notification retrieval and rendering,
+                        unread count badge, marking items as read (removing
+                        <code>data-unread="true"</code>), item dismissal (removing the
+                        <code>&lt;li&gt;</code>), persistence, panel open/close (position and toggle
+                        are not owned by the framework), toast insertion/removal timing, and focus
+                        management after dismiss. See
+                        <a href="../README.md#notification-center">Notification center</a> and
+                        <a href="../README.md#toast-notifications">Toast notifications</a>.
+                    </p>
+
+                    <div class="recipe-frame">
+                        <!--
+        In a real application the notification center is commonly placed inside
+        aside[data-layout-panel] or rendered as a popover/dialog triggered from the header.
+        This recipe shows it inline for documentation clarity.
+      -->
+
+                        <h3 style="margin-block-end: var(--space-4)">
+                            Notification center — filled state
+                        </h3>
+                        <aside
+                            data-notification-center
+                            aria-label="Notifications (filled)"
+                            style="max-inline-size: 22rem"
+                        >
+                            <header>
+                                <h2>Notifications</h2>
+                                <button type="button" data-tone="neutral" data-variant="outlined">
+                                    Mark all read
+                                </button>
+                            </header>
+                            <ul>
+                                <li data-unread="true">
+                                    <h3>Deploy succeeded</h3>
+                                    <p>Production build v2.4.1 finished without errors.</p>
+                                    <time datetime="2026-04-15T10:30:00Z">10:30 AM</time>
+                                    <a href="/deployments/241">View deployment</a>
+                                    <button
+                                        type="button"
+                                        data-dismiss
+                                        aria-label="Dismiss deploy notification"
+                                    ></button>
+                                </li>
+                                <li data-tone="danger" data-unread="true">
+                                    <h3>Payment failed</h3>
+                                    <p>Your card ending in 4242 was declined.</p>
+                                    <time datetime="2026-04-15T09:15:00Z">9:15 AM</time>
+                                    <button type="button">Update billing</button>
+                                    <button
+                                        type="button"
+                                        data-dismiss
+                                        aria-label="Dismiss payment notification"
+                                    ></button>
+                                </li>
+                                <li data-tone="success">
+                                    <h3>Import complete</h3>
+                                    <p>142 records were added to your account.</p>
+                                    <time datetime="2026-04-14T17:00:00Z">Yesterday</time>
+                                    <button
+                                        type="button"
+                                        data-dismiss
+                                        aria-label="Dismiss import notification"
+                                    ></button>
+                                </li>
+                                <li>
+                                    <h3>Comment on your post</h3>
+                                    <p>Sam replied to your comment in &ldquo;Q3 roadmap&rdquo;.</p>
+                                    <time datetime="2026-04-13T17:00:00Z">2 days ago</time>
+                                </li>
+                            </ul>
+                            <footer>
+                                <a href="/notifications">View all notifications</a>
+                            </footer>
+                        </aside>
+
+                        <h3 style="margin-block: var(--space-8) var(--space-4)">
+                            Notification center — empty state
+                        </h3>
+                        <aside
+                            data-notification-center
+                            aria-label="Notifications (empty)"
+                            style="max-inline-size: 22rem"
+                        >
+                            <header>
+                                <h2>Notifications</h2>
+                            </header>
+                            <section data-region-state="empty">
+                                <h3>No notifications</h3>
+                                <p>You&rsquo;re all caught up.</p>
+                            </section>
+                        </aside>
+
+                        <h3 style="margin-block: var(--space-8) var(--space-4)">
+                            Toast stack — live notification feedback
+                        </h3>
+                        <p
+                            style="
+                                font-size: var(--font-size-sm);
+                                color: var(--color-text-secondary);
+                                margin-block-end: var(--space-2);
+                            "
+                        >
+                            In production the toast region is <code>position: fixed</code> at the
+                            top-end of the viewport. The snippet below shows the DOM structure
+                            (rendered inline for recipe display only).
+                        </p>
+                        <aside
+                            data-toast-region
+                            aria-label="Toast notifications"
+                            style="
+                                position: static;
+                                display: block;
+                                inset: unset;
+                                inline-size: 100%;
+                                max-inline-size: 22rem;
+                            "
+                        >
+                            <ul>
+                                <li data-tone="success">
+                                    <div role="status">
+                                        <strong>Changes saved</strong>
+                                        <p>Your profile has been updated.</p>
+                                        <button
+                                            type="button"
+                                            data-dismiss
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                </li>
+                                <li data-tone="warning">
+                                    <div role="alert">
+                                        <strong>Session expiring</strong>
+                                        <p>Your session will expire in 5 minutes.</p>
+                                        <button type="button">Stay signed in</button>
+                                        <button
+                                            type="button"
+                                            data-dismiss
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </aside>
+                    </div>
+
+                    <ul class="contracts-list">
+                        <li>
+                            Notification center —
+                            <code>aside[data-notification-center][aria-label]</code>
+                        </li>
+                        <li>
+                            Notification items — <code>li[data-unread="true"]</code>,
+                            <code>li[data-tone]</code>, <code>button[data-dismiss]</code>
+                        </li>
+                        <li>
+                            Empty state composition —
+                            <code>aside[data-region-state="empty"]</code> inside the notification
+                            center
+                        </li>
+                        <li>
+                            Toast region — <code>aside[data-toast-region]</code> with
+                            <code>li &gt; div[role="status"]</code> and
+                            <code>li &gt; div[role="alert"]</code>
+                        </li>
+                        <li>Button variant — <code>button.outlined.neutral</code></li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+        <!-- /data-layout-shell -->
+        <script>
+            (function () {
+                function getEffectiveTheme() {
+                    const explicit = document.documentElement.getAttribute("data-theme");
+                    if (explicit === "dark" || explicit === "light") return explicit;
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                }
+
+                function setToggleLabel(btn) {
+                    if (!btn) return;
+                    const current = getEffectiveTheme();
+                    const action = current === "dark" ? "light" : "dark";
+                    btn.innerHTML =
+                        action === "light"
+                            ? '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-sun"></use></svg>Light</span>'
+                            : '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-moon"></use></svg>Dark</span>';
+                }
+
+                window.toggleDocsTheme = function (btn) {
+                    const current = getEffectiveTheme();
+                    const next = current === "dark" ? "light" : "dark";
+                    document.documentElement.setAttribute("data-theme", next);
+                    localStorage.setItem("lumen-theme", next);
+                    setToggleLabel(btn);
+                };
+
+                const saved = localStorage.getItem("lumen-theme");
+                if (saved === "dark" || saved === "light") {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+
+                const btn = document.querySelector('[aria-label="Toggle dark mode"]');
+                setToggleLabel(btn);
+
+                const media = window.matchMedia("(prefers-color-scheme: dark)");
+                const sync = function () {
+                    if (!localStorage.getItem("lumen-theme")) setToggleLabel(btn);
+                };
+                if (typeof media.addEventListener === "function") {
+                    media.addEventListener("change", sync);
+                }
+            })();
+        </script>
+    </body>
+</html>

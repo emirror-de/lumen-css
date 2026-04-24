@@ -1,0 +1,3261 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="lumen.css — A CSS-only, semantic-first framework for productive business applications. No JavaScript runtime. No build step. Just semantic HTML."
+        />
+        <title>lumen.css — Semantic-first CSS framework</title>
+        <link rel="stylesheet" href="../css/lumen.css" />
+        <style>
+            /* ─── Site-only styles (not part of the framework) ─── */
+
+            /* Hero gradient backdrop */
+            .hero {
+                padding-block: var(--space-16) var(--space-12);
+                padding-inline: var(--space-8);
+                text-align: center;
+                background: linear-gradient(
+                    160deg,
+                    var(--color-accent-subtle) 0%,
+                    var(--color-bg) 60%
+                );
+                border-block-end: 1px solid var(--color-border-subtle);
+            }
+            .hero h1 {
+                font-size: clamp(2.5rem, 6vw, 4rem);
+                font-weight: var(--font-weight-bold);
+                letter-spacing: -0.03em;
+                line-height: var(--line-height-tight);
+                margin-block-end: var(--space-4);
+            }
+            .hero h1 span {
+                color: var(--color-accent);
+            }
+            .hero .lead {
+                font-size: clamp(1rem, 2.5vw, 1.25rem);
+                color: var(--color-text-secondary);
+                max-inline-size: 40rem;
+                margin-inline: auto;
+                margin-block-end: var(--space-8);
+                line-height: var(--line-height-relaxed);
+            }
+            .hero-cta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--space-3);
+                justify-content: center;
+                margin-block-end: var(--space-10);
+            }
+            .hero-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-2);
+                padding-block: var(--space-1);
+                padding-inline: var(--space-3);
+                border-radius: var(--radius-full);
+                background: var(--color-surface-raised);
+                border: 1px solid var(--color-border-subtle);
+                font-size: var(--font-size-sm);
+                color: var(--color-text-secondary);
+                font-family: var(--font-family-mono);
+            }
+            .hero-logo {
+                display: block;
+                block-size: 10rem;
+                inline-size: auto;
+                margin-inline: auto;
+                margin-block-end: var(--space-5);
+            }
+
+            /* Quick install snippet */
+            .install-snippet {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-3);
+                padding-block: var(--space-3);
+                padding-inline: var(--space-4);
+                background: var(--color-surface-sunken);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-lg);
+                font-family: var(--font-family-mono);
+                font-size: var(--font-size-sm);
+                color: var(--color-text);
+                max-inline-size: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            .install-snippet code {
+                flex: 1;
+            }
+
+            /* Page sections */
+            .page-section {
+                padding-block: var(--space-12);
+                padding-inline: var(--space-8);
+                border-block-end: 1px solid var(--color-border-subtle);
+            }
+            .page-section:last-child {
+                border-block-end: none;
+            }
+            .section-label {
+                font-size: var(--font-size-xs);
+                font-weight: var(--font-weight-semibold);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: var(--color-accent);
+                margin-block-end: var(--space-2);
+            }
+            .section-heading {
+                font-size: clamp(1.5rem, 3vw, 2.25rem);
+                font-weight: var(--font-weight-bold);
+                letter-spacing: -0.02em;
+                line-height: var(--line-height-tight);
+                margin-block-end: var(--space-3);
+            }
+            .section-sub {
+                color: var(--color-text-secondary);
+                max-inline-size: 48rem;
+                margin-block-end: var(--space-8);
+                line-height: var(--line-height-relaxed);
+            }
+
+            /* Feature grid */
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+                gap: var(--space-5);
+            }
+            .feature-card {
+                padding: var(--space-5);
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-lg);
+            }
+            .feature-icon {
+                inline-size: 1.75rem;
+                block-size: 1.75rem;
+                margin-block-end: var(--space-3);
+                display: block;
+            }
+            .icon {
+                inline-size: 1em;
+                block-size: 1em;
+                display: inline-block;
+                vertical-align: middle;
+                stroke: currentColor;
+                fill: none;
+                stroke-width: 1.9;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                flex-shrink: 0;
+            }
+            .icon-label {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--space-1);
+            }
+            [data-icon] > .icon {
+                inline-size: 1rem;
+                block-size: 1rem;
+            }
+            .feature-card h3 {
+                font-size: var(--font-size-base);
+                font-weight: var(--font-weight-semibold);
+                margin-block-end: var(--space-2);
+            }
+            .feature-card p {
+                font-size: var(--font-size-sm);
+                color: var(--color-text-secondary);
+                line-height: var(--line-height-relaxed);
+                margin: 0;
+            }
+
+            /* Code blocks */
+            .code-block {
+                background: var(--color-surface-sunken);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                padding: var(--space-4);
+                overflow-x: auto;
+            }
+            .code-block pre {
+                margin: 0;
+                font-size: var(--font-size-sm);
+                line-height: 1.6;
+            }
+
+            /* Demo / preview areas */
+            .demo-frame {
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-lg);
+                padding: var(--space-6);
+                overflow: hidden;
+            }
+            .demo-label {
+                font-size: var(--font-size-xs);
+                font-weight: var(--font-weight-semibold);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--color-text-tertiary);
+                margin-block-end: var(--space-3);
+            }
+
+            /* Split layout: demo + code */
+            .demo-split {
+                display: grid;
+                gap: var(--space-5);
+                grid-template-columns: 1fr;
+            }
+            @media (min-width: 56em) {
+                .demo-split {
+                    grid-template-columns: 1fr 1fr;
+                }
+                .demo-split.wide {
+                    grid-template-columns: 3fr 2fr;
+                }
+            }
+
+            /* Tabs demo */
+            .demo-tabs [role="tablist"] {
+                margin-block-end: 0;
+            }
+
+            /* Token color swatch grid */
+            .token-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+                gap: var(--space-3);
+                margin-block-end: var(--space-6);
+            }
+            .token-swatch {
+                border-radius: var(--radius-md);
+                overflow: hidden;
+                border: 1px solid var(--color-border);
+            }
+            .token-swatch-color {
+                block-size: 3.5rem;
+            }
+            .token-swatch-label {
+                padding: var(--space-2) var(--space-2);
+                background: var(--color-surface);
+                font-size: 0.65rem;
+                font-family: var(--font-family-mono);
+                color: var(--color-text-secondary);
+                word-break: break-all;
+            }
+
+            /* Responsive row of controls */
+            .ctrl-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--space-3);
+                align-items: center;
+            }
+
+            /* Typography scale preview */
+            .type-scale > * {
+                margin: 0;
+            }
+            .type-scale {
+                display: flex;
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+
+            /* Layout shell minimap */
+            .shell-diagram {
+                display: grid;
+                gap: 3px;
+                background: var(--color-border-subtle);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-md);
+                padding: 3px;
+                max-inline-size: 32rem;
+            }
+            .shell-diagram-header {
+                background: var(--color-accent-subtle);
+                border: 1px solid var(--color-accent);
+                border-radius: var(--radius-sm);
+                padding: var(--space-2) var(--space-3);
+                font-size: var(--font-size-xs);
+                font-family: var(--font-family-mono);
+                color: var(--color-accent);
+                text-align: center;
+            }
+            .shell-diagram-body {
+                display: grid;
+                grid-template-columns: 6rem 1fr 5rem;
+                gap: 3px;
+            }
+            .shell-diagram-sidebar,
+            .shell-diagram-main,
+            .shell-diagram-panel {
+                border-radius: var(--radius-sm);
+                padding: var(--space-3);
+                font-size: var(--font-size-xs);
+                font-family: var(--font-family-mono);
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-block-size: 6rem;
+            }
+            .shell-diagram-sidebar {
+                background: var(--color-surface-raised);
+                border: 1px solid var(--color-border);
+                color: var(--color-text-secondary);
+            }
+            .shell-diagram-main {
+                background: var(--color-bg);
+                border: 1px solid var(--color-border-subtle);
+                color: var(--color-text-secondary);
+            }
+            .shell-diagram-panel {
+                background: var(--color-surface-raised);
+                border: 1px solid var(--color-border);
+                color: var(--color-text-secondary);
+            }
+            .shell-diagram-footer {
+                background: var(--color-surface);
+                border: 1px solid var(--color-border);
+                border-radius: var(--radius-sm);
+                padding: var(--space-2) var(--space-3);
+                font-size: var(--font-size-xs);
+                font-family: var(--font-family-mono);
+                color: var(--color-text-tertiary);
+                text-align: center;
+            }
+
+            /* Comparison table */
+            .comparison-table th {
+                white-space: nowrap;
+            }
+            .check {
+                color: var(--color-success-text);
+                font-size: 1.1em;
+            }
+            .cross {
+                color: var(--color-danger-text);
+                font-size: 1.1em;
+            }
+
+            /* Scroll margin for anchor targets */
+            [id] {
+                scroll-margin-top: calc(var(--layout-shell-header-height, 3.5rem) + var(--space-4));
+            }
+
+            /* ─── Sidebar navigation ─── */
+            /* Block links: full-width hit target with comfortable padding */
+            nav[aria-label="Docs sections"] a {
+                display: block;
+                padding-block: var(--space-1);
+                padding-inline: var(--space-3);
+                border-radius: var(--radius-sm);
+                font-size: var(--font-size-sm);
+                color: var(--color-text-secondary);
+                text-decoration: none;
+                transition:
+                    background var(--transition-fast),
+                    color var(--transition-fast);
+            }
+            nav[aria-label="Docs sections"] a:hover {
+                background: var(--color-surface-raised);
+                color: var(--color-text);
+            }
+            nav[aria-label="Docs sections"] a[aria-current="page"] {
+                background: var(--color-accent-subtle);
+                color: var(--color-accent);
+                font-weight: var(--font-weight-semibold);
+            }
+            /* Section label items (non-interactive) */
+            nav[aria-label="Docs sections"] li.nav-section-label {
+                padding-block-start: var(--space-4);
+                padding-inline: var(--space-3);
+                padding-block-end: var(--space-1);
+                font-size: var(--font-size-xs);
+                font-weight: var(--font-weight-semibold);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--color-text-tertiary);
+            }
+            nav[aria-label="Docs sections"] li.nav-section-label:first-child {
+                padding-block-start: var(--space-1);
+            }
+
+            /* Footer */
+            .site-footer {
+                padding: var(--space-8);
+                text-align: center;
+                color: var(--color-text-tertiary);
+                font-size: var(--font-size-sm);
+                border-block-start: 1px solid var(--color-border-subtle);
+            }
+            /* Override the typography layer's 72ch cap so footer paragraphs span full width */
+            .site-footer p {
+                max-inline-size: none;
+            }
+            .site-footer a {
+                color: var(--color-link);
+            }
+            .brand-link {
+                display: inline-flex;
+                align-items: center;
+                line-height: 1;
+                min-block-size: 2.25rem;
+            }
+        </style>
+    </head>
+    <body>
+        <svg
+            aria-hidden="true"
+            style="position: absolute; inline-size: 0; block-size: 0; overflow: hidden"
+        >
+            <defs>
+                <symbol id="icon-lucide-sun" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2"></path>
+                    <path d="M12 20v2"></path>
+                    <path d="m4.93 4.93 1.41 1.41"></path>
+                    <path d="m17.66 17.66 1.41 1.41"></path>
+                    <path d="M2 12h2"></path>
+                    <path d="M20 12h2"></path>
+                    <path d="m6.34 17.66-1.41 1.41"></path>
+                    <path d="m19.07 4.93-1.41 1.41"></path>
+                </symbol>
+                <symbol id="icon-lucide-moon" viewBox="0 0 24 24">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"></path>
+                </symbol>
+                <symbol id="icon-lucide-search" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </symbol>
+                <symbol id="icon-lucide-zap" viewBox="0 0 24 24">
+                    <path
+                        d="M4 14a1 1 0 0 1-.78-1.63l9-11A1 1 0 0 1 14 2v7h6a1 1 0 0 1 .78 1.63l-9 11A1 1 0 0 1 10 21v-7z"
+                    ></path>
+                </symbol>
+                <symbol id="icon-lucide-palette" viewBox="0 0 24 24">
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+                    <path d="M12 22a1 1 0 0 1 0-20 10 10 0 0 1 0 20Z"></path>
+                    <path d="M12 16a2 2 0 0 0 2 2h3a5 5 0 0 0 0-10h-.26"></path>
+                </symbol>
+                <symbol id="icon-lucide-tags" viewBox="0 0 24 24">
+                    <path d="M9 5H2v7l9.29 9.29a1 1 0 0 0 1.42 0l7-7a1 1 0 0 0 0-1.42z"></path>
+                    <path d="M6 9.01V9"></path>
+                    <path d="m15 5 6.3 6.3a1 1 0 0 1 0 1.4l-6.6 6.6"></path>
+                </symbol>
+                <symbol id="icon-lucide-circle-half" viewBox="0 0 24 24">
+                    <path d="M12 3a9 9 0 1 0 0 18V3z"></path>
+                    <path d="M12 3a9 9 0 0 1 0 18"></path>
+                </symbol>
+                <symbol id="icon-lucide-accessibility" viewBox="0 0 24 24">
+                    <circle cx="16" cy="4" r="1"></circle>
+                    <path d="m18 19 1-7-6 1"></path>
+                    <path d="m5 8 3-3 5.5 3-2.36 3.5"></path>
+                    <path d="M4.24 14.5a5 5 0 0 0 6.88 6"></path>
+                    <path d="M13.76 17.5a5 5 0 0 0-6.88-6"></path>
+                </symbol>
+                <symbol id="icon-lucide-layout-grid" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                </symbol>
+                <symbol id="icon-lucide-shield-check" viewBox="0 0 24 24">
+                    <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V6l8-4 8 4z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                </symbol>
+                <symbol id="icon-lucide-building" viewBox="0 0 24 24">
+                    <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                    <path d="M9 22v-4h6v4"></path>
+                    <path d="M8 6h.01"></path>
+                    <path d="M16 6h.01"></path>
+                    <path d="M8 10h.01"></path>
+                    <path d="M16 10h.01"></path>
+                    <path d="M8 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                </symbol>
+            </defs>
+        </svg>
+        <div data-layout-shell>
+            <!-- ─── Header ─── -->
+            <header data-layout-header>
+                <a class="brand-link" href="#" style="text-decoration: none; flex-shrink: 0">
+                    <img
+                        src="logo-no-text.png"
+                        alt="lumen.css"
+                        style="display: block; block-size: 2rem; inline-size: auto"
+                    />
+                </a>
+
+                <button
+                    data-nav-toggle
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="primary-navbar"
+                    aria-label="Open navigation"
+                    onclick="
+                        const expanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', String(!expanded));
+                        this.setAttribute(
+                            'aria-label',
+                            !expanded ? 'Close navigation' : 'Open navigation',
+                        );
+                    "
+                ></button>
+
+                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                    <ul>
+                        <li><a href="index.html" aria-current="page">Home</a></li>
+                        <li><a href="showcase.html">Showcase</a></li>
+                        <li><a href="recipes.html">Recipes</a></li>
+                        <li><a href="browser-support.html">Browser support</a></li>
+                        <li><a href="responsibilities.html">Responsibilities</a></li>
+                    </ul>
+                </nav>
+
+                <div data-layout-actions>
+                    <button
+                        type="button"
+                        aria-label="Toggle dark mode"
+                        id="theme-toggle"
+                        onclick="toggleDocsTheme(this)"
+                    >
+                        <span class="icon-label"
+                            ><svg class="icon" aria-hidden="true">
+                                <use href="#icon-lucide-moon"></use></svg
+                            >Dark</span
+                        >
+                    </button>
+                </div>
+            </header>
+
+            <!-- ─── Sidebar nav ─── -->
+            <aside data-layout-sidebar aria-label="Documentation sections">
+                <nav aria-label="Docs sections">
+                    <ul role="list">
+                        <li class="nav-section-label">Getting started</li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#quickstart">Quick start</a></li>
+                        <li><a href="#tokens">Tokens</a></li>
+                        <li><a href="#theming">Theming</a></li>
+                        <li class="nav-section-label">Components</li>
+                        <li><a href="#typography">Typography</a></li>
+                        <li><a href="#buttons">Buttons</a></li>
+                        <li><a href="#forms">Forms</a></li>
+                        <li><a href="#tables">Tables</a></li>
+                        <li><a href="#cards">Cards</a></li>
+                        <li><a href="#badges">Badges</a></li>
+                        <li><a href="#spinners">Spinners</a></li>
+                        <li class="nav-section-label">Patterns</li>
+                        <li><a href="#layout-shell">Layout shell</a></li>
+                        <li><a href="#navbar">Navbar</a></li>
+                        <li><a href="#tabs">Tabs</a></li>
+                        <li><a href="#breadcrumbs">Breadcrumbs</a></li>
+                        <li><a href="#pagination">Pagination</a></li>
+                        <li><a href="#toasts">Toasts</a></li>
+                        <li><a href="#command-menu">Command menu</a></li>
+                        <li><a href="#data-view">Data view</a></li>
+                        <li class="nav-section-label">More</li>
+                        <li><a href="showcase.html">Full showcase</a></li>
+                        <li><a href="recipes.html">Application recipes</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- ─── Main content ─── -->
+            <main>
+                <!-- ══════════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════════ -->
+                <section class="hero" id="hero" aria-labelledby="hero-heading">
+                    <img class="hero-logo" src="logo.png" alt="lumen.css" />
+                    <div class="hero-badge">
+                        <span aria-hidden="true">◆</span>
+                        CSS-only · No JavaScript runtime · No build step
+                    </div>
+
+                    <h1 id="hero-heading" style="margin-block-start: var(--space-5)">
+                        Semantic HTML,<br /><span>beautifully styled.</span>
+                    </h1>
+
+                    <p class="lead">
+                        lumen.css is a CSS-only, CSS-variable-configurable, semantic-first framework
+                        for productive business applications. Link the stylesheet — your semantic
+                        HTML is already styled.
+                    </p>
+
+                    <div class="hero-cta">
+                        <a href="#quickstart">
+                            <button type="button" data-tone="accent">Get started →</button>
+                        </a>
+                        <a href="showcase.html">
+                            <button type="button" data-variant="outlined">View showcase</button>
+                        </a>
+                        <a href="recipes.html">
+                            <button type="button" data-variant="outlined">
+                                Application recipes
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="install-snippet" role="region" aria-label="Installation snippet">
+                        <code>&lt;link rel="stylesheet" href="lumen.css" /&gt;</code>
+                        <button
+                            type="button"
+                            data-variant="outlined"
+                            style="flex-shrink: 0; font-size: var(--font-size-xs)"
+                            aria-label="Copy install snippet"
+                            onclick="copyInstallSnippet(this)"
+                        >
+                            Copy
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         FEATURES
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="features" aria-labelledby="features-heading">
+                    <p class="section-label">Why lumen.css</p>
+                    <h2 class="section-heading" id="features-heading">
+                        Everything you need. Nothing you don't.
+                    </h2>
+                    <p class="section-sub">
+                        A framework built around the principle that good HTML is already meaningful
+                        — styling should follow semantics, not fight against them.
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-zap"></use>
+                            </svg>
+                            <h3>CSS only</h3>
+                            <p>
+                                Zero JavaScript runtime, zero build step for consumers. Drop in one
+                                stylesheet and ship.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-palette"></use>
+                            </svg>
+                            <h3>Token-driven theming</h3>
+                            <p>
+                                Every visual decision is a CSS custom property. Override any
+                                semantic token on <code>:root</code> to match your brand instantly.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-tags"></use>
+                            </svg>
+                            <h3>Semantic-first</h3>
+                            <p>
+                                Element selectors and ARIA attributes drive all styling. No startup
+                                classes required — valid HTML is styled HTML.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-circle-half"></use>
+                            </svg>
+                            <h3>Light &amp; dark themes</h3>
+                            <p>
+                                Automatic via <code>prefers-color-scheme</code>. Override per-page
+                                with <code>data-theme="dark"</code> or
+                                <code>data-theme="light"</code>.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-accessibility"></use>
+                            </svg>
+                            <h3>Accessible by default</h3>
+                            <p>
+                                WCAG 2.1 AA contrast, visible focus rings,
+                                <code>prefers-reduced-motion</code> support, and logical properties
+                                throughout.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-layout-grid"></use>
+                            </svg>
+                            <h3>No layout system lock-in</h3>
+                            <p>
+                                Native CSS Grid and Flexbox handle layout. lumen.css provides the
+                                shell; you own the geometry.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-shield-check"></use>
+                            </svg>
+                            <h3>Modern browser baseline</h3>
+                            <p>
+                                Chrome/Edge 121+, Firefox 121+, Safari 17.2+. Leverages
+                                <code>:has()</code>, <code>color-mix()</code>, and container queries
+                                without polyfills.
+                            </p>
+                        </div>
+
+                        <div class="feature-card">
+                            <svg class="feature-icon icon" aria-hidden="true">
+                                <use href="#icon-lucide-building"></use>
+                            </svg>
+                            <h3>Built for business apps</h3>
+                            <p>
+                                Data tables, command menus, notification centers, toasts, layout
+                                shells, tabs — the primitives serious applications actually need.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         QUICK START
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="quickstart" aria-labelledby="quickstart-heading">
+                    <p class="section-label">Quick start</p>
+                    <h2 class="section-heading" id="quickstart-heading">
+                        Up and running in one line.
+                    </h2>
+                    <p class="section-sub">
+                        No npm install. No webpack. No PostCSS pipeline. Just a
+                        <code>&lt;link&gt;</code>.
+                    </p>
+
+                    <div class="demo-split">
+                        <div>
+                            <p class="demo-label">1. Link the stylesheet</p>
+                            <div class="code-block">
+                                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8" /&gt;
+  &lt;meta name="viewport"
+        content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;My App&lt;/title&gt;
+  &lt;link rel="stylesheet" href="lumen.css" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello world&lt;/h1&gt;
+  &lt;p&gt;Semantic HTML, already styled.&lt;/p&gt;
+  &lt;button type="button" data-tone="accent"&gt;
+    Get started
+  &lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="demo-label">2. Customise tokens (optional)</p>
+                            <div class="code-block">
+                                <pre><code>/* Override any semantic token on :root
+   before or after the import */
+:root {
+  --color-accent:       #7c3aed;
+  --color-accent-hover: #6d28d9;
+
+  --font-family-base:
+    "Inter", system-ui, sans-serif;
+
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+</code></pre>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                3. Use semantic HTML
+                            </p>
+                            <div class="demo-frame">
+                                <p style="margin: 0 0 var(--space-3)">
+                                    You're already done. Every element below uses zero classes:
+                                </p>
+                                <div class="ctrl-row">
+                                    <button type="button">Default</button>
+                                    <button type="button" data-tone="accent">Accent</button>
+                                    <button type="button" data-tone="success">Success</button>
+                                    <button
+                                        type="button"
+                                        data-tone="danger"
+                                        data-variant="outlined"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="section-sub" style="margin-block-start: var(--space-6)">
+                        <strong>Icon recommendation:</strong> We recommend
+                        <a href="https://lucide.dev/" rel="noopener noreferrer">Lucide</a> for docs
+                        and product UIs. Its neutral stroke style matches lumen.css; use a
+                        24&times;24 grid, rounded caps/joins, and <code>currentColor</code> so icons
+                        inherit token colors.
+                    </p>
+                    <p class="demo-label">Lucide setup + usage (small example)</p>
+                    <div class="code-block">
+                        <pre><code># install icon files once
+npm i -D lucide-static
+
+&lt;!-- inline one icon and let it inherit text color --&gt;
+&lt;button type="button" data-variant="outlined"&gt;
+  &lt;svg aria-hidden="true" viewBox="0 0 24 24"
+       style="inline-size:1rem;block-size:1rem;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"&gt;
+    &lt;path d="M11 19a8 8 0 1 1 5.2-14.1" /&gt;
+    &lt;path d="m21 21-4.3-4.3" /&gt;
+  &lt;/svg&gt;
+  Search
+&lt;/button&gt;</code></pre>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         TYPOGRAPHY
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="typography" aria-labelledby="typography-heading">
+                    <p class="section-label">Components</p>
+                    <h2 class="section-heading" id="typography-heading">Typography</h2>
+                    <p class="section-sub">
+                        All heading levels, paragraph text, inline elements, and code are styled by
+                        default. No classes required.
+                    </p>
+
+                    <div class="demo-split wide">
+                        <div class="demo-frame">
+                            <div class="type-scale">
+                                <h1 style="margin: 0">Heading 1 — h1</h1>
+                                <h2 style="margin: 0">Heading 2 — h2</h2>
+                                <h3 style="margin: 0">Heading 3 — h3</h3>
+                                <h4 style="margin: 0">Heading 4 — h4</h4>
+                                <h5 style="margin: 0">Heading 5 — h5</h5>
+                                <h6 style="margin: 0">Heading 6 — h6</h6>
+                            </div>
+                            <hr style="margin-block: var(--space-4)" />
+                            <p>
+                                Regular paragraph text with an <a href="#">inline link</a>,
+                                <strong>bold text</strong>, <em>italic text</em>,
+                                <code>inline code</code>, and a
+                                <abbr title="Abbreviation example">abbr</abbr>.
+                            </p>
+                            <blockquote>
+                                <p>
+                                    "Design is not just what it looks like and feels like. Design is
+                                    how it works."
+                                </p>
+                                <footer>— Steve Jobs</footer>
+                            </blockquote>
+                            <p>
+                                Inline elements: <mark>highlighted</mark>, <del>deleted</del>,
+                                <ins>inserted</ins>, <kbd>Ctrl</kbd
+                                ><span aria-hidden="true"> + </span><kbd>K</kbd>,
+                                <samp>sample output</samp>, <small>small text</small>.
+                            </p>
+                            <pre><code>// Monospaced code block
+const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- No classes needed —
+     element selectors style everything --&gt;
+
+&lt;h1&gt;Heading 1&lt;/h1&gt;
+&lt;h2&gt;Heading 2&lt;/h2&gt;
+
+&lt;p&gt;
+  Text with &lt;a href="#"&gt;link&lt;/a&gt;,
+  &lt;strong&gt;bold&lt;/strong&gt;,
+  &lt;code&gt;inline code&lt;/code&gt;.
+&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;"A great quote."&lt;/p&gt;
+  &lt;footer&gt;— Attribution&lt;/footer&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code&gt;code block&lt;/code&gt;&lt;/pre&gt;
+
+&lt;kbd&gt;Ctrl&lt;/kbd&gt; + &lt;kbd&gt;K&lt;/kbd&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         BUTTONS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="buttons" aria-labelledby="buttons-heading">
+                    <h2 class="section-heading" id="buttons-heading">Buttons</h2>
+                    <p class="section-sub">
+                        Tone and variant are expressed via <code>data-tone</code> and
+                        <code>data-variant</code> attributes — no classes. Works on
+                        <code>&lt;button&gt;</code> and
+                        <code>&lt;input type="submit|button|reset"&gt;</code>.
+                    </p>
+
+                    <div class="demo-split wide">
+                        <div>
+                            <p class="demo-label">Solid tones</p>
+                            <div class="demo-frame">
+                                <div class="ctrl-row">
+                                    <button type="button">Default</button>
+                                    <button type="button" data-tone="neutral">Neutral</button>
+                                    <button type="button" data-tone="accent">Accent</button>
+                                    <button type="button" data-tone="success">Success</button>
+                                    <button type="button" data-tone="warning">Warning</button>
+                                    <button type="button" data-tone="danger">Danger</button>
+                                </div>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                Outlined variants
+                            </p>
+                            <div class="demo-frame">
+                                <div class="ctrl-row">
+                                    <button type="button" data-variant="outlined">Outlined</button>
+                                    <button
+                                        type="button"
+                                        data-tone="accent"
+                                        data-variant="outlined"
+                                    >
+                                        Accent
+                                    </button>
+                                    <button
+                                        type="button"
+                                        data-tone="success"
+                                        data-variant="outlined"
+                                    >
+                                        Success
+                                    </button>
+                                    <button
+                                        type="button"
+                                        data-tone="danger"
+                                        data-variant="outlined"
+                                    >
+                                        Danger
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                States
+                            </p>
+                            <div class="demo-frame">
+                                <div class="ctrl-row">
+                                    <button type="button" disabled>Disabled</button>
+                                    <button type="button" aria-busy="true" data-tone="accent">
+                                        Saving…
+                                    </button>
+                                    <button type="button" aria-pressed="true">Pressed</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Solid tones --&gt;
+&lt;button type="button"&gt;Default&lt;/button&gt;
+&lt;button type="button"
+        data-tone="accent"&gt;Accent&lt;/button&gt;
+&lt;button type="button"
+        data-tone="success"&gt;Success&lt;/button&gt;
+&lt;button type="button"
+        data-tone="warning"&gt;Warning&lt;/button&gt;
+&lt;button type="button"
+        data-tone="danger"&gt;Danger&lt;/button&gt;
+
+&lt;!-- Outlined variant --&gt;
+&lt;button type="button"
+        data-tone="accent"
+        data-variant="outlined"&gt;
+  Outlined accent
+&lt;/button&gt;
+
+&lt;!-- States (no classes needed) --&gt;
+&lt;button type="button" disabled&gt;
+  Disabled
+&lt;/button&gt;
+&lt;button type="button"
+        aria-busy="true"
+        data-tone="accent"&gt;
+  Saving…
+&lt;/button&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         FORMS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="forms" aria-labelledby="forms-heading">
+                    <h2 class="section-heading" id="forms-heading">Forms</h2>
+                    <p class="section-sub">
+                        All native form controls are styled out of the box. Use
+                        <code>data-field</code> for label + control + help/error composition.
+                        Validation states driven by <code>:invalid</code> and
+                        <code>aria-invalid</code>.
+                    </p>
+
+                    <div class="demo-split">
+                        <div class="demo-frame">
+                            <form
+                                onsubmit="return false;"
+                                style="display: flex; flex-direction: column; gap: var(--space-4)"
+                            >
+                                <div data-field-row>
+                                    <div data-field>
+                                        <label for="demo-first">First name</label>
+                                        <input
+                                            type="text"
+                                            id="demo-first"
+                                            name="first"
+                                            placeholder="Jane"
+                                        />
+                                    </div>
+                                    <div data-field>
+                                        <label for="demo-last">Last name</label>
+                                        <input
+                                            type="text"
+                                            id="demo-last"
+                                            name="last"
+                                            placeholder="Smith"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div data-field>
+                                    <label for="demo-email">Email address</label>
+                                    <input
+                                        type="email"
+                                        id="demo-email"
+                                        name="email"
+                                        placeholder="jane@example.com"
+                                    />
+                                    <span data-help>We'll never share your email.</span>
+                                </div>
+
+                                <div data-field>
+                                    <label for="demo-email-invalid">Email (invalid state)</label>
+                                    <input
+                                        type="email"
+                                        id="demo-email-invalid"
+                                        name="email-invalid"
+                                        value="not-an-email"
+                                        aria-invalid="true"
+                                        aria-describedby="email-invalid-err"
+                                    />
+                                    <span data-error id="email-invalid-err"
+                                        >Enter a valid email address.</span
+                                    >
+                                </div>
+
+                                <div data-field>
+                                    <label for="demo-role">Role</label>
+                                    <select id="demo-role" name="role">
+                                        <option value="">Select a role…</option>
+                                        <option>Admin</option>
+                                        <option>Editor</option>
+                                        <option>Viewer</option>
+                                    </select>
+                                </div>
+
+                                <div data-field>
+                                    <label for="demo-bio">Bio</label>
+                                    <textarea
+                                        id="demo-bio"
+                                        name="bio"
+                                        rows="3"
+                                        placeholder="Tell us about yourself…"
+                                    ></textarea>
+                                    <span data-help>Max 280 characters.</span>
+                                </div>
+
+                                <fieldset data-field>
+                                    <legend>Notifications</legend>
+                                    <label
+                                        ><input type="checkbox" name="notify-email" checked /> Email
+                                        notifications</label
+                                    >
+                                    <label
+                                        ><input type="checkbox" name="notify-sms" /> SMS
+                                        notifications</label
+                                    >
+                                </fieldset>
+
+                                <fieldset data-field>
+                                    <legend>Account type</legend>
+                                    <label
+                                        ><input type="radio" name="acct" value="personal" checked />
+                                        Personal</label
+                                    >
+                                    <label
+                                        ><input type="radio" name="acct" value="business" />
+                                        Business</label
+                                    >
+                                </fieldset>
+
+                                <div class="ctrl-row">
+                                    <button type="submit" data-tone="accent">Save changes</button>
+                                    <button type="reset" data-variant="outlined">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Field composition primitive --&gt;
+&lt;div data-field&gt;
+  &lt;label for="email"&gt;Email&lt;/label&gt;
+  &lt;input type="email" id="email" /&gt;
+  &lt;span data-help&gt;Help text&lt;/span&gt;
+  &lt;span data-error&gt;Error message&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Inline row --&gt;
+&lt;div data-field-row&gt;
+  &lt;div data-field&gt;
+    &lt;label for="first"&gt;First&lt;/label&gt;
+    &lt;input type="text" id="first" /&gt;
+  &lt;/div&gt;
+  &lt;div data-field&gt;
+    &lt;label for="last"&gt;Last&lt;/label&gt;
+    &lt;input type="text" id="last" /&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Invalid state --&gt;
+&lt;div data-field&gt;
+  &lt;label for="bad"&gt;Email&lt;/label&gt;
+  &lt;input type="email" id="bad"
+         aria-invalid="true"
+         aria-describedby="bad-err" /&gt;
+  &lt;span data-error id="bad-err"&gt;
+    Enter a valid email.
+  &lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Grouped choices --&gt;
+&lt;fieldset data-field&gt;
+  &lt;legend&gt;Notifications&lt;/legend&gt;
+  &lt;label&gt;
+    &lt;input type="checkbox" /&gt; Email
+  &lt;/label&gt;
+&lt;/fieldset&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         INPUT GROUPS
+    ══════════════════════════════════════════════ -->
+                <section
+                    class="page-section"
+                    id="input-groups"
+                    aria-labelledby="input-groups-heading"
+                >
+                    <h2 class="section-heading" id="input-groups-heading">Input groups</h2>
+                    <p class="section-sub">
+                        <code>data-input-group</code> composes search fields, prefixed/suffixed
+                        inputs, and fields with trailing actions.
+                    </p>
+
+                    <div class="demo-split">
+                        <div
+                            class="demo-frame"
+                            style="display: flex; flex-direction: column; gap: var(--space-4)"
+                        >
+                            <div data-field>
+                                <label for="ig-search">Site search</label>
+                                <div data-input-group>
+                                    <span data-icon aria-hidden="true"
+                                        ><svg class="icon" aria-hidden="true">
+                                            <use href="#icon-lucide-search"></use></svg
+                                    ></span>
+                                    <input type="search" id="ig-search" placeholder="Search…" />
+                                    <button type="submit" aria-label="Search">Search</button>
+                                </div>
+                            </div>
+
+                            <div data-field>
+                                <label for="ig-amount">Amount</label>
+                                <div data-input-group>
+                                    <span data-prefix aria-hidden="true">$</span>
+                                    <input
+                                        type="number"
+                                        id="ig-amount"
+                                        placeholder="0.00"
+                                        inputmode="decimal"
+                                    />
+                                </div>
+                            </div>
+
+                            <div data-field>
+                                <label for="ig-weight">Weight</label>
+                                <div data-input-group>
+                                    <input
+                                        type="number"
+                                        id="ig-weight"
+                                        placeholder="0.0"
+                                        inputmode="decimal"
+                                    />
+                                    <span data-suffix aria-hidden="true">kg</span>
+                                </div>
+                            </div>
+
+                            <div data-field>
+                                <label for="ig-apikey">API key</label>
+                                <div data-input-group>
+                                    <input
+                                        type="text"
+                                        id="ig-apikey"
+                                        value="sk-••••••••••••••••"
+                                        readonly
+                                    />
+                                    <button
+                                        type="button"
+                                        aria-label="Copy API key"
+                                        onclick="
+                                            this.textContent = 'Copied!';
+                                            setTimeout(() => (this.textContent = 'Copy'), 2000);
+                                        "
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Search with icon + button --&gt;
+&lt;div data-input-group&gt;
+  &lt;span data-icon aria-hidden="true"&gt;⌕&lt;/span&gt;
+  &lt;input type="search" placeholder="Search…" /&gt;
+  &lt;button type="submit"&gt;Search&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Currency prefix --&gt;
+&lt;div data-input-group&gt;
+  &lt;span data-prefix aria-hidden="true"&gt;$&lt;/span&gt;
+  &lt;input type="number" placeholder="0.00" /&gt;
+&lt;/div&gt;
+
+&lt;!-- Unit suffix --&gt;
+&lt;div data-input-group&gt;
+  &lt;input type="number" placeholder="0.0" /&gt;
+  &lt;span data-suffix aria-hidden="true"&gt;kg&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Trailing action --&gt;
+&lt;div data-input-group&gt;
+  &lt;input type="text" value="sk-••••" readonly /&gt;
+  &lt;button type="button"&gt;Copy&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         TABLES
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="tables" aria-labelledby="tables-heading">
+                    <h2 class="section-heading" id="tables-heading">Data tables</h2>
+                    <p class="section-sub">
+                        Tables are styled by default — stripes, hover, sort indicators, and
+                        row-state highlighting. Opt-in to sticky headers, compact density, or
+                        overflow scroll containers.
+                    </p>
+
+                    <div class="demo-split wide">
+                        <div>
+                            <p class="demo-label">
+                                Default table with sort, selection, and status badges
+                            </p>
+                            <div data-table-container>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" aria-sort="ascending">Account</th>
+                                            <th scope="col">Contact</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">
+                                                <span data-visually-hidden>Actions</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr aria-current="row">
+                                            <td><strong>Acme Corp</strong></td>
+                                            <td>alice@acme.com</td>
+                                            <td>
+                                                <span data-badge data-tone="success">Active</span>
+                                            </td>
+                                            <td>$84,000</td>
+                                            <td>
+                                                <details data-menu data-align="start">
+                                                    <summary aria-label="Row actions">⋯</summary>
+                                                    <ul>
+                                                        <li><button type="button">Edit</button></li>
+                                                        <li>
+                                                            <button type="button">Duplicate</button>
+                                                        </li>
+                                                        <li role="separator"></li>
+                                                        <li data-tone="danger">
+                                                            <button type="button">Delete</button>
+                                                        </li>
+                                                    </ul>
+                                                </details>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Globex</strong></td>
+                                            <td>bob@globex.com</td>
+                                            <td>
+                                                <span data-badge data-tone="warning">Trial</span>
+                                            </td>
+                                            <td>$210,000</td>
+                                            <td>
+                                                <details data-menu data-align="start">
+                                                    <summary aria-label="Row actions">⋯</summary>
+                                                    <ul>
+                                                        <li><button type="button">Edit</button></li>
+                                                        <li role="separator"></li>
+                                                        <li data-tone="danger">
+                                                            <button type="button">Delete</button>
+                                                        </li>
+                                                    </ul>
+                                                </details>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Initech</strong></td>
+                                            <td>carol@initech.com</td>
+                                            <td>
+                                                <span data-badge data-tone="danger">Suspended</span>
+                                            </td>
+                                            <td>$12,400</td>
+                                            <td>
+                                                <details data-menu data-align="start">
+                                                    <summary aria-label="Row actions">⋯</summary>
+                                                    <ul>
+                                                        <li>
+                                                            <button type="button">
+                                                                Reactivate
+                                                            </button>
+                                                        </li>
+                                                        <li role="separator"></li>
+                                                        <li data-tone="danger">
+                                                            <button type="button">Delete</button>
+                                                        </li>
+                                                    </ul>
+                                                </details>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Umbrella Co.</strong></td>
+                                            <td>dan@umbrella.com</td>
+                                            <td><span data-badge>Neutral</span></td>
+                                            <td>$55,600</td>
+                                            <td>
+                                                <details data-menu data-align="start">
+                                                    <summary aria-label="Row actions">⋯</summary>
+                                                    <ul>
+                                                        <li><button type="button">Edit</button></li>
+                                                        <li role="separator"></li>
+                                                        <li data-tone="danger">
+                                                            <button type="button">Delete</button>
+                                                        </li>
+                                                    </ul>
+                                                </details>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                Compact density
+                            </p>
+                            <div data-table-container>
+                                <table data-density="compact">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Event</th>
+                                            <th scope="col">User</th>
+                                            <th scope="col">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Login</td>
+                                            <td>alice</td>
+                                            <td>10:32</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Export</td>
+                                            <td>bob</td>
+                                            <td>10:41</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Delete record</td>
+                                            <td>carol</td>
+                                            <td>11:05</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Login</td>
+                                            <td>dan</td>
+                                            <td>11:22</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Default — stripes, hover built-in --&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th scope="col"
+          aria-sort="ascending"&gt;
+        Account
+      &lt;/th&gt;
+      &lt;th scope="col"&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr aria-current="row"&gt;
+      &lt;td&gt;Acme Corp&lt;/td&gt;
+      &lt;td&gt;
+        &lt;span data-badge
+              data-tone="success"&gt;
+          Active
+        &lt;/span&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- Overflow container --&gt;
+&lt;div data-table-container&gt;
+  &lt;table&gt;…&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;!-- Compact density --&gt;
+&lt;table data-density="compact"&gt;…&lt;/table&gt;
+
+&lt;!-- Sticky header --&gt;
+&lt;div data-table-container&gt;
+  &lt;table data-sticky-header&gt;…&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         CARDS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="cards" aria-labelledby="cards-heading">
+                    <h2 class="section-heading" id="cards-heading">Cards</h2>
+                    <p class="section-sub">
+                        <code>article[data-card]</code> is a reusable content surface with optional
+                        media, tone cues, and density control.
+                    </p>
+
+                    <div
+                        style="
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+                            gap: var(--space-5);
+                            margin-block-end: var(--space-6);
+                        "
+                    >
+                        <article data-card>
+                            <div data-card-main>
+                                <header>
+                                    <h3>Default card</h3>
+                                    <p>Supporting meta text</p>
+                                </header>
+                                <div data-card-body>
+                                    <p>
+                                        A neutral card for general content. The host element is an
+                                        <code>article</code> with <code>data-card</code>.
+                                    </p>
+                                </div>
+                                <footer>
+                                    <button type="button" data-tone="accent">View details</button>
+                                </footer>
+                            </div>
+                        </article>
+
+                        <article data-card data-tone="success">
+                            <div data-card-main>
+                                <header><h3>Success tone</h3></header>
+                                <div data-card-body>
+                                    <p>
+                                        Tone styling is subtle and semantic — uses existing token
+                                        families without resembling an alert.
+                                    </p>
+                                </div>
+                                <footer>
+                                    <button type="button" data-tone="success">Proceed</button>
+                                </footer>
+                            </div>
+                        </article>
+
+                        <article data-card data-tone="warning">
+                            <div data-card-main>
+                                <header><h3>Warning tone</h3></header>
+                                <div data-card-body>
+                                    <p>
+                                        Use <code>data-tone="warning"</code> for cards that require
+                                        attention.
+                                    </p>
+                                </div>
+                                <footer>
+                                    <button type="button" data-tone="warning">Review</button>
+                                </footer>
+                            </div>
+                        </article>
+
+                        <article data-card data-tone="danger">
+                            <div data-card-main>
+                                <header><h3>Danger tone</h3></header>
+                                <div data-card-body>
+                                    <p>Reserved for critical states or destructive context.</p>
+                                </div>
+                                <footer>
+                                    <button
+                                        type="button"
+                                        data-tone="danger"
+                                        data-variant="outlined"
+                                    >
+                                        Resolve
+                                    </button>
+                                </footer>
+                            </div>
+                        </article>
+                    </div>
+
+                    <p class="demo-label">Linked card with command menu</p>
+                    <article data-card style="max-inline-size: 28rem">
+                        <div data-card-main>
+                            <header>
+                                <h3><a href="#">Q3 Revenue Report</a></h3>
+                                <p>Updated 2 hours ago</p>
+                            </header>
+                            <div data-card-body>
+                                <p>
+                                    Total revenue up 14% quarter-over-quarter. Three regions
+                                    exceeded targets.
+                                </p>
+                            </div>
+                            <footer>
+                                <button type="button">Download PDF</button>
+                                <details data-menu>
+                                    <summary aria-label="More options">⋯</summary>
+                                    <ul>
+                                        <li><button type="button">Share</button></li>
+                                        <li><button type="button">Archive</button></li>
+                                        <li role="separator"></li>
+                                        <li data-tone="danger">
+                                            <button type="button">Delete</button>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </footer>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         BADGES
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="badges" aria-labelledby="badges-heading">
+                    <h2 class="section-heading" id="badges-heading">Badges</h2>
+                    <p class="section-sub">
+                        Compact inline status pills via <code>[data-badge]</code>. Purely
+                        presentational, non-interactive. Supports <code>span</code>,
+                        <code>strong</code>, and <code>small</code>.
+                    </p>
+
+                    <div class="demo-split">
+                        <div class="demo-frame">
+                            <div class="ctrl-row" style="margin-block-end: var(--space-4)">
+                                <span data-badge>Neutral</span>
+                                <span data-badge data-tone="accent">Accent</span>
+                                <span data-badge data-tone="success">Active</span>
+                                <span data-badge data-tone="warning">Trial</span>
+                                <span data-badge data-tone="danger">Suspended</span>
+                            </div>
+                            <p
+                                style="
+                                    font-size: var(--font-size-sm);
+                                    color: var(--color-text-secondary);
+                                "
+                            >
+                                Used inline in text — status is
+                                <span data-badge data-tone="success">Active</span> and plan is
+                                <span data-badge data-tone="accent">Pro</span>.
+                            </p>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;span data-badge&gt;Neutral&lt;/span&gt;
+&lt;span data-badge
+      data-tone="accent"&gt;Accent&lt;/span&gt;
+&lt;span data-badge
+      data-tone="success"&gt;Active&lt;/span&gt;
+&lt;span data-badge
+      data-tone="warning"&gt;Trial&lt;/span&gt;
+&lt;span data-badge
+      data-tone="danger"&gt;Suspended&lt;/span&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         SPINNERS / LOADING
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="spinners" aria-labelledby="spinners-heading">
+                    <h2 class="section-heading" id="spinners-heading">Loading patterns</h2>
+                    <p class="section-sub">
+                        Four context-based loading patterns driven by semantic elements and ARIA
+                        alone — no class required.
+                    </p>
+
+                    <div class="demo-split">
+                        <div
+                            class="demo-frame"
+                            style="display: flex; flex-direction: column; gap: var(--space-5)"
+                        >
+                            <div>
+                                <p class="demo-label">Indeterminate spinner</p>
+                                <label for="spin-demo" data-visually-hidden>Loading</label>
+                                <progress id="spin-demo" aria-label="Loading records"></progress>
+                            </div>
+
+                            <div>
+                                <p class="demo-label">Determinate progress (65%)</p>
+                                <div data-field>
+                                    <label for="prog-demo">Uploading…</label>
+                                    <progress id="prog-demo" value="65" max="100"></progress>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="demo-label">Inline button spinner</p>
+                                <button type="button" aria-busy="true" data-tone="accent" disabled>
+                                    Saving…
+                                </button>
+                            </div>
+
+                            <div>
+                                <p class="demo-label">Busy-region overlay</p>
+                                <section
+                                    aria-busy="true"
+                                    style="
+                                        min-block-size: 6rem;
+                                        border: 1px solid var(--color-border);
+                                        border-radius: var(--radius-md);
+                                        padding: var(--space-4);
+                                    "
+                                >
+                                    <h3 style="margin: 0 0 var(--space-2)">Report</h3>
+                                    <p style="margin: 0">Fetching data…</p>
+                                    <p role="status" data-visually-hidden>
+                                        Loading report data, please wait.
+                                    </p>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Indeterminate spinner --&gt;
+&lt;progress aria-label="Loading"&gt;&lt;/progress&gt;
+
+&lt;!-- Determinate --&gt;
+&lt;progress value="65" max="100"&gt;&lt;/progress&gt;
+
+&lt;!-- Inline button spinner --&gt;
+&lt;button type="button"
+        aria-busy="true"
+        data-tone="accent"
+        disabled&gt;
+  Saving…
+&lt;/button&gt;
+
+&lt;!-- Busy-region overlay --&gt;
+&lt;section aria-busy="true"&gt;
+  &lt;h2&gt;Report&lt;/h2&gt;
+  &lt;p&gt;Fetching data…&lt;/p&gt;
+  &lt;!-- screen reader announcement: --&gt;
+  &lt;p role="status"
+     data-visually-hidden&gt;
+    Loading report data, please wait.
+  &lt;/p&gt;
+&lt;/section&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         LAYOUT SHELL
+    ══════════════════════════════════════════════ -->
+                <section
+                    class="page-section"
+                    id="layout-shell"
+                    aria-labelledby="layout-shell-heading"
+                >
+                    <p class="section-label">Patterns</p>
+                    <h2 class="section-heading" id="layout-shell-heading">Layout shell</h2>
+                    <p class="section-sub">
+                        <code>div[data-layout-shell]</code> is the single container-based layout
+                        host. Eight direct-child combinations are detected automatically via
+                        <code>:has()</code> — no modifier class needed.
+                    </p>
+
+                    <div
+                        style="
+                            display: grid;
+                            gap: var(--space-6);
+                            grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+                            margin-block-end: var(--space-6);
+                        "
+                    >
+                        <div>
+                            <p class="demo-label">Variant 8 — full shell diagram</p>
+                            <div class="shell-diagram" aria-label="Layout diagram: full shell">
+                                <div class="shell-diagram-header">header[data-layout-header]</div>
+                                <div class="shell-diagram-body">
+                                    <div class="shell-diagram-sidebar">
+                                        aside[data-layout-sidebar]
+                                    </div>
+                                    <div class="shell-diagram-main">main</div>
+                                    <div class="shell-diagram-panel">aside[data-layout-panel]</div>
+                                </div>
+                                <div class="shell-diagram-footer">footer[data-layout-footer]</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="demo-label">Supported variant matrix</p>
+                            <div
+                                data-table-container
+                                style="max-block-size: 16rem; overflow-y: auto"
+                            >
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Children</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td><code>main</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td><code>header + main</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td><code>header + main + panel</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td><code>header + main + footer</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td><code>header + sidebar + main</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td><code>header + sidebar + main + panel</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>7</td>
+                                            <td><code>header + sidebar + main + footer</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>8</td>
+                                            <td>
+                                                <code
+                                                    >header + sidebar + main + panel + footer</code
+                                                >
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="demo-split">
+                        <div class="code-block">
+                            <pre><code>&lt;!-- Variant 5: header + sidebar + main --&gt;
+&lt;div data-layout-shell&gt;
+
+  &lt;header data-layout-header&gt;
+    &lt;a href="/"&gt;Acme&lt;/a&gt;
+    &lt;nav data-navbar aria-label="Primary"&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="/"
+               aria-current="page"&gt;Home&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/pricing"&gt;Pricing&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;aside data-layout-sidebar
+         aria-label="Navigation"&gt;
+    &lt;nav&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="/"
+               aria-current="page"&gt;
+          Dashboard
+        &lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/users"&gt;Users&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/aside&gt;
+
+  &lt;main&gt;
+    &lt;h1&gt;Dashboard&lt;/h1&gt;
+    &lt;p&gt;Primary content.&lt;/p&gt;
+  &lt;/main&gt;
+
+&lt;/div&gt;</code></pre>
+                        </div>
+
+                        <div>
+                            <p class="demo-label">Responsive behavior</p>
+                            <div class="demo-frame">
+                                <ul
+                                    style="
+                                        margin: 0;
+                                        padding-inline-start: var(--space-4);
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space-2);
+                                    "
+                                >
+                                    <li>
+                                        At <code>≤ 48em</code> the sidebar slides off-canvas (<code
+                                            >transform: translateX(-100%)</code
+                                        >)
+                                    </li>
+                                    <li>
+                                        Add <code>data-open</code> to
+                                        <code>aside[data-layout-sidebar]</code> to reveal it
+                                    </li>
+                                    <li>
+                                        The panel track is collapsed on narrow viewports;
+                                        <code>main</code> fills full width
+                                    </li>
+                                    <li>
+                                        <code>prefers-reduced-motion: reduce</code> disables the
+                                        slide transition
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-4)">
+                                Layout tokens
+                            </p>
+                            <div class="code-block">
+                                <pre><code>:root {
+  --layout-shell-header-height:
+    3.5rem;
+  --layout-shell-sidebar-width:
+    clamp(14rem, 20vw, 20rem);
+  --layout-shell-panel-width:
+    20rem;
+  --layout-shell-gap: 0px;
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         NAVBAR
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="navbar" aria-labelledby="navbar-heading">
+                    <h2 class="section-heading" id="navbar-heading">Navbar</h2>
+                    <p class="section-sub">
+                        <code>nav[data-navbar]</code> inside
+                        <code>header[data-layout-header]</code> gives you a responsive primary
+                        navigation with hover dropdowns — zero JavaScript.
+                    </p>
+
+                    <div class="demo-split">
+                        <div
+                            class="demo-frame"
+                            style="padding: 0; overflow: hidden; border-radius: var(--radius-lg)"
+                        >
+                            <header
+                                data-layout-header
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: var(--space-2);
+                                    padding-inline: var(--layout-navbar-padding-inline);
+                                    min-block-size: var(--layout-shell-header-height);
+                                    background-color: var(--layout-navbar-surface);
+                                    border-block-end: 1px solid var(--layout-navbar-border-color);
+                                    position: relative;
+                                    inset: auto;
+                                    inline-size: auto;
+                                    z-index: auto;
+                                "
+                            >
+                                <a
+                                    class="brand-link"
+                                    href="#"
+                                    style="
+                                        font-weight: var(--font-weight-bold);
+                                        text-decoration: none;
+                                        color: inherit;
+                                    "
+                                    >Acme</a
+                                >
+                                <nav
+                                    data-navbar
+                                    aria-label="Demo primary"
+                                    style="position: relative; z-index: 10"
+                                >
+                                    <ul>
+                                        <li><a href="#" aria-current="page">Home</a></li>
+                                        <li>
+                                            <a href="#">Products</a>
+                                            <ul>
+                                                <li><a href="#">CRM</a></li>
+                                                <li><a href="#">Support</a></li>
+                                                <li><a href="#">Analytics</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Pricing</a></li>
+                                    </ul>
+                                    <ul>
+                                        <li><a href="#">Docs</a></li>
+                                        <li><a href="#">Sign in</a></li>
+                                    </ul>
+                                </nav>
+                            </header>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;header data-layout-header&gt;
+  &lt;a href="/"&gt;Acme&lt;/a&gt;
+
+  &lt;button data-nav-toggle
+          aria-expanded="false"
+          aria-controls="nav"
+          aria-label="Open navigation"
+          type="button"&gt;&lt;/button&gt;
+
+  &lt;nav id="nav" data-navbar
+       aria-label="Primary"&gt;
+    &lt;!-- primary group --&gt;
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;a href="/"
+           aria-current="page"&gt;Home&lt;/a&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;!-- hover dropdown --&gt;
+        &lt;a href="/products"&gt;Products&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href="/crm"&gt;CRM&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="/support"&gt;
+            Support
+          &lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;!-- optional secondary/end group --&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href="/docs"&gt;Docs&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         TABS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="tabs" aria-labelledby="tabs-heading">
+                    <h2 class="section-heading" id="tabs-heading">Tabs</h2>
+                    <p class="section-sub">
+                        Accessible panel-switching primitive. Styling via
+                        <code>aria-selected</code> — application code owns keyboard navigation and
+                        panel visibility. Add <code>data-variant="segmented"</code> for a
+                        pill/segmented-control look.
+                    </p>
+
+                    <div class="demo-split wide">
+                        <div>
+                            <p class="demo-label">Default tabs</p>
+                            <div class="demo-frame demo-tabs">
+                                <section data-tabs>
+                                    <div role="tablist" aria-label="Account settings">
+                                        <button
+                                            role="tab"
+                                            id="tab-profile"
+                                            aria-controls="panel-profile"
+                                            aria-selected="true"
+                                            onclick="switchTab(this, 'panel-profile')"
+                                        >
+                                            Profile
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-security"
+                                            aria-controls="panel-security"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                            onclick="switchTab(this, 'panel-security')"
+                                        >
+                                            Security
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-billing"
+                                            aria-controls="panel-billing"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                            onclick="switchTab(this, 'panel-billing')"
+                                        >
+                                            Billing
+                                        </button>
+                                    </div>
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-profile"
+                                        aria-labelledby="tab-profile"
+                                    >
+                                        <p>
+                                            Profile settings panel. Update your name, avatar, and
+                                            display preferences here.
+                                        </p>
+                                    </div>
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-security"
+                                        aria-labelledby="tab-security"
+                                        hidden
+                                    >
+                                        <p>
+                                            Security settings. Manage your password, two-factor
+                                            authentication, and active sessions.
+                                        </p>
+                                    </div>
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-billing"
+                                        aria-labelledby="tab-billing"
+                                        hidden
+                                    >
+                                        <p>
+                                            Billing &amp; subscription. View your plan, invoices,
+                                            and payment methods.
+                                        </p>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                Segmented variant
+                            </p>
+                            <div class="demo-frame">
+                                <section data-tabs data-variant="segmented">
+                                    <div role="tablist" aria-label="Revenue period">
+                                        <button
+                                            role="tab"
+                                            id="tab-7d"
+                                            aria-controls="panel-7d"
+                                            aria-selected="true"
+                                            onclick="switchTab(this, 'panel-7d')"
+                                        >
+                                            7 days
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-30d"
+                                            aria-controls="panel-30d"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                            onclick="switchTab(this, 'panel-30d')"
+                                        >
+                                            30 days
+                                        </button>
+                                        <button
+                                            role="tab"
+                                            id="tab-90d"
+                                            aria-controls="panel-90d"
+                                            aria-selected="false"
+                                            tabindex="-1"
+                                            onclick="switchTab(this, 'panel-90d')"
+                                        >
+                                            90 days
+                                        </button>
+                                    </div>
+                                    <div role="tabpanel" id="panel-7d" aria-labelledby="tab-7d">
+                                        <p>Revenue for the last 7 days: <strong>$14,320</strong></p>
+                                    </div>
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-30d"
+                                        aria-labelledby="tab-30d"
+                                        hidden
+                                    >
+                                        <p>
+                                            Revenue for the last 30 days: <strong>$58,940</strong>
+                                        </p>
+                                    </div>
+                                    <div
+                                        role="tabpanel"
+                                        id="panel-90d"
+                                        aria-labelledby="tab-90d"
+                                        hidden
+                                    >
+                                        <p>
+                                            Revenue for the last 90 days: <strong>$163,200</strong>
+                                        </p>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;section data-tabs&gt;
+  &lt;div role="tablist"
+       aria-label="Account settings"&gt;
+    &lt;button role="tab"
+            id="tab-profile"
+            aria-controls="panel-profile"
+            aria-selected="true"&gt;
+      Profile
+    &lt;/button&gt;
+    &lt;button role="tab"
+            id="tab-security"
+            aria-controls="panel-security"
+            aria-selected="false"
+            tabindex="-1"&gt;
+      Security
+    &lt;/button&gt;
+  &lt;/div&gt;
+
+  &lt;div role="tabpanel"
+       id="panel-profile"
+       aria-labelledby="tab-profile"&gt;
+    &lt;!-- panel content --&gt;
+  &lt;/div&gt;
+  &lt;div role="tabpanel"
+       id="panel-security"
+       aria-labelledby="tab-security"
+       hidden&gt;
+    &lt;!-- panel content --&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Segmented variant --&gt;
+&lt;section data-tabs
+         data-variant="segmented"&gt;
+  …same ARIA contract…
+&lt;/section&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         BREADCRUMBS
+    ══════════════════════════════════════════════ -->
+                <section
+                    class="page-section"
+                    id="breadcrumbs"
+                    aria-labelledby="breadcrumbs-heading"
+                >
+                    <h2 class="section-heading" id="breadcrumbs-heading">Breadcrumbs</h2>
+                    <p class="section-sub">
+                        Semantic breadcrumb with CSS-generated separators — never in the DOM, so
+                        screen readers read clean crumb labels only.
+                    </p>
+
+                    <div class="demo-split">
+                        <div class="demo-frame">
+                            <nav data-breadcrumbs aria-label="Page location">
+                                <ol>
+                                    <li><a href="#">Dashboard</a></li>
+                                    <li><a href="#">Accounts</a></li>
+                                    <li><a href="#">Acme Corporation</a></li>
+                                    <li><a href="#" aria-current="page">Edit details</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;nav data-breadcrumbs
+     aria-label="Page location"&gt;
+  &lt;ol&gt;
+    &lt;li&gt;&lt;a href="/dashboard"&gt;
+      Dashboard
+    &lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/accounts"&gt;
+      Accounts
+    &lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;
+      &lt;!-- current: link or span --&gt;
+      &lt;a href="/accounts/42/edit"
+         aria-current="page"&gt;
+        Edit details
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         PAGINATION
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="pagination" aria-labelledby="pagination-heading">
+                    <h2 class="section-heading" id="pagination-heading">Pagination</h2>
+                    <p class="section-sub">
+                        Accessible pagination for tables, search results, and record lists. The CSS
+                        contract uses <code>data-pagination</code>, so localized label text is never
+                        part of the selector.
+                    </p>
+
+                    <div class="demo-split">
+                        <div class="demo-frame">
+                            <nav data-pagination aria-label="Results pagination">
+                                <ol>
+                                    <li><span aria-disabled="true">Previous</span></li>
+                                    <li><a href="#">1</a></li>
+                                    <li><a href="#" aria-current="page">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><span aria-hidden="true">&hellip;</span></li>
+                                    <li><a href="#">9</a></li>
+                                    <li><a href="#">Next</a></li>
+                                </ol>
+                            </nav>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;nav data-pagination
+     aria-label="Results pagination"&gt;
+  &lt;ol&gt;
+    &lt;!-- disabled prev --&gt;
+    &lt;li&gt;
+      &lt;span aria-disabled="true"&gt;
+        Previous
+      &lt;/span&gt;
+    &lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="?page=1"&gt;1&lt;/a&gt;&lt;/li&gt;
+
+    &lt;!-- current page --&gt;
+    &lt;li&gt;
+      &lt;a href="?page=2"
+         aria-current="page"&gt;2&lt;/a&gt;
+    &lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="?page=3"&gt;3&lt;/a&gt;&lt;/li&gt;
+
+    &lt;!-- ellipsis gap --&gt;
+    &lt;li&gt;
+      &lt;span aria-hidden="true"&gt;…&lt;/span&gt;
+    &lt;/li&gt;
+
+    &lt;li&gt;&lt;a href="?page=9"&gt;9&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="?page=3"&gt;Next&lt;/a&gt;&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/nav&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         TOASTS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="toasts" aria-labelledby="toasts-heading">
+                    <h2 class="section-heading" id="toasts-heading">Toast notifications</h2>
+                    <p class="section-sub">
+                        Semantic, fixed top-end toast stack. Tones driven by
+                        <code>data-tone</code> on the <code>&lt;li&gt;</code>. Urgency driven by
+                        <code>role="status"</code> (polite) vs <code>role="alert"</code> (assertive)
+                        on the inner div.
+                    </p>
+
+                    <div class="demo-split">
+                        <div
+                            class="demo-frame"
+                            style="display: flex; flex-direction: column; gap: var(--space-4)"
+                        >
+                            <p
+                                style="
+                                    margin: 0;
+                                    font-size: var(--font-size-sm);
+                                    color: var(--color-text-secondary);
+                                "
+                            >
+                                Click the buttons to see toasts appear in the top-right corner of
+                                the page.
+                            </p>
+                            <div class="ctrl-row">
+                                <button type="button" onclick="showToast('default')">
+                                    Default toast
+                                </button>
+                                <button
+                                    type="button"
+                                    data-tone="success"
+                                    onclick="showToast('success')"
+                                >
+                                    Success toast
+                                </button>
+                                <button
+                                    type="button"
+                                    data-tone="warning"
+                                    onclick="showToast('warning')"
+                                >
+                                    Warning toast
+                                </button>
+                                <button
+                                    type="button"
+                                    data-tone="danger"
+                                    onclick="showToast('danger')"
+                                >
+                                    Danger toast
+                                </button>
+                            </div>
+                            <p
+                                style="
+                                    margin: 0;
+                                    font-size: var(--font-size-xs);
+                                    color: var(--color-text-tertiary);
+                                "
+                            >
+                                Toasts auto-dismiss after 4 seconds, or click the × button to close.
+                            </p>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;aside data-toast-region
+       aria-label="Notifications"&gt;
+  &lt;ul&gt;
+    &lt;!-- polite update --&gt;
+    &lt;li&gt;
+      &lt;div role="status"&gt;
+        Changes saved.
+        &lt;button type="button"
+                data-dismiss
+                aria-label="Close"&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+
+    &lt;!-- toned toast --&gt;
+    &lt;li data-tone="success"&gt;
+      &lt;div role="status"&gt;
+        &lt;strong&gt;Import complete&lt;/strong&gt;
+        &lt;p&gt;142 records added.&lt;/p&gt;
+        &lt;button type="button"
+                data-dismiss
+                aria-label="Close"&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+
+    &lt;!-- assertive alert --&gt;
+    &lt;li data-tone="danger"&gt;
+      &lt;div role="alert"&gt;
+        &lt;strong&gt;Connection lost&lt;/strong&gt;
+        &lt;button type="button"&gt;Retry&lt;/button&gt;
+        &lt;button type="button"
+                data-dismiss
+                aria-label="Close"&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/aside&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         COMMAND MENU
+    ══════════════════════════════════════════════ -->
+                <section
+                    class="page-section"
+                    id="command-menu"
+                    aria-labelledby="command-menu-heading"
+                >
+                    <h2 class="section-heading" id="command-menu-heading">Command menu</h2>
+                    <p class="section-sub">
+                        <code>details[data-menu]</code> provides contextual action surfaces — row
+                        actions, card overflow menus — using native <code>&lt;details&gt;</code> for
+                        zero-JavaScript toggle.
+                    </p>
+
+                    <div class="demo-split">
+                        <div
+                            class="demo-frame"
+                            style="display: flex; flex-direction: column; gap: var(--space-5)"
+                        >
+                            <div>
+                                <p class="demo-label">Default (bottom-end alignment)</p>
+                                <details data-menu>
+                                    <summary aria-label="Row actions">⋯ Options</summary>
+                                    <ul>
+                                        <li><a href="#">View</a></li>
+                                        <li><button type="button">Edit</button></li>
+                                        <li><button type="button">Duplicate</button></li>
+                                        <li role="separator"></li>
+                                        <li data-tone="danger">
+                                            <button type="button">Delete</button>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+
+                            <div>
+                                <p class="demo-label">Start alignment</p>
+                                <details data-menu data-align="start">
+                                    <summary aria-label="More actions">⋯ More</summary>
+                                    <ul>
+                                        <li><button type="button">Archive</button></li>
+                                        <li><button type="button">Export CSV</button></li>
+                                        <li role="separator"></li>
+                                        <li data-tone="danger">
+                                            <button type="button">Remove access</button>
+                                        </li>
+                                    </ul>
+                                </details>
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <pre><code>&lt;details data-menu&gt;
+  &lt;summary aria-label="Row actions"&gt;
+    ⋯
+  &lt;/summary&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/edit"&gt;Edit&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;
+      &lt;button type="button"&gt;
+        Duplicate
+      &lt;/button&gt;
+    &lt;/li&gt;
+    &lt;li role="separator"&gt;&lt;/li&gt;
+    &lt;li data-tone="danger"&gt;
+      &lt;button type="button"&gt;
+        Delete
+      &lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/details&gt;
+
+&lt;!-- Start-aligned variant --&gt;
+&lt;details data-menu data-align="start"&gt;
+  …
+&lt;/details&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         DATA VIEW
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="data-view" aria-labelledby="data-view-heading">
+                    <h2 class="section-heading" id="data-view-heading">Data-view shell</h2>
+                    <p class="section-sub">
+                        <code>section[data-data-view]</code> is an opinionated framing shell for
+                        list, search, and admin screens. It composes table, pagination, badge,
+                        toolbar, and region-state primitives into one cohesive layout.
+                    </p>
+
+                    <div class="demo-split wide">
+                        <section data-data-view>
+                            <header>
+                                <h3>Users</h3>
+                                <button type="button" data-tone="accent">Invite user</button>
+                            </header>
+                            <form data-data-toolbar onsubmit="return false;">
+                                <div data-input-group>
+                                    <span data-icon aria-hidden="true"
+                                        ><svg class="icon" aria-hidden="true">
+                                            <use href="#icon-lucide-search"></use></svg
+                                    ></span>
+                                    <input
+                                        type="search"
+                                        placeholder="Search users…"
+                                        aria-label="Search users"
+                                    />
+                                </div>
+                                <select aria-label="Status filter">
+                                    <option>All statuses</option>
+                                    <option>Active</option>
+                                    <option>Inactive</option>
+                                </select>
+                                <button type="submit">Search</button>
+                            </form>
+                            <p data-results-summary>Showing 1–4 of 4 users</p>
+                            <div data-data-content>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Role</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Alice Martin</td>
+                                            <td>Admin</td>
+                                            <td>
+                                                <span data-badge data-tone="success">Active</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bob Chen</td>
+                                            <td>Editor</td>
+                                            <td>
+                                                <span data-badge data-tone="success">Active</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Carol Davis</td>
+                                            <td>Viewer</td>
+                                            <td>
+                                                <span data-badge data-tone="warning">Invited</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dan Wilson</td>
+                                            <td>Editor</td>
+                                            <td><span data-badge>Inactive</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <footer>
+                                <nav data-pagination aria-label="Users pagination">
+                                    <ol>
+                                        <li><span aria-disabled="true">Previous</span></li>
+                                        <li><a href="#" aria-current="page">1</a></li>
+                                        <li><a href="#">Next</a></li>
+                                    </ol>
+                                </nav>
+                            </footer>
+                        </section>
+
+                        <div class="code-block">
+                            <pre><code>&lt;section data-data-view&gt;
+
+  &lt;header&gt;
+    &lt;h2&gt;Users&lt;/h2&gt;
+    &lt;button type="button"
+            data-tone="accent"&gt;
+      Invite user
+    &lt;/button&gt;
+  &lt;/header&gt;
+
+  &lt;form data-data-toolbar&gt;
+    &lt;div data-input-group&gt;
+      &lt;span data-icon
+            aria-hidden="true"&gt;⌕&lt;/span&gt;
+      &lt;input type="search"
+             placeholder="Search…" /&gt;
+    &lt;/div&gt;
+    &lt;button type="submit"&gt;Search&lt;/button&gt;
+  &lt;/form&gt;
+
+  &lt;p data-results-summary&gt;
+    Showing 1–25 of 142 users
+  &lt;/p&gt;
+
+  &lt;div data-data-content&gt;
+    &lt;table&gt;…&lt;/table&gt;
+  &lt;/div&gt;
+
+  &lt;footer&gt;
+    &lt;nav data-pagination
+         aria-label="Pagination"&gt;
+      …
+    &lt;/nav&gt;
+  &lt;/footer&gt;
+
+&lt;/section&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         TOKENS
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="tokens" aria-labelledby="tokens-heading">
+                    <p class="section-label">Customization</p>
+                    <h2 class="section-heading" id="tokens-heading">Design tokens</h2>
+                    <p class="section-sub">
+                        Every visual decision is a CSS custom property. Override any semantic token
+                        on <code>:root</code> to match your brand. Tokens prefixed
+                        <code>--_</code> are internal primitives and not part of the stable API.
+                    </p>
+
+                    <p class="demo-label">Color palette (light theme defaults)</p>
+                    <div class="token-grid">
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-bg)"
+                            ></div>
+                            <div class="token-swatch-label">--color-bg</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-surface)"
+                            ></div>
+                            <div class="token-swatch-label">--color-surface</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-surface-raised)"
+                            ></div>
+                            <div class="token-swatch-label">--color-surface-raised</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-accent)"
+                            ></div>
+                            <div class="token-swatch-label">--color-accent</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-accent-subtle)"
+                            ></div>
+                            <div class="token-swatch-label">--color-accent-subtle</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-success-subtle)"
+                            ></div>
+                            <div class="token-swatch-label">--color-success-subtle</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-warning-subtle)"
+                            ></div>
+                            <div class="token-swatch-label">--color-warning-subtle</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-danger-subtle)"
+                            ></div>
+                            <div class="token-swatch-label">--color-danger-subtle</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-border)"
+                            ></div>
+                            <div class="token-swatch-label">--color-border</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-text)"
+                            ></div>
+                            <div class="token-swatch-label">--color-text</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-text-secondary)"
+                            ></div>
+                            <div class="token-swatch-label">--color-text-secondary</div>
+                        </div>
+                        <div class="token-swatch">
+                            <div
+                                class="token-swatch-color"
+                                style="background: var(--color-text-tertiary)"
+                            ></div>
+                            <div class="token-swatch-label">--color-text-tertiary</div>
+                        </div>
+                    </div>
+
+                    <p class="demo-label">Full token categories</p>
+                    <div data-table-container>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Key tokens</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Surfaces</td>
+                                    <td>
+                                        <code>--color-bg</code>, <code>--color-surface</code>,
+                                        <code>--color-surface-raised</code>,
+                                        <code>--color-surface-sunken</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Borders</td>
+                                    <td>
+                                        <code>--color-border</code>,
+                                        <code>--color-border-strong</code>,
+                                        <code>--color-border-subtle</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Text</td>
+                                    <td>
+                                        <code>--color-text</code>,
+                                        <code>--color-text-secondary</code>,
+                                        <code>--color-text-tertiary</code>,
+                                        <code>--color-text-disabled</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Accent / Action</td>
+                                    <td>
+                                        <code>--color-accent</code>,
+                                        <code>--color-accent-hover</code>,
+                                        <code>--color-accent-subtle</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>
+                                        <code>--color-success[-subtle/-text/-border]</code>,
+                                        <code>--color-warning[…]</code>,
+                                        <code>--color-danger[…]</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Typography</td>
+                                    <td>
+                                        <code>--font-family-base</code>,
+                                        <code>--font-family-mono</code>,
+                                        <code>--font-size-{xs…4xl}</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Spacing</td>
+                                    <td><code>--space-{1…16}</code> (0.25 rem increments)</td>
+                                </tr>
+                                <tr>
+                                    <td>Radius</td>
+                                    <td>
+                                        <code>--radius-{sm…xl}</code>, <code>--radius-full</code>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Shadows</td>
+                                    <td><code>--shadow-{sm…xl}</code></td>
+                                </tr>
+                                <tr>
+                                    <td>Transitions</td>
+                                    <td>
+                                        <code>--transition-fast</code>,
+                                        <code>--transition-base</code>,
+                                        <code>--transition-slow</code>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p class="demo-label" style="margin-block-start: var(--space-6)">
+                        Customization example
+                    </p>
+                    <div class="code-block">
+                        <pre><code>/* Brand override — place after lumen.css import */
+:root {
+  --color-accent:       #7c3aed;   /* purple */
+  --color-accent-hover: #6d28d9;
+  --color-accent-active:#5b21b6;
+  --color-accent-subtle:rgb(124 58 237 / 0.08);
+
+  --font-family-base:   "Inter", system-ui, sans-serif;
+
+  --radius-sm:  0.25rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --radius-xl:  1rem;
+}</code></pre>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         THEMING
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="theming" aria-labelledby="theming-heading">
+                    <h2 class="section-heading" id="theming-heading">Light &amp; dark theming</h2>
+                    <p class="section-sub">
+                        The dark theme activates automatically via
+                        <code>prefers-color-scheme</code>. Override with a single attribute on
+                        <code>&lt;html&gt;</code>.
+                    </p>
+
+                    <div class="demo-split">
+                        <div>
+                            <p class="demo-label">Manual override</p>
+                            <div class="code-block">
+                                <pre><code>&lt;!-- Force dark --&gt;
+&lt;html data-theme="dark"&gt;
+
+&lt;!-- Force light --&gt;
+&lt;html data-theme="light"&gt;</code></pre>
+                            </div>
+
+                            <p class="demo-label" style="margin-block-start: var(--space-5)">
+                                JavaScript toggle
+                            </p>
+                            <div class="code-block">
+                                <pre><code>document.documentElement.setAttribute(
+  'data-theme',
+  document.documentElement
+    .getAttribute('data-theme') === 'dark'
+    ? 'light'
+    : 'dark'
+);</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="demo-frame">
+                            <p
+                                style="
+                                    margin: 0 0 var(--space-3);
+                                    color: var(--color-text-secondary);
+                                    font-size: var(--font-size-sm);
+                                "
+                            >
+                                Use the Dark / Light toggle button in the header to toggle this
+                                page's theme — all components react instantly.
+                            </p>
+
+                            <div
+                                style="
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    gap: var(--space-3);
+                                "
+                            >
+                                <div
+                                    style="
+                                        padding: var(--space-4);
+                                        background: var(--color-surface);
+                                        border: 1px solid var(--color-border);
+                                        border-radius: var(--radius-md);
+                                        font-size: var(--font-size-sm);
+                                    "
+                                >
+                                    <strong>Surface</strong><br />
+                                    <code>--color-surface</code>
+                                </div>
+                                <div
+                                    style="
+                                        padding: var(--space-4);
+                                        background: var(--color-surface-raised);
+                                        border: 1px solid var(--color-border);
+                                        border-radius: var(--radius-md);
+                                        font-size: var(--font-size-sm);
+                                    "
+                                >
+                                    <strong>Raised</strong><br />
+                                    <code>--color-surface-raised</code>
+                                </div>
+                                <div
+                                    style="
+                                        padding: var(--space-4);
+                                        background: var(--color-accent-subtle);
+                                        border: 1px solid var(--color-accent);
+                                        border-radius: var(--radius-md);
+                                        font-size: var(--font-size-sm);
+                                        color: var(--color-accent);
+                                    "
+                                >
+                                    <strong>Accent subtle</strong><br />
+                                    <code>--color-accent-subtle</code>
+                                </div>
+                                <div
+                                    style="
+                                        padding: var(--space-4);
+                                        background: var(--color-danger-subtle);
+                                        border: 1px solid var(--color-danger-border);
+                                        border-radius: var(--radius-md);
+                                        font-size: var(--font-size-sm);
+                                        color: var(--color-danger-text);
+                                    "
+                                >
+                                    <strong>Danger subtle</strong><br />
+                                    <code>--color-danger-subtle</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         COMPARISON
+    ══════════════════════════════════════════════ -->
+                <section class="page-section" id="comparison" aria-labelledby="comparison-heading">
+                    <p class="section-label">Why lumen.css</p>
+                    <h2 class="section-heading" id="comparison-heading">How it compares</h2>
+                    <p class="section-sub">
+                        lumen.css occupies a unique position: the ergonomics of a utility framework
+                        with the semantics of bare HTML.
+                    </p>
+
+                    <div data-table-container>
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Feature</th>
+                                    <th scope="col">lumen.css</th>
+                                    <th scope="col">Tailwind CSS</th>
+                                    <th scope="col">Bootstrap</th>
+                                    <th scope="col">Bulma</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CSS only (no JS runtime)</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                </tr>
+                                <tr>
+                                    <td>No build step for consumers</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Semantic HTML — no required classes</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Token-driven theming (CSS vars)</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Automatic dark mode</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>ARIA-driven state styling</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Layout shell component</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Business app primitives (toasts, data tables, etc.)</td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                    <td><span class="check" aria-label="Yes">✓</span></td>
+                                    <td><span class="cross" aria-label="No">✗</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ══════════════════════════════════════════════
+         CTA
+    ══════════════════════════════════════════════ -->
+                <section
+                    class="page-section"
+                    aria-labelledby="cta-heading"
+                    style="
+                        text-align: center;
+                        background: linear-gradient(
+                            160deg,
+                            var(--color-accent-subtle) 0%,
+                            var(--color-bg) 100%
+                        );
+                    "
+                >
+                    <h2
+                        class="section-heading"
+                        id="cta-heading"
+                        style="max-inline-size: 30rem; margin-inline: auto"
+                    >
+                        Ready to build with lumen.css?
+                    </h2>
+                    <p class="section-sub" style="margin-inline: auto">
+                        One stylesheet. Semantic HTML. Beautiful, accessible, production-ready
+                        applications.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#quickstart">
+                            <button type="button" data-tone="accent">Get started →</button>
+                        </a>
+                        <a href="showcase.html">
+                            <button type="button" data-variant="outlined">
+                                View component showcase
+                            </button>
+                        </a>
+                        <a href="recipes.html">
+                            <button type="button" data-variant="outlined">Browse recipes</button>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- ─── Footer ─── -->
+                <footer class="site-footer">
+                    <p>
+                        <strong>lumen.css</strong> — CSS-only · Semantic-first · Token-driven
+                        &nbsp;·&nbsp;
+                        <a href="showcase.html">Showcase</a>
+                        &nbsp;·&nbsp;
+                        <a href="recipes.html">Recipes</a>
+                        &nbsp;·&nbsp;
+                        <a href="browser-support.html">Browser support</a>
+                    </p>
+                    <p style="margin-block-start: var(--space-2)">
+                        Built with lumen.css — this page uses no additional CSS framework.
+                    </p>
+                </footer>
+            </main>
+        </div>
+        <!-- /data-layout-shell -->
+
+        <!-- Toast region (hidden until toasts are shown) -->
+        <aside data-toast-region aria-label="Notifications" id="toast-region">
+            <ul id="toast-list"></ul>
+        </aside>
+
+        <script>
+            // ─── Install snippet copy ────────────────────────────
+            function copyInstallSnippet(btn) {
+                navigator.clipboard
+                    .writeText('<link rel="stylesheet" href="lumen.css" />')
+                    .then(() => {
+                        btn.textContent = "Copied!";
+                        setTimeout(() => {
+                            btn.textContent = "Copy";
+                        }, 2000);
+                    })
+                    .catch(() => {
+                        btn.textContent = "Copy failed";
+                        setTimeout(() => {
+                            btn.textContent = "Copy";
+                        }, 2000);
+                    });
+            }
+
+            // ─── Theme toggle + persistence ──────────────────────
+            (function () {
+                function getEffectiveTheme() {
+                    const explicit = document.documentElement.getAttribute("data-theme");
+                    if (explicit === "dark" || explicit === "light") return explicit;
+                    return window.matchMedia("(prefers-color-scheme: dark)").matches
+                        ? "dark"
+                        : "light";
+                }
+
+                function setToggleLabel(btn) {
+                    if (!btn) return;
+                    const current = getEffectiveTheme();
+                    const action = current === "dark" ? "light" : "dark";
+                    btn.innerHTML =
+                        action === "light"
+                            ? '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-sun"></use></svg>Light</span>'
+                            : '<span class="icon-label"><svg class="icon" aria-hidden="true"><use href="#icon-lucide-moon"></use></svg>Dark</span>';
+                }
+
+                window.toggleDocsTheme = function (btn) {
+                    const current = getEffectiveTheme();
+                    const next = current === "dark" ? "light" : "dark";
+                    document.documentElement.setAttribute("data-theme", next);
+                    localStorage.setItem("lumen-theme", next);
+                    setToggleLabel(btn);
+                };
+
+                const saved = localStorage.getItem("lumen-theme");
+                if (saved === "dark" || saved === "light") {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+
+                const btn = document.getElementById("theme-toggle");
+                setToggleLabel(btn);
+
+                const media = window.matchMedia("(prefers-color-scheme: dark)");
+                const sync = function () {
+                    if (!localStorage.getItem("lumen-theme")) setToggleLabel(btn);
+                };
+                if (typeof media.addEventListener === "function") {
+                    media.addEventListener("change", sync);
+                }
+            })();
+
+            // ─── Tab switching (demo only) ────────────────────────
+            function switchTab(trigger, panelId) {
+                const tablist = trigger.closest('[role="tablist"]');
+                const section = trigger.closest("[data-tabs]");
+
+                // Deactivate all tabs in this tablist
+                tablist.querySelectorAll('[role="tab"]').forEach((tab) => {
+                    tab.setAttribute("aria-selected", "false");
+                    tab.setAttribute("tabindex", "-1");
+                });
+
+                // Hide all panels in this section
+                section.querySelectorAll('[role="tabpanel"]').forEach((panel) => {
+                    panel.hidden = true;
+                });
+
+                // Activate selected
+                trigger.setAttribute("aria-selected", "true");
+                trigger.setAttribute("tabindex", "0");
+                const panel = document.getElementById(panelId);
+                if (panel) panel.hidden = false;
+            }
+
+            // ─── Toast demo ───────────────────────────────────────
+            const toastMessages = {
+                default: {
+                    role: "status",
+                    title: "Notification",
+                    body: "Your settings have been saved successfully.",
+                },
+                success: {
+                    role: "status",
+                    title: "Import complete",
+                    body: "142 records were added to your account.",
+                    tone: "success",
+                },
+                warning: {
+                    role: "status",
+                    title: "Low disk space",
+                    body: "Less than 500 MB remaining.",
+                    tone: "warning",
+                },
+                danger: {
+                    role: "alert",
+                    title: "Connection lost",
+                    body: "Unable to reach the server.",
+                    tone: "danger",
+                },
+            };
+
+            function showToast(type) {
+                const msg = toastMessages[type];
+                const list = document.getElementById("toast-list");
+
+                const li = document.createElement("li");
+                if (msg.tone) li.setAttribute("data-tone", msg.tone);
+
+                const div = document.createElement("div");
+                div.setAttribute("role", msg.role);
+
+                const strong = document.createElement("strong");
+                strong.textContent = msg.title;
+
+                const p = document.createElement("p");
+                p.textContent = msg.body;
+
+                const close = document.createElement("button");
+                close.type = "button";
+                close.setAttribute("data-dismiss", "");
+                close.setAttribute("aria-label", "Close");
+                close.addEventListener("click", () => li.remove());
+
+                div.appendChild(strong);
+                div.appendChild(p);
+                div.appendChild(close);
+                li.appendChild(div);
+                list.appendChild(li);
+
+                // Auto-dismiss after 4 s
+                setTimeout(() => {
+                    if (li.parentNode) li.remove();
+                }, 4000);
+            }
+
+            // ─── Active sidebar link on scroll ───────────────────
+            (function () {
+                const headings = document.querySelectorAll("section[id], section[id] > *, [id]");
+                const links = document.querySelectorAll(
+                    'nav[aria-label="Docs sections"] a[href^="#"]',
+                );
+
+                if (!links.length) return;
+
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                const id = entry.target.id;
+                                links.forEach((a) => {
+                                    const match = a.getAttribute("href") === "#" + id;
+                                    if (match) a.setAttribute("aria-current", "page");
+                                    else a.removeAttribute("aria-current");
+                                });
+                            }
+                        });
+                    },
+                    { rootMargin: "-20% 0px -70% 0px" },
+                );
+
+                document.querySelectorAll("[id]").forEach((el) => observer.observe(el));
+            })();
+        </script>
+    </body>
+</html>
