@@ -17,9 +17,8 @@
 
           packages = with pkgs; [
             nodejs_22
+          ] ++ lib.optionals stdenv.isLinux [
             # Playwright needs a NixOS-patched Chromium to run headlessly on NixOS.
-            # PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH is read by playwright.config.js
-            # so tests can be launched without downloading a separate browser binary.
             chromium
           ];
 
@@ -31,6 +30,7 @@
               npm install --prefer-offline --silent
             fi
 
+          '' + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
             # Point Playwright at the NixOS-patched system Chromium so that the
             # downloaded chrome-headless-shell binary (which does not work on NixOS)
             # is never used.
