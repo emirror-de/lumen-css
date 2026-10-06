@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="A static business application example composed from lumen.css patterns."
+        />
+        <title>Acme Console — lumen.css example</title>
+        <link rel="stylesheet" href="lumen.min.css" />
+        <style>
+            main > [data-layout="container"] {
+                display: grid;
+                gap: var(--space-8);
+                padding-block: var(--space-8);
+            }
+            main section > header {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: var(--space-3);
+            }
+            main section > header h1,
+            main section > header h2 {
+                margin: 0;
+            }
+            .metric-value {
+                display: block;
+                margin-block-start: var(--space-2);
+                font-size: var(--font-size-2xl);
+                font-weight: var(--font-weight-bold);
+                font-variant-numeric: tabular-nums;
+            }
+            .record-summary {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+                gap: var(--space-3);
+            }
+            .record-summary h2 {
+                margin: 0;
+            }
+            .notice-column {
+                display: grid;
+                gap: var(--space-4);
+                align-content: start;
+            }
+            .mobile-nav-toggle {
+                display: none;
+            }
+            @media (width <= 48em) {
+                .mobile-nav-toggle {
+                    display: inline-flex;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div data-ui="layout-shell">
+            <header data-layout-header>
+                <a href="app-example.html" aria-label="Acme Console home">Acme Console</a>
+                <button
+                    class="mobile-nav-toggle"
+                    type="button"
+                    data-nav-toggle
+                    aria-expanded="false"
+                    aria-controls="app-navigation"
+                    aria-label="Open navigation"
+                >
+                    Menu
+                </button>
+                <nav id="app-navigation" data-ui="navbar" aria-label="Primary">
+                    <ul>
+                        <li><a href="#dashboard" aria-current="location">Dashboard</a></li>
+                        <li><a href="#records">Records</a></li>
+                        <li><a href="#record-detail">Record detail</a></li>
+                        <li><a href="#settings">Settings</a></li>
+                    </ul>
+                </nav>
+                <div data-layout-actions>
+                    <a href="index.html">Lumen docs</a>
+                </div>
+            </header>
+
+            <aside data-layout-sidebar aria-label="Workspace navigation">
+                <nav aria-label="Workspace">
+                    <ul role="list">
+                        <li><a href="#dashboard" aria-current="location">Overview</a></li>
+                        <li><a href="#records">Customer records</a></li>
+                        <li><a href="#settings">Account settings</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main>
+                <div data-layout="container">
+                    <section id="dashboard" aria-labelledby="dashboard-heading" data-layout="stack">
+                        <header>
+                            <h1 id="dashboard-heading">Operations dashboard</h1>
+                            <p>Monday, 6 October 2026</p>
+                        </header>
+
+                        <div data-layout="grid" role="group" aria-label="Key metrics">
+                            <article data-ui="card">
+                                <h2>Open records</h2>
+                                <span class="metric-value">24</span>
+                                <p>5 need review today</p>
+                            </article>
+                            <article data-ui="card" data-tone="success">
+                                <h2>Resolved this week</h2>
+                                <span class="metric-value">138</span>
+                                <p>Up 12% from last week</p>
+                            </article>
+                            <article data-ui="card" data-tone="warning">
+                                <h2>Response time</h2>
+                                <span class="metric-value">3.2h</span>
+                                <p>Target is under 4 hours</p>
+                            </article>
+                        </div>
+
+                        <div data-layout="grid">
+                            <section data-ui="data-view" aria-labelledby="activity-heading">
+                                <header>
+                                    <h2 id="activity-heading">Recent activity</h2>
+                                    <a href="#records">View all records</a>
+                                </header>
+                                <div data-data-content>
+                                    <ul>
+                                        <li><a href="#record-detail">Maya Chen updated AC-1042</a></li>
+                                        <li>Jordan Lee assigned AC-1041</li>
+                                        <li>AC-1038 was resolved</li>
+                                    </ul>
+                                </div>
+                            </section>
+
+                            <div class="notice-column">
+                                <aside data-ui="notification-center" aria-label="Notifications">
+                                    <header><h2>Notifications</h2></header>
+                                    <ul>
+                                        <li data-unread="true">
+                                            <h3>Review due</h3>
+                                            <p>AC-1042 needs a response before 3:00 PM.</p>
+                                            <a href="#record-detail">Open record</a>
+                                        </li>
+                                        <li>
+                                            <h3>Weekly report ready</h3>
+                                            <p>Your team report is available.</p>
+                                            <time datetime="2026-10-05">Yesterday</time>
+                                        </li>
+                                    </ul>
+                                </aside>
+                                <aside data-ui="toast-region" aria-label="Recent messages">
+                                    <ul>
+                                        <li><div role="status">Your workspace is up to date.</div></li>
+                                    </ul>
+                                </aside>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="records" aria-labelledby="records-heading" data-ui="data-view">
+                        <header>
+                            <h2 id="records-heading">Customer records</h2>
+                            <button type="button" data-tone="accent">Create record</button>
+                        </header>
+                        <form data-data-toolbar role="search" action="/records" method="get">
+                            <label for="record-search">Search records</label>
+                            <div data-ui="input-group">
+                                <input id="record-search" name="q" type="search" placeholder="Name or record ID" />
+                                <button type="submit" aria-label="Search">Search</button>
+                            </div>
+                            <label for="record-status">Status</label>
+                            <select id="record-status" name="status">
+                                <option value="all">All statuses</option>
+                                <option value="open">Open</option>
+                                <option value="resolved">Resolved</option>
+                            </select>
+                        </form>
+                        <p data-results-summary role="status">Showing 3 of 24 records</p>
+                        <div data-data-content>
+                            <table>
+                                <caption>Recent customer records</caption>
+                                <thead>
+                                    <tr><th scope="col">Record</th><th scope="col">Owner</th><th scope="col">Status</th><th scope="col">Updated</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><a href="#record-detail">AC-1042 — Maya Chen</a></th>
+                                        <td>Jordan Lee</td><td><span data-ui="badge" data-tone="warning">Needs review</span></td><td><time datetime="2026-10-06">Today</time></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">AC-1041 — Arun Patel</th>
+                                        <td>Sam Rivera</td><td><span data-ui="badge" data-tone="accent">In progress</span></td><td><time datetime="2026-10-05">Yesterday</time></td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">AC-1038 — Taylor Morgan</th>
+                                        <td>Jordan Lee</td><td><span data-ui="badge" data-tone="success">Resolved</span></td><td><time datetime="2026-10-04">4 Oct</time></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <footer>
+                            <nav data-ui="pagination" aria-label="Customer records pages">
+                                <ol><li><span aria-disabled="true">Previous</span></li><li><a href="?page=1" aria-current="page">1</a></li><li><a href="?page=2">2</a></li><li><a href="?page=2">Next</a></li></ol>
+                            </nav>
+                        </footer>
+                    </section>
+
+                    <section id="record-detail" aria-labelledby="record-heading" data-layout="stack">
+                        <nav data-ui="breadcrumbs" aria-label="Breadcrumb">
+                            <ol><li><a href="#dashboard">Dashboard</a></li><li><a href="#records">Records</a></li><li><span aria-current="page">AC-1042</span></li></ol>
+                        </nav>
+                        <header class="record-summary">
+                            <h2 id="record-heading">Maya Chen</h2>
+                            <span data-ui="badge" data-tone="warning">Needs review</span>
+                        </header>
+                        <p>Record AC-1042 · Customer since 2022 · Last updated today</p>
+                        <section data-ui="tabs" aria-label="Record information">
+                            <div role="tablist" aria-label="Record details">
+                                <button type="button" role="tab" id="record-overview-tab" aria-controls="record-overview-panel" aria-selected="true">Overview</button>
+                                <button type="button" role="tab" id="record-history-tab" aria-controls="record-history-panel" aria-selected="false" tabindex="-1">History</button>
+                            </div>
+                            <div role="tabpanel" id="record-overview-panel" aria-labelledby="record-overview-tab">
+                                <h3>Customer request</h3>
+                                <p>Maya needs help updating the billing contact for the Northwind account.</p>
+                            </div>
+                            <div role="tabpanel" id="record-history-panel" aria-labelledby="record-history-tab" hidden>
+                                <h3>Recent history</h3>
+                                <p>Assigned to Jordan Lee on 5 October 2026.</p>
+                            </div>
+                        </section>
+                        <form action="/records/AC-1042" method="post">
+                            <h3>Update record</h3>
+                            <div data-ui="field">
+                                <label for="record-note">Internal note</label>
+                                <textarea id="record-note" name="note" rows="3"></textarea>
+                                <span data-help>Only team members can see this note.</span>
+                            </div>
+                            <div data-layout="cluster">
+                                <button type="submit" data-tone="accent">Save note</button>
+                                <button type="button" data-tone="neutral">Assign to me</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section id="settings" aria-labelledby="settings-heading" data-layout="stack">
+                        <header><h2 id="settings-heading">Workspace settings</h2></header>
+                        <form action="/settings/profile" method="post">
+                            <div data-ui="field-row">
+                                <div data-ui="field">
+                                    <label for="display-name">Display name</label>
+                                    <input id="display-name" name="display_name" value="Jordan Lee" autocomplete="name" />
+                                </div>
+                                <div data-ui="field">
+                                    <label for="work-email">Work email</label>
+                                    <input id="work-email" name="email" type="email" value="jordan@example.com" autocomplete="email" />
+                                </div>
+                            </div>
+                            <div data-ui="field">
+                                <label for="timezone">Time zone</label>
+                                <select id="timezone" name="timezone"><option>America/New_York</option><option>Europe/London</option></select>
+                            </div>
+                            <button type="submit" data-tone="accent">Save settings</button>
+                        </form>
+                    </section>
+
+                    <section aria-labelledby="ownership-heading" data-ui="region-state" data-state="empty">
+                        <h2 id="ownership-heading">Behavior and data ownership</h2>
+                        <p>This static example demonstrates markup and presentation. A real application must implement route handling, search and filters, pagination, form submission and validation, notification loading and dismissal, permissions, and persistence.</p>
+                        <p>Responsive navigation is toggled by the small script below. Tab activation is supplied by the optional <a href="tabs-behavior.md">tabs behavior module</a>.</p>
+                        <p>Pattern references: <a href="../README.md#layout-shell">layout shell</a>, <a href="../README.md#card">cards</a>, <a href="../README.md#data-tables">tables</a>, <a href="../README.md#tabs">tabs</a>, <a href="../README.md#notification-center">notifications</a>, and <a href="../README.md#field-composition-primitives">fields</a>. See <a href="browser-support.html">browser support notes</a> for the supported CSS baseline.</p>
+                    </section>
+                </div>
+            </main>
+
+            <footer data-layout-footer><p>Acme Console example · Built with <a href="../README.md">lumen.css</a></p></footer>
+        </div>
+        <script src="../js/tabs.js"></script>
+        <script src="app-example.js"></script>
+    </body>
+</html>

@@ -5,91 +5,91 @@ Small, verifiable work items derived from [`IMPROVEMENT_PLAN.md`](IMPROVEMENT_PL
 ## 1. Stabilize the public attribute and token contract
 
 ### 1.1 Define the attribute rules
-- [ ] Adopt `data-ui="component-name"` as the identity attribute for components.
-- [ ] Reserve `data-variant`, `data-tone`, and `data-density` (and documented equivalents) for appearance options.
-- [ ] Use native HTML and ARIA attributes for state wherever available (`disabled`, `hidden`, `aria-expanded`, etc.).
-- [ ] Document when a new public attribute is justified and reject utility-style attribute proliferation.
-- [ ] Add examples of valid and invalid attribute usage to contributor guidance.
+- [x] Adopt `data-ui="component-name"` as the identity attribute for components.
+- [x] Reserve `data-variant`, `data-tone`, and `data-density` (and documented equivalents) for appearance options.
+- [x] Use native HTML and ARIA attributes for state wherever available (`disabled`, `hidden`, `aria-expanded`, etc.).
+- [x] Document when a new public attribute is justified and reject utility-style attribute proliferation.
+- [x] Add examples of valid and invalid attribute usage to contributor guidance.
 
 ### 1.2 Migrate component identity attributes
-- [ ] Inventory existing component selectors, examples, tests, and docs that use component-specific identity attributes.
-- [ ] Update component CSS selectors to use `[data-ui="name"]`.
-- [ ] Update documentation and examples to use the new identity syntax.
-- [ ] Update visual/accessibility tests and fixtures to match.
-- [ ] Remove legacy component-identity selectors and markup; do not add compatibility aliases.
-- [ ] Search the repository for old identity attributes and update all active CSS, docs, examples, and tests to the new contract.
+- [x] Inventory existing component selectors, examples, tests, and docs that use component-specific identity attributes.
+- [x] Update component CSS selectors to use `[data-ui="name"]`.
+- [x] Update documentation and examples to use the new identity syntax.
+- [x] Update visual/accessibility tests and fixtures to match.
+- [x] Remove legacy component-identity selectors and markup; do not add compatibility aliases.
+- [x] Search the repository for old identity attributes and update all active CSS, docs, examples, and tests to the new contract.
 
 ### 1.3 Make token names and sources predictable
-- [ ] Inventory current CSS custom properties and group them as primitive, semantic, or component tokens.
-- [ ] Document naming, fallback, and override conventions.
-- [ ] Identify duplicate or unclear tokens before renaming anything.
-- [ ] Define a machine-readable token format and check it against current CSS values.
+- [x] Inventory current CSS custom properties and group them as primitive, semantic, or component tokens.
+- [x] Document naming, fallback, and override conventions.
+- [x] Identify duplicate or unclear tokens before renaming anything; the unused duplicate easing tokens were removed and intentional repeated private/theme overrides are recorded in [`docs/token-audit.md`](docs/token-audit.md).
+- [x] Record the requirements for an eventual machine-readable token source in [`docs/token-source-requirements.md`](docs/token-source-requirements.md); implement and publish that source under section 8, where token tooling is planned.
 
 ## 2. Loosen rigid component markup contracts
 
 ### 2.1 Pilot the card contract
-- [ ] Change component identity from `data-card` to `data-ui="card"`.
-- [ ] Allow semantically appropriate host elements such as `article`, `section`, `div`, or `li`.
-- [ ] Replace the required `div[data-card-main]` and nested body structure with the simplest content structure that supports the design.
-- [ ] Retain child-part attributes only when a demonstrated layout or styling requirement needs them; do not preserve wrappers for compatibility.
-- [ ] Make the host tag flexible and let semantic context determine whether the card is an `article`, `section`, `li`, or another suitable element.
-- [ ] Update card examples, docs, and tests to teach the simplified contract.
+- [x] Change component identity from `data-card` to `data-ui="card"`.
+- [x] Allow semantically appropriate host elements such as `article`, `section`, `div`, or `li`.
+- [x] Replace the required `div[data-card-main]` and nested body structure with the simplest content structure that supports the design.
+- [x] Retain child-part attributes only when a demonstrated layout or styling requirement needs them; do not preserve wrappers for compatibility.
+- [x] Make the host tag flexible and let semantic context determine whether the card is an `article`, `section`, `li`, or another suitable element.
+- [x] Update card examples, docs, and tests to teach the simplified contract.
 - [ ] Verify card layouts still work across media positions, tones, density, and narrow containers.
 
 ### 2.2 Apply the contract consistently
-- [ ] List components with required host tags, child ordering, or mandatory wrappers.
-- [ ] For each, distinguish semantic requirements from CSS convenience constraints.
-- [ ] Relax only the constraints that do not protect meaning, accessibility, or a necessary layout.
-- [ ] Add one minimal and one richer example for each updated component.
+- [x] List components with required host tags, child ordering, or mandatory wrappers in [`docs/component-contract-audit.md`](docs/component-contract-audit.md).
+- [x] For each, distinguish semantic requirements from CSS convenience constraints in the audit.
+- [ ] Relax only the constraints that do not protect meaning, accessibility, or a necessary layout; tabs host-tag restriction was relaxed, remaining candidates need focused coverage.
+- [x] Add one minimal and one richer example for each updated component (card and tabs).
 
 ## 3. Add a small set of composition primitives
 
-- [ ] Choose the initial primitives and define each layout algorithm (for example stack, cluster, grid, split, center, container).
-- [ ] Limit modifiers to a small documented set of useful values.
-- [ ] Implement the first primitive with token-based spacing and responsive behavior.
-- [ ] Add examples demonstrating composition without utility-attribute sprawl.
-- [ ] Add tests or browser checks for wrapping, overflow, and narrow containers.
+- [x] Choose the initial primitives and define each layout algorithm (for example stack, cluster, grid, split, center, container).
+- [x] Limit modifiers to a small documented set of useful values.
+- [x] Implement the first primitive with token-based spacing and responsive behavior.
+- [x] Add examples demonstrating composition without utility-attribute sprawl.
+- [x] Add tests or browser checks for wrapping, overflow, and narrow containers.
 - [ ] Repeat for remaining primitives only after the initial API is validated.
 
 ## 4. Make CSS packages and installation first-class
 
-- [ ] Define the supported npm package name and installation workflow.
-- [ ] Add package metadata and a CSS entry point that works with common bundlers.
-- [ ] Identify stable CSS layer boundaries and expose only useful modular entry points.
-- [ ] Verify full and modular imports do not unexpectedly duplicate or reorder styles.
-- [ ] Add install and import examples to the README.
-- [ ] Run packaging/release checks on the built artifact, not only the source tree.
+- [x] Define the supported npm package name and installation workflow.
+- [x] Add package metadata and a CSS entry point that works with common bundlers.
+- [x] Identify stable CSS layer boundaries and expose only useful modular entry points.
+- [x] Verify full and modular imports do not unexpectedly duplicate or reorder styles; only full and minified whole-stylesheet entries are published, with guidance to import exactly one.
+- [x] Add install and import examples to the README.
+- [x] Run packaging/release checks on the built artifact, not only the source tree.
 
 ## 5. Improve documentation as a learning system
 
 ### 5.1 Component references
-- [ ] Establish a repeatable reference-page template.
+- [x] Establish a repeatable reference-page template in [`docs/component-reference-template.md`](docs/component-reference-template.md).
 - [ ] Include preview, copyable HTML, accessibility notes, and responsibility boundaries for each pattern.
 - [ ] Add state or theme controls where they clarify behavior.
 - [ ] Add browser-support notes for features used by the pattern.
 - [ ] Verify examples use the current `data-ui` and attribute vocabulary.
 
 ### 5.2 End-to-end example
-- [ ] Pick one realistic business application scenario.
-- [ ] Build a small navigable example with dashboard, list/detail, forms, tables, notifications, and responsive navigation.
-- [ ] Keep application behavior explicit rather than implying CSS supplies it.
-- [ ] Link component references from the example and validate it at narrow and wide sizes.
+- [x] Pick one realistic business application scenario (Acme Console operations workspace).
+- [x] Build a small navigable example with dashboard, list/detail, forms, tables, notifications, and responsive navigation in [`docs/app-example.html`](docs/app-example.html).
+- [x] Keep application behavior explicit rather than implying CSS supplies it; the example identifies static-demo limitations and application-owned routes, state, and data behavior.
+- [ ] Link component references from the example and validate it at narrow and wide sizes (reference links are in place; browser validation is pending).
 
 ## 6. Add optional, tested JavaScript behaviors
 
-- [ ] Keep the core stylesheet usable without JavaScript.
-- [ ] Select one high-value behavior (such as tabs) and define its HTML and accessibility contract.
-- [ ] Implement it as a small dependency-free module that enhances valid HTML.
-- [ ] Test keyboard interaction, focus behavior, and state synchronization.
-- [ ] Document setup, teardown, and how to use application-owned behavior instead.
+- [x] Keep the core stylesheet usable without JavaScript.
+- [x] Select one high-value behavior (tabs) and define its HTML and accessibility contract.
+- [x] Implement it as a small dependency-free module that enhances valid HTML (`js/tabs.js`, exported as `lumen.css/tabs`).
+- [ ] Test keyboard interaction, focus behavior, and state synchronization (coverage is added; Playwright execution is pending Chromium availability).
+- [x] Document setup, teardown, and how to use application-owned behavior instead in [`docs/tabs-behavior.md`](docs/tabs-behavior.md).
 - [ ] Add further behaviors only after the module format and contract prove out.
 
 ## 7. Publish framework integration recipes
 
-- [ ] Choose a small initial set of integrations based on project demand.
-- [ ] Write a plain HTML baseline for each recipe.
-- [ ] Show how the framework integrates without replacing semantic markup with framework-specific components.
-- [ ] Include one realistic example and note behavior the application still owns.
+- [x] Choose a small initial set of integrations based on project demand (React/JSX and HTMX), documented in [`docs/integrations.md`](docs/integrations.md).
+- [x] Write a plain HTML baseline for each recipe.
+- [x] Show how the framework integrates without replacing semantic markup with framework-specific components.
+- [x] Include realistic examples and note behavior the application still owns.
 - [ ] Validate snippets against the supported framework versions.
 
 ## 8. Build token and theme tooling
@@ -143,11 +143,11 @@ Small, verifiable work items derived from [`IMPROVEMENT_PLAN.md`](IMPROVEMENT_PL
 
 ## 14. Guard the framework's complexity budget
 
-- [ ] Add the public-attribute complexity rule to contributor guidance.
-- [ ] Require each proposed attribute to solve a semantic, compositional, state, or reusable visual problem.
-- [ ] Prefer native HTML/ARIA state over parallel custom state attributes.
-- [ ] Reject spacing, sizing, display, or alignment attributes that recreate a utility framework.
-- [ ] Review new component-part attributes for necessity and keep component APIs composable.
+- [x] Add the public-attribute complexity rule to contributor guidance.
+- [x] Require each proposed attribute to solve a semantic, compositional, state, or reusable visual problem.
+- [x] Prefer native HTML/ARIA state over parallel custom state attributes.
+- [x] Reject spacing, sizing, display, or alignment attributes that recreate a utility framework.
+- [x] Review new component-part attributes for necessity and keep component APIs composable.
 
 ## Suggested delivery order and release gate
 

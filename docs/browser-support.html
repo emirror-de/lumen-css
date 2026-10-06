@@ -98,7 +98,7 @@
                 </symbol>
             </defs>
         </svg>
-        <div data-layout-shell>
+        <div data-ui="layout-shell">
             <header data-layout-header>
                 <a href="index.html" style="text-decoration: none; flex-shrink: 0"
                     ><img
@@ -122,7 +122,7 @@
                         );
                     "
                 ></button>
-                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="showcase.html">Showcase</a></li>
@@ -170,10 +170,10 @@
                 <div class="doc-page">
                     <h1 id="top">Browser Support</h1>
                     <p class="lead">
-                        lumen.css targets <strong>modern evergreen browsers</strong> with a precise
-                        feature baseline. This document lists the minimum supported versions, the
-                        advanced CSS features that set those minimums, and the exact degradation
-                        behaviour when a feature is absent.
+                        Lumen supports the <strong>current and previous stable release</strong> of
+                        each listed browser. The feature notes below explain the CSS capabilities
+                        used by the framework; obsolete browser versions and Internet Explorer are
+                        out of scope.
                     </p>
 
                     <!-- ── Supported browsers ─────────────────────────────────────────── -->
@@ -183,30 +183,25 @@
                             <thead>
                                 <tr>
                                     <th>Browser</th>
-                                    <th>Minimum version</th>
-                                    <th>Release date</th>
+                                    <th>Support policy</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Chrome / Chromium</td>
-                                    <td>121</td>
-                                    <td>Jan 2024</td>
+                                    <td>Chrome on desktop and Android</td>
+                                    <td>Current and previous stable release</td>
                                 </tr>
                                 <tr>
-                                    <td>Edge</td>
-                                    <td>121</td>
-                                    <td>Jan 2024</td>
+                                    <td>Edge on desktop</td>
+                                    <td>Current and previous stable release</td>
                                 </tr>
                                 <tr>
-                                    <td>Firefox</td>
-                                    <td>121</td>
-                                    <td>Dec 2023</td>
+                                    <td>Firefox on desktop</td>
+                                    <td>Current and previous stable release</td>
                                 </tr>
                                 <tr>
-                                    <td>Safari / WebKit</td>
-                                    <td>17.2</td>
-                                    <td>Dec 2023</td>
+                                    <td>Safari on macOS and iOS</td>
+                                    <td>Current and previous stable release</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -459,7 +454,7 @@
                                     >li &gt; a + ul</code
                                 >
                                 with <code>details</code>/<code>summary</code>) and command menus
-                                (<code>details[data-menu]</code>).
+                                (<code>details[data-ui="menu"]</code>).
                             </p>
                             <table>
                                 <thead>
@@ -511,22 +506,11 @@
                     <section id="effective-minimum">
                         <h2>Determining the effective minimum</h2>
                         <p>
-                            The binding minimums for full framework support are set by the
-                            intersection of the feature table above:
-                        </p>
-                        <ul>
-                            <li>
-                                <strong><code>:has()</code></strong> requires Firefox 121 (Dec 2023)
-                                — this is the binding lower bound.
-                            </li>
-                            <li>
-                                The overall minimum is therefore
-                                <strong>Chrome/Edge 121, Firefox 121, Safari 17.2</strong>.
-                            </li>
-                        </ul>
-                        <p>
-                            Adopters targeting slightly older releases can use the framework with
-                            the degradation notes above as the documented trade-off.
+                            The support window moves with browser releases: test and support the
+                            current and immediately previous stable release for each browser above.
+                            Record the concrete versions exercised by CI and manual verification
+                            when updating this document. Older releases may happen to render the
+                            stylesheet, but are not part of the support commitment.
                         </p>
                     </section>
                 </div>
@@ -555,7 +539,7 @@
                 </p>
             </footer>
         </div>
-        <!-- /data-layout-shell -->
+        <!-- /data-ui="layout-shell" -->
 
         <script>
             // Theme toggle + persistence

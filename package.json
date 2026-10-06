@@ -21,7 +21,7 @@
     "dark-mode"
   ],
   "style": "css/lumen.css",
-  "sideEffects": ["css/*.css"],
+  "sideEffects": ["css/*.css", "js/*.js"],
   "exports": {
     ".": {
       "style": "./css/lumen.css",
@@ -31,18 +31,24 @@
       "style": "./css/lumen.min.css",
       "default": "./css/lumen.min.css"
     },
+    "./tabs": "./js/tabs.js",
     "./css/lumen.css": "./css/lumen.css",
     "./css/lumen.min.css": "./css/lumen.min.css"
   },
   "files": [
+    "js/tabs.js",
     "css/lumen.css",
     "css/lumen.min.css",
     "css/lumen.min.css.map",
     "docs/index.html",
     "docs/showcase.html",
     "docs/recipes.html",
+    "docs/app-example.html",
+    "docs/app-example.js",
     "docs/browser-support.html",
     "docs/responsibilities.html",
+    "docs/tabs-behavior.md",
+    "docs/integrations.md",
     "docs/logo.png",
     "docs/logo-no-text.png",
     "LICENSE",

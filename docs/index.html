@@ -484,7 +484,7 @@
                 </symbol>
             </defs>
         </svg>
-        <div data-layout-shell>
+        <div data-ui="layout-shell">
             <!-- ─── Header ─── -->
             <header data-layout-header>
                 <a class="brand-link" href="#" style="text-decoration: none; flex-shrink: 0">
@@ -511,11 +511,12 @@
                     "
                 ></button>
 
-                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
                     <ul>
                         <li><a href="index.html" aria-current="page">Home</a></li>
                         <li><a href="showcase.html">Showcase</a></li>
                         <li><a href="recipes.html">Recipes</a></li>
+                        <li><a href="app-example.html">Acme Console example</a></li>
                         <li><a href="browser-support.html">Browser support</a></li>
                         <li><a href="responsibilities.html">Responsibilities</a></li>
                     </ul>
@@ -566,6 +567,7 @@
                         <li class="nav-section-label">More</li>
                         <li><a href="showcase.html">Full showcase</a></li>
                         <li><a href="recipes.html">Application recipes</a></li>
+                        <li><a href="app-example.html">End-to-end application example</a></li>
                     </ul>
                 </nav>
             </aside>
@@ -1007,7 +1009,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                     <h2 class="section-heading" id="forms-heading">Forms</h2>
                     <p class="section-sub">
                         All native form controls are styled out of the box. Use
-                        <code>data-field</code> for label + control + help/error composition.
+                        <code>data-ui="field"</code> for label + control + help/error composition.
                         Validation states driven by <code>:invalid</code> and
                         <code>aria-invalid</code>.
                     </p>
@@ -1018,8 +1020,8 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 onsubmit="return false;"
                                 style="display: flex; flex-direction: column; gap: var(--space-4)"
                             >
-                                <div data-field-row>
-                                    <div data-field>
+                                <div data-ui="field-row">
+                                    <div data-ui="field">
                                         <label for="demo-first">First name</label>
                                         <input
                                             type="text"
@@ -1028,7 +1030,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                             placeholder="Jane"
                                         />
                                     </div>
-                                    <div data-field>
+                                    <div data-ui="field">
                                         <label for="demo-last">Last name</label>
                                         <input
                                             type="text"
@@ -1039,7 +1041,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     </div>
                                 </div>
 
-                                <div data-field>
+                                <div data-ui="field">
                                     <label for="demo-email">Email address</label>
                                     <input
                                         type="email"
@@ -1050,7 +1052,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     <span data-help>We'll never share your email.</span>
                                 </div>
 
-                                <div data-field>
+                                <div data-ui="field">
                                     <label for="demo-email-invalid">Email (invalid state)</label>
                                     <input
                                         type="email"
@@ -1065,7 +1067,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     >
                                 </div>
 
-                                <div data-field>
+                                <div data-ui="field">
                                     <label for="demo-role">Role</label>
                                     <select id="demo-role" name="role">
                                         <option value="">Select a role…</option>
@@ -1075,7 +1077,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     </select>
                                 </div>
 
-                                <div data-field>
+                                <div data-ui="field">
                                     <label for="demo-bio">Bio</label>
                                     <textarea
                                         id="demo-bio"
@@ -1086,7 +1088,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     <span data-help>Max 280 characters.</span>
                                 </div>
 
-                                <fieldset data-field>
+                                <fieldset data-ui="field">
                                     <legend>Notifications</legend>
                                     <label
                                         ><input type="checkbox" name="notify-email" checked /> Email
@@ -1098,7 +1100,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     >
                                 </fieldset>
 
-                                <fieldset data-field>
+                                <fieldset data-ui="field">
                                     <legend>Account type</legend>
                                     <label
                                         ><input type="radio" name="acct" value="personal" checked />
@@ -1119,7 +1121,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 
                         <div class="code-block">
                             <pre><code>&lt;!-- Field composition primitive --&gt;
-&lt;div data-field&gt;
+&lt;div data-ui="field"&gt;
   &lt;label for="email"&gt;Email&lt;/label&gt;
   &lt;input type="email" id="email" /&gt;
   &lt;span data-help&gt;Help text&lt;/span&gt;
@@ -1127,19 +1129,19 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 &lt;/div&gt;
 
 &lt;!-- Inline row --&gt;
-&lt;div data-field-row&gt;
-  &lt;div data-field&gt;
+&lt;div data-ui="field-row"&gt;
+  &lt;div data-ui="field"&gt;
     &lt;label for="first"&gt;First&lt;/label&gt;
     &lt;input type="text" id="first" /&gt;
   &lt;/div&gt;
-  &lt;div data-field&gt;
+  &lt;div data-ui="field"&gt;
     &lt;label for="last"&gt;Last&lt;/label&gt;
     &lt;input type="text" id="last" /&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 
 &lt;!-- Invalid state --&gt;
-&lt;div data-field&gt;
+&lt;div data-ui="field"&gt;
   &lt;label for="bad"&gt;Email&lt;/label&gt;
   &lt;input type="email" id="bad"
          aria-invalid="true"
@@ -1150,7 +1152,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 &lt;/div&gt;
 
 &lt;!-- Grouped choices --&gt;
-&lt;fieldset data-field&gt;
+&lt;fieldset data-ui="field"&gt;
   &lt;legend&gt;Notifications&lt;/legend&gt;
   &lt;label&gt;
     &lt;input type="checkbox" /&gt; Email
@@ -1170,7 +1172,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 >
                     <h2 class="section-heading" id="input-groups-heading">Input groups</h2>
                     <p class="section-sub">
-                        <code>data-input-group</code> composes search fields, prefixed/suffixed
+                        <code>data-ui="input-group"</code> composes search fields, prefixed/suffixed
                         inputs, and fields with trailing actions.
                     </p>
 
@@ -1179,9 +1181,9 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                             class="demo-frame"
                             style="display: flex; flex-direction: column; gap: var(--space-4)"
                         >
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="ig-search">Site search</label>
-                                <div data-input-group>
+                                <div data-ui="input-group">
                                     <span data-icon aria-hidden="true"
                                         ><svg class="icon" aria-hidden="true">
                                             <use href="#icon-lucide-search"></use></svg
@@ -1191,9 +1193,9 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 </div>
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="ig-amount">Amount</label>
-                                <div data-input-group>
+                                <div data-ui="input-group">
                                     <span data-prefix aria-hidden="true">$</span>
                                     <input
                                         type="number"
@@ -1204,9 +1206,9 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 </div>
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="ig-weight">Weight</label>
-                                <div data-input-group>
+                                <div data-ui="input-group">
                                     <input
                                         type="number"
                                         id="ig-weight"
@@ -1217,9 +1219,9 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 </div>
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="ig-apikey">API key</label>
-                                <div data-input-group>
+                                <div data-ui="input-group">
                                     <input
                                         type="text"
                                         id="ig-apikey"
@@ -1242,26 +1244,26 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 
                         <div class="code-block">
                             <pre><code>&lt;!-- Search with icon + button --&gt;
-&lt;div data-input-group&gt;
+&lt;div data-ui="input-group"&gt;
   &lt;span data-icon aria-hidden="true"&gt;⌕&lt;/span&gt;
   &lt;input type="search" placeholder="Search…" /&gt;
   &lt;button type="submit"&gt;Search&lt;/button&gt;
 &lt;/div&gt;
 
 &lt;!-- Currency prefix --&gt;
-&lt;div data-input-group&gt;
+&lt;div data-ui="input-group"&gt;
   &lt;span data-prefix aria-hidden="true"&gt;$&lt;/span&gt;
   &lt;input type="number" placeholder="0.00" /&gt;
 &lt;/div&gt;
 
 &lt;!-- Unit suffix --&gt;
-&lt;div data-input-group&gt;
+&lt;div data-ui="input-group"&gt;
   &lt;input type="number" placeholder="0.0" /&gt;
   &lt;span data-suffix aria-hidden="true"&gt;kg&lt;/span&gt;
 &lt;/div&gt;
 
 &lt;!-- Trailing action --&gt;
-&lt;div data-input-group&gt;
+&lt;div data-ui="input-group"&gt;
   &lt;input type="text" value="sk-••••" readonly /&gt;
   &lt;button type="button"&gt;Copy&lt;/button&gt;
 &lt;/div&gt;</code></pre>
@@ -1303,11 +1305,11 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                             <td><strong>Acme Corp</strong></td>
                                             <td>alice@acme.com</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                             <td>$84,000</td>
                                             <td>
-                                                <details data-menu data-align="start">
+                                                <details data-ui="menu" data-align="start">
                                                     <summary aria-label="Row actions">⋯</summary>
                                                     <ul>
                                                         <li><button type="button">Edit</button></li>
@@ -1326,11 +1328,11 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                             <td><strong>Globex</strong></td>
                                             <td>bob@globex.com</td>
                                             <td>
-                                                <span data-badge data-tone="warning">Trial</span>
+                                                <span data-ui="badge" data-tone="warning">Trial</span>
                                             </td>
                                             <td>$210,000</td>
                                             <td>
-                                                <details data-menu data-align="start">
+                                                <details data-ui="menu" data-align="start">
                                                     <summary aria-label="Row actions">⋯</summary>
                                                     <ul>
                                                         <li><button type="button">Edit</button></li>
@@ -1346,11 +1348,11 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                             <td><strong>Initech</strong></td>
                                             <td>carol@initech.com</td>
                                             <td>
-                                                <span data-badge data-tone="danger">Suspended</span>
+                                                <span data-ui="badge" data-tone="danger">Suspended</span>
                                             </td>
                                             <td>$12,400</td>
                                             <td>
-                                                <details data-menu data-align="start">
+                                                <details data-ui="menu" data-align="start">
                                                     <summary aria-label="Row actions">⋯</summary>
                                                     <ul>
                                                         <li>
@@ -1369,10 +1371,10 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                         <tr>
                                             <td><strong>Umbrella Co.</strong></td>
                                             <td>dan@umbrella.com</td>
-                                            <td><span data-badge>Neutral</span></td>
+                                            <td><span data-ui="badge">Neutral</span></td>
                                             <td>$55,600</td>
                                             <td>
-                                                <details data-menu data-align="start">
+                                                <details data-ui="menu" data-align="start">
                                                     <summary aria-label="Row actions">⋯</summary>
                                                     <ul>
                                                         <li><button type="button">Edit</button></li>
@@ -1442,7 +1444,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
     &lt;tr aria-current="row"&gt;
       &lt;td&gt;Acme Corp&lt;/td&gt;
       &lt;td&gt;
-        &lt;span data-badge
+        &lt;span data-ui="badge"
               data-tone="success"&gt;
           Active
         &lt;/span&gt;
@@ -1473,113 +1475,55 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 <section class="page-section" id="cards" aria-labelledby="cards-heading">
                     <h2 class="section-heading" id="cards-heading">Cards</h2>
                     <p class="section-sub">
-                        <code>article[data-card]</code> is a reusable content surface with optional
-                        media, tone cues, and density control.
+                        <code>[data-ui="card"]</code> styles a content surface without prescribing
+                        the host element or requiring component-part attributes.
                     </p>
 
-                    <div
-                        style="
-                            display: grid;
-                            grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-                            gap: var(--space-5);
-                            margin-block-end: var(--space-6);
-                        "
-                    >
-                        <article data-card>
-                            <div data-card-main>
-                                <header>
-                                    <h3>Default card</h3>
-                                    <p>Supporting meta text</p>
-                                </header>
-                                <div data-card-body>
-                                    <p>
-                                        A neutral card for general content. The host element is an
-                                        <code>article</code> with <code>data-card</code>.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button" data-tone="accent">View details</button>
-                                </footer>
-                            </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-5); margin-block-end: var(--space-6);">
+                        <article data-ui="card">
+                            <h3>Default card</h3>
+                            <p>A neutral card for general content.</p>
+                            <button type="button" data-tone="accent">View details</button>
                         </article>
 
-                        <article data-card data-tone="success">
-                            <div data-card-main>
-                                <header><h3>Success tone</h3></header>
-                                <div data-card-body>
-                                    <p>
-                                        Tone styling is subtle and semantic — uses existing token
-                                        families without resembling an alert.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button" data-tone="success">Proceed</button>
-                                </footer>
-                            </div>
-                        </article>
+                        <div data-ui="card" data-tone="success">
+                            <h3>Success tone</h3>
+                            <p>Tone styling is subtle and semantic, using existing tokens.</p>
+                            <button type="button" data-tone="success">Proceed</button>
+                        </div>
 
-                        <article data-card data-tone="warning">
-                            <div data-card-main>
-                                <header><h3>Warning tone</h3></header>
-                                <div data-card-body>
-                                    <p>
-                                        Use <code>data-tone="warning"</code> for cards that require
-                                        attention.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button" data-tone="warning">Review</button>
-                                </footer>
-                            </div>
-                        </article>
+                        <section data-ui="card" data-tone="warning">
+                            <h3>Warning tone</h3>
+                            <p>Use <code>data-tone="warning"</code> for content that needs attention.</p>
+                            <button type="button" data-tone="warning">Review</button>
+                        </section>
 
-                        <article data-card data-tone="danger">
-                            <div data-card-main>
-                                <header><h3>Danger tone</h3></header>
-                                <div data-card-body>
-                                    <p>Reserved for critical states or destructive context.</p>
-                                </div>
-                                <footer>
-                                    <button
-                                        type="button"
-                                        data-tone="danger"
-                                        data-variant="outlined"
-                                    >
-                                        Resolve
-                                    </button>
-                                </footer>
-                            </div>
+                        <article data-ui="card" data-tone="danger">
+                            <h3>Danger tone</h3>
+                            <p>Reserved for critical states or destructive context.</p>
+                            <button type="button" data-tone="danger" data-variant="outlined">Resolve</button>
                         </article>
                     </div>
 
                     <p class="demo-label">Linked card with command menu</p>
-                    <article data-card style="max-inline-size: 28rem">
-                        <div data-card-main>
-                            <header>
-                                <h3><a href="#">Q3 Revenue Report</a></h3>
-                                <p>Updated 2 hours ago</p>
-                            </header>
-                            <div data-card-body>
-                                <p>
-                                    Total revenue up 14% quarter-over-quarter. Three regions
-                                    exceeded targets.
-                                </p>
-                            </div>
-                            <footer>
-                                <button type="button">Download PDF</button>
-                                <details data-menu>
-                                    <summary aria-label="More options">⋯</summary>
-                                    <ul>
-                                        <li><button type="button">Share</button></li>
-                                        <li><button type="button">Archive</button></li>
-                                        <li role="separator"></li>
-                                        <li data-tone="danger">
-                                            <button type="button">Delete</button>
-                                        </li>
-                                    </ul>
-                                </details>
-                            </footer>
-                        </div>
+                    <article data-ui="card" style="max-inline-size: 28rem">
+                        <header>
+                            <h3><a href="#">Q3 Revenue Report</a></h3>
+                            <p>Updated 2 hours ago</p>
+                        </header>
+                        <p>Total revenue up 14% quarter-over-quarter. Three regions exceeded targets.</p>
+                        <footer>
+                            <button type="button">Download PDF</button>
+                            <details data-ui="menu">
+                                <summary aria-label="More options">⋯</summary>
+                                <ul>
+                                    <li><button type="button">Share</button></li>
+                                    <li><button type="button">Archive</button></li>
+                                    <li role="separator"></li>
+                                    <li data-tone="danger"><button type="button">Delete</button></li>
+                                </ul>
+                            </details>
+                        </footer>
                     </article>
                 </section>
 
@@ -1589,7 +1533,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 <section class="page-section" id="badges" aria-labelledby="badges-heading">
                     <h2 class="section-heading" id="badges-heading">Badges</h2>
                     <p class="section-sub">
-                        Compact inline status pills via <code>[data-badge]</code>. Purely
+                        Compact inline status pills via <code>[data-ui="badge"]</code>. Purely
                         presentational, non-interactive. Supports <code>span</code>,
                         <code>strong</code>, and <code>small</code>.
                     </p>
@@ -1597,11 +1541,11 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                     <div class="demo-split">
                         <div class="demo-frame">
                             <div class="ctrl-row" style="margin-block-end: var(--space-4)">
-                                <span data-badge>Neutral</span>
-                                <span data-badge data-tone="accent">Accent</span>
-                                <span data-badge data-tone="success">Active</span>
-                                <span data-badge data-tone="warning">Trial</span>
-                                <span data-badge data-tone="danger">Suspended</span>
+                                <span data-ui="badge">Neutral</span>
+                                <span data-ui="badge" data-tone="accent">Accent</span>
+                                <span data-ui="badge" data-tone="success">Active</span>
+                                <span data-ui="badge" data-tone="warning">Trial</span>
+                                <span data-ui="badge" data-tone="danger">Suspended</span>
                             </div>
                             <p
                                 style="
@@ -1610,20 +1554,20 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 "
                             >
                                 Used inline in text — status is
-                                <span data-badge data-tone="success">Active</span> and plan is
-                                <span data-badge data-tone="accent">Pro</span>.
+                                <span data-ui="badge" data-tone="success">Active</span> and plan is
+                                <span data-ui="badge" data-tone="accent">Pro</span>.
                             </p>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;span data-badge&gt;Neutral&lt;/span&gt;
-&lt;span data-badge
+                            <pre><code>&lt;span data-ui="badge"&gt;Neutral&lt;/span&gt;
+&lt;span data-ui="badge"
       data-tone="accent"&gt;Accent&lt;/span&gt;
-&lt;span data-badge
+&lt;span data-ui="badge"
       data-tone="success"&gt;Active&lt;/span&gt;
-&lt;span data-badge
+&lt;span data-ui="badge"
       data-tone="warning"&gt;Trial&lt;/span&gt;
-&lt;span data-badge
+&lt;span data-ui="badge"
       data-tone="danger"&gt;Suspended&lt;/span&gt;</code></pre>
                         </div>
                     </div>
@@ -1652,7 +1596,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 
                             <div>
                                 <p class="demo-label">Determinate progress (65%)</p>
-                                <div data-field>
+                                <div data-ui="field">
                                     <label for="prog-demo">Uploading…</label>
                                     <progress id="prog-demo" value="65" max="100"></progress>
                                 </div>
@@ -1725,7 +1669,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                     <p class="section-label">Patterns</p>
                     <h2 class="section-heading" id="layout-shell-heading">Layout shell</h2>
                     <p class="section-sub">
-                        <code>div[data-layout-shell]</code> is the single container-based layout
+                        <code>div[data-ui="layout-shell"]</code> is the single container-based layout
                         host. Eight direct-child combinations are detected automatically via
                         <code>:has()</code> — no modifier class needed.
                     </p>
@@ -1812,11 +1756,11 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                     <div class="demo-split">
                         <div class="code-block">
                             <pre><code>&lt;!-- Variant 5: header + sidebar + main --&gt;
-&lt;div data-layout-shell&gt;
+&lt;div data-ui="layout-shell"&gt;
 
   &lt;header data-layout-header&gt;
     &lt;a href="/"&gt;Acme&lt;/a&gt;
-    &lt;nav data-navbar aria-label="Primary"&gt;
+    &lt;nav data-ui="navbar" aria-label="Primary"&gt;
       &lt;ul&gt;
         &lt;li&gt;&lt;a href="/"
                aria-current="page"&gt;Home&lt;/a&gt;&lt;/li&gt;
@@ -1902,7 +1846,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 <section class="page-section" id="navbar" aria-labelledby="navbar-heading">
                     <h2 class="section-heading" id="navbar-heading">Navbar</h2>
                     <p class="section-sub">
-                        <code>nav[data-navbar]</code> inside
+                        <code>nav[data-ui="navbar"]</code> inside
                         <code>header[data-layout-header]</code> gives you a responsive primary
                         navigation with hover dropdowns — zero JavaScript.
                     </p>
@@ -1939,7 +1883,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                     >Acme</a
                                 >
                                 <nav
-                                    data-navbar
+                                    data-ui="navbar"
                                     aria-label="Demo primary"
                                     style="position: relative; z-index: 10"
                                 >
@@ -1973,7 +1917,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
           aria-label="Open navigation"
           type="button"&gt;&lt;/button&gt;
 
-  &lt;nav id="nav" data-navbar
+  &lt;nav id="nav" data-ui="navbar"
        aria-label="Primary"&gt;
     &lt;!-- primary group --&gt;
     &lt;ul&gt;
@@ -2018,7 +1962,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         <div>
                             <p class="demo-label">Default tabs</p>
                             <div class="demo-frame demo-tabs">
-                                <section data-tabs>
+                                <section data-ui="tabs">
                                     <div role="tablist" aria-label="Account settings">
                                         <button
                                             role="tab"
@@ -2089,7 +2033,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                 Segmented variant
                             </p>
                             <div class="demo-frame">
-                                <section data-tabs data-variant="segmented">
+                                <section data-ui="tabs" data-variant="segmented">
                                     <div role="tablist" aria-label="Revenue period">
                                         <button
                                             role="tab"
@@ -2149,7 +2093,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;section data-tabs&gt;
+                            <pre><code>&lt;section data-ui="tabs"&gt;
   &lt;div role="tablist"
        aria-label="Account settings"&gt;
     &lt;button role="tab"
@@ -2181,7 +2125,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 &lt;/section&gt;
 
 &lt;!-- Segmented variant --&gt;
-&lt;section data-tabs
+&lt;section data-ui="tabs"
          data-variant="segmented"&gt;
   …same ARIA contract…
 &lt;/section&gt;</code></pre>
@@ -2205,7 +2149,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 
                     <div class="demo-split">
                         <div class="demo-frame">
-                            <nav data-breadcrumbs aria-label="Page location">
+                            <nav data-ui="breadcrumbs" aria-label="Page location">
                                 <ol>
                                     <li><a href="#">Dashboard</a></li>
                                     <li><a href="#">Accounts</a></li>
@@ -2216,7 +2160,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;nav data-breadcrumbs
+                            <pre><code>&lt;nav data-ui="breadcrumbs"
      aria-label="Page location"&gt;
   &lt;ol&gt;
     &lt;li&gt;&lt;a href="/dashboard"&gt;
@@ -2245,13 +2189,13 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                     <h2 class="section-heading" id="pagination-heading">Pagination</h2>
                     <p class="section-sub">
                         Accessible pagination for tables, search results, and record lists. The CSS
-                        contract uses <code>data-pagination</code>, so localized label text is never
+                        contract uses <code>data-ui="pagination"</code>, so localized label text is never
                         part of the selector.
                     </p>
 
                     <div class="demo-split">
                         <div class="demo-frame">
-                            <nav data-pagination aria-label="Results pagination">
+                            <nav data-ui="pagination" aria-label="Results pagination">
                                 <ol>
                                     <li><span aria-disabled="true">Previous</span></li>
                                     <li><a href="#">1</a></li>
@@ -2266,7 +2210,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;nav data-pagination
+                            <pre><code>&lt;nav data-ui="pagination"
      aria-label="Results pagination"&gt;
   &lt;ol&gt;
     &lt;!-- disabled prev --&gt;
@@ -2364,7 +2308,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;aside data-toast-region
+                            <pre><code>&lt;aside data-ui="toast-region"
        aria-label="Notifications"&gt;
   &lt;ul&gt;
     &lt;!-- polite update --&gt;
@@ -2417,7 +2361,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 >
                     <h2 class="section-heading" id="command-menu-heading">Command menu</h2>
                     <p class="section-sub">
-                        <code>details[data-menu]</code> provides contextual action surfaces — row
+                        <code>details[data-ui="menu"]</code> provides contextual action surfaces — row
                         actions, card overflow menus — using native <code>&lt;details&gt;</code> for
                         zero-JavaScript toggle.
                     </p>
@@ -2429,7 +2373,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         >
                             <div>
                                 <p class="demo-label">Default (bottom-end alignment)</p>
-                                <details data-menu>
+                                <details data-ui="menu">
                                     <summary aria-label="Row actions">⋯ Options</summary>
                                     <ul>
                                         <li><a href="#">View</a></li>
@@ -2445,7 +2389,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 
                             <div>
                                 <p class="demo-label">Start alignment</p>
-                                <details data-menu data-align="start">
+                                <details data-ui="menu" data-align="start">
                                     <summary aria-label="More actions">⋯ More</summary>
                                     <ul>
                                         <li><button type="button">Archive</button></li>
@@ -2460,7 +2404,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </div>
 
                         <div class="code-block">
-                            <pre><code>&lt;details data-menu&gt;
+                            <pre><code>&lt;details data-ui="menu"&gt;
   &lt;summary aria-label="Row actions"&gt;
     ⋯
   &lt;/summary&gt;
@@ -2481,7 +2425,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
 &lt;/details&gt;
 
 &lt;!-- Start-aligned variant --&gt;
-&lt;details data-menu data-align="start"&gt;
+&lt;details data-ui="menu" data-align="start"&gt;
   …
 &lt;/details&gt;</code></pre>
                         </div>
@@ -2494,19 +2438,19 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 <section class="page-section" id="data-view" aria-labelledby="data-view-heading">
                     <h2 class="section-heading" id="data-view-heading">Data-view shell</h2>
                     <p class="section-sub">
-                        <code>section[data-data-view]</code> is an opinionated framing shell for
+                        <code>section[data-ui="data-view"]</code> is an opinionated framing shell for
                         list, search, and admin screens. It composes table, pagination, badge,
                         toolbar, and region-state primitives into one cohesive layout.
                     </p>
 
                     <div class="demo-split wide">
-                        <section data-data-view>
+                        <section data-ui="data-view">
                             <header>
                                 <h3>Users</h3>
                                 <button type="button" data-tone="accent">Invite user</button>
                             </header>
                             <form data-data-toolbar onsubmit="return false;">
-                                <div data-input-group>
+                                <div data-ui="input-group">
                                     <span data-icon aria-hidden="true"
                                         ><svg class="icon" aria-hidden="true">
                                             <use href="#icon-lucide-search"></use></svg
@@ -2539,33 +2483,33 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                                             <td>Alice Martin</td>
                                             <td>Admin</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Bob Chen</td>
                                             <td>Editor</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Carol Davis</td>
                                             <td>Viewer</td>
                                             <td>
-                                                <span data-badge data-tone="warning">Invited</span>
+                                                <span data-ui="badge" data-tone="warning">Invited</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Dan Wilson</td>
                                             <td>Editor</td>
-                                            <td><span data-badge>Inactive</span></td>
+                                            <td><span data-ui="badge">Inactive</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <footer>
-                                <nav data-pagination aria-label="Users pagination">
+                                <nav data-ui="pagination" aria-label="Users pagination">
                                     <ol>
                                         <li><span aria-disabled="true">Previous</span></li>
                                         <li><a href="#" aria-current="page">1</a></li>
@@ -2576,7 +2520,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                         </section>
 
                         <div class="code-block">
-                            <pre><code>&lt;section data-data-view&gt;
+                            <pre><code>&lt;section data-ui="data-view"&gt;
 
   &lt;header&gt;
     &lt;h2&gt;Users&lt;/h2&gt;
@@ -2587,7 +2531,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
   &lt;/header&gt;
 
   &lt;form data-data-toolbar&gt;
-    &lt;div data-input-group&gt;
+    &lt;div data-ui="input-group"&gt;
       &lt;span data-icon
             aria-hidden="true"&gt;⌕&lt;/span&gt;
       &lt;input type="search"
@@ -2605,7 +2549,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
   &lt;/div&gt;
 
   &lt;footer&gt;
-    &lt;nav data-pagination
+    &lt;nav data-ui="pagination"
          aria-label="Pagination"&gt;
       …
     &lt;/nav&gt;
@@ -3074,10 +3018,10 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
                 </footer>
             </main>
         </div>
-        <!-- /data-layout-shell -->
+        <!-- /data-ui="layout-shell" -->
 
         <!-- Toast region (hidden until toasts are shown) -->
-        <aside data-toast-region aria-label="Notifications" id="toast-region">
+        <aside data-ui="toast-region" aria-label="Notifications" id="toast-region">
             <ul id="toast-list"></ul>
         </aside>
 
@@ -3148,7 +3092,7 @@ const greet = (name) =&gt; `Hello, ${name}!`;</code></pre>
             // ─── Tab switching (demo only) ────────────────────────
             function switchTab(trigger, panelId) {
                 const tablist = trigger.closest('[role="tablist"]');
-                const section = trigger.closest("[data-tabs]");
+                const section = trigger.closest("[data-ui="tabs"]");
 
                 // Deactivate all tabs in this tablist
                 tablist.querySelectorAll('[role="tab"]').forEach((tab) => {

@@ -78,7 +78,7 @@
                 inline-size: 1rem;
                 block-size: 1rem;
             }
-            details[data-menu] > summary > .icon {
+            details[data-ui="menu"] > summary > .icon {
                 inline-size: 1rem;
                 block-size: 1rem;
             }
@@ -115,7 +115,7 @@
                 </symbol>
             </defs>
         </svg>
-        <div data-layout-shell>
+        <div data-ui="layout-shell">
             <!-- Shell header: brand + grouped navbar + theme toggle -->
             <header data-layout-header>
                 <a href="#" style="text-decoration: none; flex-shrink: 0"
@@ -140,7 +140,7 @@
                         );
                     "
                 ></button>
-                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="showcase.html" aria-current="page">Showcase</a></li>
@@ -398,7 +398,7 @@ console.log(greeting);</code></pre>
                         <fieldset>
                             <legend>Account details</legend>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-email">Email address</label>
                                 <input
                                     type="email"
@@ -410,7 +410,7 @@ console.log(greeting);</code></pre>
                                 />
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-name">Full name</label>
                                 <input
                                     type="text"
@@ -422,7 +422,7 @@ console.log(greeting);</code></pre>
                                 />
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-bio">Biography</label>
                                 <textarea
                                     id="sf-bio"
@@ -432,7 +432,7 @@ console.log(greeting);</code></pre>
                                 ></textarea>
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-role">Role</label>
                                 <select id="sf-role" name="role">
                                     <option value="">Select a role</option>
@@ -446,7 +446,7 @@ console.log(greeting);</code></pre>
                         <fieldset>
                             <legend>Preferences</legend>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-range">Notification frequency</label>
                                 <input
                                     type="range"
@@ -458,12 +458,12 @@ console.log(greeting);</code></pre>
                                 />
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-color">Accent colour</label>
                                 <input type="color" id="sf-color" name="accent" value="#2563eb" />
                             </div>
 
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="sf-file">Profile picture</label>
                                 <input type="file" id="sf-file" name="avatar" accept="image/*" />
                             </div>
@@ -506,7 +506,7 @@ console.log(greeting);</code></pre>
 
                         <h3>State variations</h3>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="sf-disabled">Disabled input</label>
                             <input
                                 type="text"
@@ -516,7 +516,7 @@ console.log(greeting);</code></pre>
                             />
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="sf-readonly">Read-only input</label>
                             <input
                                 type="text"
@@ -526,7 +526,7 @@ console.log(greeting);</code></pre>
                             />
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="sf-invalid">Invalid input (aria-invalid)</label>
                             <input
                                 type="email"
@@ -538,12 +538,12 @@ console.log(greeting);</code></pre>
                             <small id="sf-invalid-msg">Please enter a valid email address.</small>
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="sf-progress">Progress</label>
                             <progress id="sf-progress" value="65" max="100"></progress>
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="sf-meter">Disk usage</label>
                             <meter
                                 id="sf-meter"
@@ -562,7 +562,7 @@ console.log(greeting);</code></pre>
                 <section class="showcase-section" id="field-composition">
                     <h2>Field composition primitives</h2>
                     <p>
-                        <code>data-field</code> and <code>data-field-row</code> are narrow opt-in
+                        <code>data-ui="field"</code> and <code>data-ui="field-row"</code> are narrow opt-in
                         wrappers that solve what native HTML alone cannot: a consistent way to
                         associate a label, help text, error message, and success message with a
                         single control or a grouped set of controls. They are
@@ -572,14 +572,14 @@ console.log(greeting);</code></pre>
                         The API uses three child marker attributes:
                         <code>[data-help]</code>, <code>[data-error]</code>, and
                         <code>[data-success]</code>. These must be direct children of
-                        <code>[data-field]</code>. Validation semantics remain native-first through
+                        <code>[data-ui="field"]</code>. Validation semantics remain native-first through
                         <code>:invalid</code> and <code>aria-invalid</code>; the wrappers only
                         present those states coherently.
                     </p>
 
                     <h3>1. Single text field</h3>
                     <form novalidate>
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="fc-email">Email address</label>
                             <input
                                 type="email"
@@ -596,7 +596,7 @@ console.log(greeting);</code></pre>
 
                     <h3>2. Invalid field with help and error text</h3>
                     <form novalidate>
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="fc-invalid">Email address</label>
                             <input
                                 type="email"
@@ -617,7 +617,7 @@ console.log(greeting);</code></pre>
 
                     <h3>3. Success state</h3>
                     <form novalidate>
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="fc-success">Username</label>
                             <input
                                 type="text"
@@ -632,7 +632,7 @@ console.log(greeting);</code></pre>
 
                     <h3>4. Grouped radio choices (fieldset)</h3>
                     <form novalidate>
-                        <fieldset data-field>
+                        <fieldset data-ui="field">
                             <legend>Notification frequency</legend>
                             <label
                                 ><input type="radio" name="fc-freq" value="realtime" />
@@ -654,7 +654,7 @@ console.log(greeting);</code></pre>
 
                     <h3>5. Grouped checkbox choices (fieldset)</h3>
                     <form novalidate>
-                        <fieldset data-field>
+                        <fieldset data-ui="field">
                             <legend>Notification channels</legend>
                             <label
                                 ><input type="checkbox" name="fc-notify" value="email" checked />
@@ -675,14 +675,14 @@ console.log(greeting);</code></pre>
 
                     <h3>6. Inline field row</h3>
                     <p>
-                        <code>div[data-field-row]</code> creates a responsive auto-fit grid of
-                        <code>div[data-field]</code> children. Fields collapse to a single column on
+                        <code>div[data-ui="field-row"]</code> creates a responsive auto-fit grid of
+                        <code>div[data-ui="field"]</code> children. Fields collapse to a single column on
                         narrow viewports automatically. Tune column density with
                         <code>--layout-field-row-min-column-size</code>.
                     </p>
                     <form novalidate>
-                        <div data-field-row>
-                            <div data-field>
+                        <div data-ui="field-row">
+                            <div data-ui="field">
                                 <label for="fc-row-first">First name</label>
                                 <input
                                     type="text"
@@ -693,7 +693,7 @@ console.log(greeting);</code></pre>
                                     required
                                 />
                             </div>
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="fc-row-last">Last name</label>
                                 <input
                                     type="text"
@@ -704,7 +704,7 @@ console.log(greeting);</code></pre>
                                     required
                                 />
                             </div>
-                            <div data-field>
+                            <div data-ui="field">
                                 <label for="fc-row-email">Work email</label>
                                 <input
                                     type="email"
@@ -720,14 +720,14 @@ console.log(greeting);</code></pre>
                     <h3>Copy-pasteable markup</h3>
 
                     <h4>Single field with help text</h4>
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="email"&gt;Email address&lt;/label&gt;
   &lt;input type="email" id="email" name="email" /&gt;
   &lt;span data-help&gt;We will only use this to send account notifications.&lt;/span&gt;
 &lt;/div&gt;</code></pre>
 
                     <h4>Invalid field with help and error text</h4>
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="email"&gt;Email address&lt;/label&gt;
   &lt;input type="email" id="email" name="email"
          value="not-an-email" aria-invalid="true"
@@ -737,7 +737,7 @@ console.log(greeting);</code></pre>
 &lt;/div&gt;</code></pre>
 
                     <h4>Success state</h4>
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="username"&gt;Username&lt;/label&gt;
   &lt;input type="text" id="username" name="username" value="jsmith"
          aria-describedby="username-success" /&gt;
@@ -745,7 +745,7 @@ console.log(greeting);</code></pre>
 &lt;/div&gt;</code></pre>
 
                     <h4>Grouped radio choices</h4>
-                    <pre><code>&lt;fieldset data-field&gt;
+                    <pre><code>&lt;fieldset data-ui="field"&gt;
   &lt;legend&gt;Notification frequency&lt;/legend&gt;
   &lt;label&gt;&lt;input type="radio" name="freq" value="realtime" /&gt; Real-time&lt;/label&gt;
   &lt;label&gt;&lt;input type="radio" name="freq" value="daily" /&gt; Daily digest&lt;/label&gt;
@@ -754,12 +754,12 @@ console.log(greeting);</code></pre>
 &lt;/fieldset&gt;</code></pre>
 
                     <h4>Inline field row</h4>
-                    <pre><code>&lt;div data-field-row&gt;
-  &lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field-row"&gt;
+  &lt;div data-ui="field"&gt;
     &lt;label for="first"&gt;First name&lt;/label&gt;
     &lt;input type="text" id="first" name="first_name" /&gt;
   &lt;/div&gt;
-  &lt;div data-field&gt;
+  &lt;div data-ui="field"&gt;
     &lt;label for="last"&gt;Last name&lt;/label&gt;
     &lt;input type="text" id="last" name="last_name" /&gt;
   &lt;/div&gt;
@@ -799,7 +799,7 @@ console.log(greeting);</code></pre>
                 <section class="showcase-section" id="input-group">
                     <h2>Input group composition</h2>
                     <p>
-                        <code>data-input-group</code> is a narrow opt-in composition wrapper for
+                        <code>data-ui="input-group"</code> is a narrow opt-in composition wrapper for
                         common production controls. It presents the group as one cohesive surface: a
                         shared border, a unified focus ring, and propagated invalid and disabled
                         states.
@@ -812,9 +812,9 @@ console.log(greeting);</code></pre>
                     </p>
 
                     <h3>Leading icon search field</h3>
-                    <div data-field style="max-inline-size: 28rem">
+                    <div data-ui="field" style="max-inline-size: 28rem">
                         <label for="ig-search">Site search</label>
-                        <div data-input-group>
+                        <div data-ui="input-group">
                             <span data-icon aria-hidden="true"
                                 ><svg class="icon" aria-hidden="true">
                                     <use href="#icon-lucide-search"></use></svg
@@ -826,9 +826,9 @@ console.log(greeting);</code></pre>
                         </div>
                     </div>
 
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="site-search"&gt;Site search&lt;/label&gt;
-  &lt;div data-input-group&gt;
+  &lt;div data-ui="input-group"&gt;
     &lt;span data-icon aria-hidden="true"&gt;&amp;#x2315;&lt;/span&gt;
     &lt;input type="search" id="site-search" placeholder="Search&hellip;" /&gt;
     &lt;button type="submit" data-tone="neutral" aria-label="Submit search"&gt;Search&lt;/button&gt;
@@ -836,9 +836,9 @@ console.log(greeting);</code></pre>
 &lt;/div&gt;</code></pre>
 
                     <h3>Currency prefix field</h3>
-                    <div data-field style="max-inline-size: 16rem">
+                    <div data-ui="field" style="max-inline-size: 16rem">
                         <label for="ig-amount">Amount</label>
-                        <div data-input-group>
+                        <div data-ui="input-group">
                             <span data-prefix aria-hidden="true">$</span>
                             <input
                                 type="number"
@@ -849,18 +849,18 @@ console.log(greeting);</code></pre>
                         </div>
                     </div>
 
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="amount"&gt;Amount&lt;/label&gt;
-  &lt;div data-input-group&gt;
+  &lt;div data-ui="input-group"&gt;
     &lt;span data-prefix aria-hidden="true"&gt;$&lt;/span&gt;
     &lt;input type="number" id="amount" inputmode="decimal" placeholder="0.00" /&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
 
                     <h3>Suffix unit field</h3>
-                    <div data-field style="max-inline-size: 16rem">
+                    <div data-ui="field" style="max-inline-size: 16rem">
                         <label for="ig-weight">Weight</label>
-                        <div data-input-group>
+                        <div data-ui="input-group">
                             <input
                                 type="number"
                                 id="ig-weight"
@@ -871,18 +871,18 @@ console.log(greeting);</code></pre>
                         </div>
                     </div>
 
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="weight"&gt;Weight&lt;/label&gt;
-  &lt;div data-input-group&gt;
+  &lt;div data-ui="input-group"&gt;
     &lt;input type="number" id="weight" inputmode="decimal" placeholder="0.0" /&gt;
     &lt;span data-suffix aria-hidden="true"&gt;kg&lt;/span&gt;
   &lt;/div&gt;
 &lt;/div&gt;</code></pre>
 
                     <h3>Trailing action button field</h3>
-                    <div data-field style="max-inline-size: 28rem">
+                    <div data-ui="field" style="max-inline-size: 28rem">
                         <label for="ig-apikey">API key</label>
-                        <div data-input-group>
+                        <div data-ui="input-group">
                             <input
                                 type="text"
                                 id="ig-apikey"
@@ -895,9 +895,9 @@ console.log(greeting);</code></pre>
                         </div>
                     </div>
 
-                    <pre><code>&lt;div data-field&gt;
+                    <pre><code>&lt;div data-ui="field"&gt;
   &lt;label for="api-key"&gt;API key&lt;/label&gt;
-  &lt;div data-input-group&gt;
+  &lt;div data-ui="input-group"&gt;
     &lt;input type="text" id="api-key" value="sk-••••••••" readonly /&gt;
     &lt;button type="button" data-tone="neutral" aria-label="Copy API key"&gt;Copy&lt;/button&gt;
   &lt;/div&gt;
@@ -909,16 +909,16 @@ console.log(greeting);</code></pre>
                         class="control-row"
                         style="flex-direction: column; align-items: flex-start; gap: 1rem"
                     >
-                        <div data-field style="max-inline-size: 24rem">
+                        <div data-ui="field" style="max-inline-size: 24rem">
                             <label for="ig-focus-demo">Focus state (click into the field)</label>
-                            <div data-input-group>
+                            <div data-ui="input-group">
                                 <span data-prefix aria-hidden="true">@</span>
                                 <input type="text" id="ig-focus-demo" placeholder="username" />
                             </div>
                         </div>
-                        <div data-field style="max-inline-size: 24rem">
+                        <div data-ui="field" style="max-inline-size: 24rem">
                             <label for="ig-invalid-demo">Invalid state</label>
-                            <div data-input-group>
+                            <div data-ui="input-group">
                                 <span data-prefix aria-hidden="true">$</span>
                                 <input
                                     type="number"
@@ -929,9 +929,9 @@ console.log(greeting);</code></pre>
                             </div>
                             <span data-error>Enter a positive amount.</span>
                         </div>
-                        <div data-field style="max-inline-size: 24rem">
+                        <div data-ui="field" style="max-inline-size: 24rem">
                             <label for="ig-disabled-demo">Disabled state</label>
-                            <div data-input-group>
+                            <div data-ui="input-group">
                                 <input
                                     type="text"
                                     id="ig-disabled-demo"
@@ -952,7 +952,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Authoring rules</h3>
                     <ul>
-                        <li>Host must be <code>div[data-input-group]</code>.</li>
+                        <li>Host must be <code>div[data-ui="input-group"]</code>.</li>
                         <li>
                             Exactly one text-like control per group: <code>input</code> (not
                             checkbox, radio, range, file, color), <code>select</code>, or
@@ -989,8 +989,8 @@ console.log(greeting);</code></pre>
                             are application code.
                         </li>
                         <li>
-                            Validation messaging — combine <code>data-input-group</code> with
-                            <code>div[data-field]</code> for label, help text, and error message
+                            Validation messaging — combine <code>data-ui="input-group"</code> with
+                            <code>div[data-ui="field"]</code> for label, help text, and error message
                             composition.
                         </li>
                     </ul>
@@ -1352,9 +1352,9 @@ console.log(greeting);</code></pre>
 
                 <!-- ── Semantic navbar pattern ─────────────────────────────────────────── -->
                 <section class="showcase-section" id="navbar">
-                    <h2>Navbar pattern (<code>nav[data-navbar]</code>)</h2>
+                    <h2>Navbar pattern (<code>nav[data-ui="navbar"]</code>)</h2>
                     <p>
-                        The primary navigation contract is <code>nav[data-navbar]</code> inside
+                        The primary navigation contract is <code>nav[data-ui="navbar"]</code> inside
                         <code>header[data-layout-header]</code>. It contains one or two direct
                         <code>&lt;ul&gt;</code> elements — the first is the primary/start group, the
                         second optional <code>&lt;ul&gt;</code> is the secondary/end group.
@@ -1377,7 +1377,7 @@ console.log(greeting);</code></pre>
                     <ul>
                         <li>
                             <code>header[data-layout-header]</code> — required host (inside
-                            <code>div[data-layout-shell]</code>).
+                            <code>div[data-ui="layout-shell"]</code>).
                         </li>
                         <li>
                             <code>button[data-nav-toggle][aria-expanded][aria-controls]</code> —
@@ -1385,15 +1385,15 @@ console.log(greeting);</code></pre>
                             <code>aria-controls</code> pointing to the <code>nav</code> id.
                         </li>
                         <li>
-                            <code>nav[data-navbar][id]</code> — the navigation element; id is
+                            <code>nav[data-ui="navbar"][id]</code> — the navigation element; id is
                             required when a toggle is present.
                         </li>
                         <li>
-                            <code>nav[data-navbar] &gt; ul</code> — primary group (left/start
+                            <code>nav[data-ui="navbar"] &gt; ul</code> — primary group (left/start
                             aligned).
                         </li>
                         <li>
-                            <code>nav[data-navbar] &gt; ul:nth-child(2)</code> — secondary group
+                            <code>nav[data-ui="navbar"] &gt; ul:nth-child(2)</code> — secondary group
                             (right/end aligned, optional).
                         </li>
                         <li>
@@ -1420,10 +1420,10 @@ console.log(greeting);</code></pre>
   <link rel="stylesheet" href="lumen.min.css" />
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Home</a></li>
         <li>
@@ -1444,7 +1444,7 @@ console.log(greeting);</code></pre>
   </header>
   <main>
     <h1>Header + main shell</h1>
-    <p>Minimal layout-shell with a header and nav[data-navbar].</p>
+    <p>Minimal layout-shell with a header and nav[data-ui="navbar"].</p>
     <p>Hover or focus Products to open the grouped navigation dropdown.</p>
     <p>Use aria-current="page" to highlight the active link.</p>
     <p>Content sample.</p>
@@ -1471,7 +1471,7 @@ console.log(greeting);</code></pre>
   <style>
     /* Force narrow-viewport layout so toggle is always visible in this demo */
     [data-nav-toggle] { display: inline-flex !important; }
-    nav[data-navbar] {
+    nav[data-ui="navbar"] {
       display: none;
       position: absolute;
       inset-block-start: var(--layout-shell-header-height);
@@ -1487,17 +1487,17 @@ console.log(greeting);</code></pre>
       box-shadow: var(--shadow-md);
       z-index: var(--layout-navbar-z-index);
     }
-    nav[data-navbar] > ul { flex-direction: column; align-items: stretch; gap: 0; }
-    nav[data-navbar] > ul:nth-child(2) { margin-inline-start: 0; }
-    nav[data-navbar] > ul > li > a { display: flex; inline-size: 100%; white-space: normal; padding-block: var(--space-3); }
-    nav[data-navbar] > ul > li:has(> a + ul) { flex-direction: column; align-items: stretch; }
-    nav[data-navbar] :where(ul > li > a:has(+ ul)) { display: flex; inline-size: 100%; padding-block: var(--space-3); white-space: normal; }
-    nav[data-navbar] :where(ul > li > a + ul) { display: block; position: static; box-shadow: none; border: none; border-radius: 0; padding-inline-start: var(--space-4); min-inline-size: 0; opacity: 1; translate: none; transition: none; }
-    :where(header[data-layout-header]:has([data-nav-toggle][aria-expanded="true"])) > nav[data-navbar] { display: flex; }
+    nav[data-ui="navbar"] > ul { flex-direction: column; align-items: stretch; gap: 0; }
+    nav[data-ui="navbar"] > ul:nth-child(2) { margin-inline-start: 0; }
+    nav[data-ui="navbar"] > ul > li > a { display: flex; inline-size: 100%; white-space: normal; padding-block: var(--space-3); }
+    nav[data-ui="navbar"] > ul > li:has(> a + ul) { flex-direction: column; align-items: stretch; }
+    nav[data-ui="navbar"] :where(ul > li > a:has(+ ul)) { display: flex; inline-size: 100%; padding-block: var(--space-3); white-space: normal; }
+    nav[data-ui="navbar"] :where(ul > li > a + ul) { display: block; position: static; box-shadow: none; border: none; border-radius: 0; padding-inline-start: var(--space-4); min-inline-size: 0; opacity: 1; translate: none; transition: none; }
+    :where(header[data-layout-header]:has([data-nav-toggle][aria-expanded="true"])) > nav[data-ui="navbar"] { display: flex; }
   </style>
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
     <button
@@ -1513,7 +1513,7 @@ console.log(greeting);</code></pre>
         btn.setAttribute(&apos;aria-label&apos;, !expanded ? &apos;Close navigation&apos; : &apos;Open navigation&apos;);
       "
     ></button>
-    <nav id="demo-navbar" data-navbar aria-label="Primary">
+    <nav id="demo-navbar" data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Home</a></li>
         <li>
@@ -1684,9 +1684,9 @@ console.log(greeting);</code></pre>
 
                 <!-- ── Layout shell examples ──────────────────────────────────────────── -->
                 <section class="showcase-section" id="layout">
-                    <h2>Layout shell (<code>div[data-layout-shell]</code>)</h2>
+                    <h2>Layout shell (<code>div[data-ui="layout-shell"]</code>)</h2>
                     <p>
-                        <code>div[data-layout-shell]</code> is a container-based full-height layout
+                        <code>div[data-ui="layout-shell"]</code> is a container-based full-height layout
                         wrapper that supports exactly eight direct-child combinations without any
                         extra CSS. All variants are detected automatically via <code>:has()</code> —
                         no modifier class or attribute is required on the host.
@@ -1764,7 +1764,7 @@ console.log(greeting);</code></pre>
                     <h3>Authoring contract</h3>
                     <ul>
                         <li>
-                            <code>div[data-layout-shell]</code> — required host; can be placed
+                            <code>div[data-ui="layout-shell"]</code> — required host; can be placed
                             anywhere in the document (not just on <code>&lt;body&gt;</code>).
                         </li>
                         <li>
@@ -1804,7 +1804,7 @@ console.log(greeting);</code></pre>
   <link rel="stylesheet" href="lumen.min.css" />
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <main>
     <h1>Page title</h1>
     <p>Main-only shell. No header, no sidebar, no panel, no footer.</p>
@@ -1832,10 +1832,10 @@ console.log(greeting);</code></pre>
   <link rel="stylesheet" href="lumen.min.css" />
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Home</a></li>
         <li><a href="#">Products</a></li>
@@ -1874,10 +1874,10 @@ console.log(greeting);</code></pre>
   <link rel="stylesheet" href="lumen.min.css" />
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Documents</a></li>
         <li><a href="#">Settings</a></li>
@@ -1896,7 +1896,7 @@ console.log(greeting);</code></pre>
     <h3 style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);margin-block-end:var(--space-3)">Properties</h3>
     <ul style="list-style:none;padding:0;font-size:var(--font-size-sm)">
       <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Author: A. Smith</li>
-      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-badge data-tone="accent">Draft</span></li>
+      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-ui="badge" data-tone="accent">Draft</span></li>
       <li style="padding:var(--space-2) 0">Last edited: today</li>
     </ul>
   </aside>
@@ -1918,10 +1918,10 @@ console.log(greeting);</code></pre>
   <link rel="stylesheet" href="lumen.min.css" />
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Home</a></li>
         <li><a href="#">About</a></li>
@@ -1956,28 +1956,28 @@ console.log(greeting);</code></pre>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="lumen.min.css" />
   <style>
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul {
       list-style: none; padding: 0; margin: 0;
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a {
       display: flex; align-items: center; padding: 0.5rem 0.75rem;
       border-radius: var(--radius-sm); text-decoration: none;
       font-size: var(--font-size-sm); color: var(--color-text-secondary);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
       background-color: var(--color-surface-sunken); color: var(--color-text);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
       background-color: var(--color-accent-subtle); color: var(--color-accent);
       font-weight: var(--font-weight-medium);
     }
   </style>
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Dashboard</a></li>
         <li>
@@ -2033,19 +2033,19 @@ console.log(greeting);</code></pre>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="lumen.min.css" />
   <style>
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul,
-    div[data-layout-shell] > aside[data-layout-panel] ul {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul,
+    div[data-ui="layout-shell"] > aside[data-layout-panel] ul {
       list-style: none; padding: 0; margin: 0;
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a {
       display: flex; align-items: center; padding: 0.5rem 0.75rem;
       border-radius: var(--radius-sm); text-decoration: none;
       font-size: var(--font-size-sm); color: var(--color-text-secondary);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
       background-color: var(--color-surface-sunken); color: var(--color-text);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
       background-color: var(--color-accent-subtle); color: var(--color-accent);
       font-weight: var(--font-weight-medium);
     }
@@ -2056,10 +2056,10 @@ console.log(greeting);</code></pre>
   </style>
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <strong style="font-size:var(--font-size-md);flex-shrink:0">Acme Admin</strong>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Dashboard</a></li>
         <li>
@@ -2072,7 +2072,7 @@ console.log(greeting);</code></pre>
       </ul>
     </nav>
     <div data-layout-actions>
-      <span data-badge data-tone="success">Live</span>
+      <span data-ui="badge" data-tone="success">Live</span>
       <button type="button" data-tone="neutral">Account</button>
     </div>
   </header>
@@ -2105,7 +2105,7 @@ console.log(greeting);</code></pre>
     <h3 style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);margin-block-end:var(--space-3)">Record detail</h3>
     <ul style="list-style:none;padding:0;font-size:var(--font-size-sm)">
       <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Owner: Ops Team</li>
-      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-badge data-tone="success">Active</span></li>
+      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-ui="badge" data-tone="success">Active</span></li>
       <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Priority: High</li>
       <li style="padding:var(--space-2) 0">Last run: 2 min ago</li>
     </ul>
@@ -2127,28 +2127,28 @@ console.log(greeting);</code></pre>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="lumen.min.css" />
   <style>
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul {
       list-style: none; padding: 0; margin: 0;
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a {
       display: flex; align-items: center; padding: 0.5rem 0.75rem;
       border-radius: var(--radius-sm); text-decoration: none;
       font-size: var(--font-size-sm); color: var(--color-text-secondary);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
       background-color: var(--color-surface-sunken); color: var(--color-text);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
       background-color: var(--color-accent-subtle); color: var(--color-accent);
       font-weight: var(--font-weight-medium);
     }
   </style>
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="#" style="font-weight:600;text-decoration:none;color:inherit;flex-shrink:0">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Dashboard</a></li>
         <li><a href="#">Settings</a></li>
@@ -2199,29 +2199,29 @@ console.log(greeting);</code></pre>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="lumen.min.css" />
   <style>
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul,
-    div[data-layout-shell] > aside[data-layout-panel] ul {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul,
+    div[data-ui="layout-shell"] > aside[data-layout-panel] ul {
       list-style: none; padding: 0; margin: 0;
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a {
       display: flex; align-items: center; padding: 0.5rem 0.75rem;
       border-radius: var(--radius-sm); text-decoration: none;
       font-size: var(--font-size-sm); color: var(--color-text-secondary);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a:is(:hover,:focus-visible) {
       background-color: var(--color-surface-sunken); color: var(--color-text);
     }
-    div[data-layout-shell] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
+    div[data-ui="layout-shell"] > aside[data-layout-sidebar] nav ul li a[aria-current="page"] {
       background-color: var(--color-accent-subtle); color: var(--color-accent);
       font-weight: var(--font-weight-medium);
     }
   </style>
 </head>
 <body>
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <strong style="font-size:var(--font-size-md);flex-shrink:0">Acme Admin</strong>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="#" aria-current="page">Dashboard</a></li>
         <li>
@@ -2234,7 +2234,7 @@ console.log(greeting);</code></pre>
       </ul>
     </nav>
     <div data-layout-actions>
-      <span data-badge data-tone="success">Live</span>
+      <span data-ui="badge" data-tone="success">Live</span>
       <button type="button" data-tone="neutral">Account</button>
     </div>
   </header>
@@ -2262,7 +2262,7 @@ console.log(greeting);</code></pre>
     <h3 style="font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);margin-block-end:var(--space-3)">Record detail</h3>
     <ul style="list-style:none;padding:0;font-size:var(--font-size-sm)">
       <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Owner: Ops Team</li>
-      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-badge data-tone="success">Active</span></li>
+      <li style="padding:var(--space-2) 0;border-block-end:1px solid var(--color-border-subtle)">Status: <span data-ui="badge" data-tone="success">Active</span></li>
       <li style="padding:var(--space-2) 0">Last run: 2 min ago</li>
     </ul>
   </aside>
@@ -2289,7 +2289,7 @@ console.log(greeting);</code></pre>
                             column track is collapsed so <code>main</code> fills the full width.
                         </li>
                         <li>
-                            At ≤ 48em: <code>nav[data-navbar]</code> collapses; toggle button
+                            At ≤ 48em: <code>nav[data-ui="navbar"]</code> collapses; toggle button
                             becomes visible.
                         </li>
                         <li>
@@ -2325,7 +2325,7 @@ console.log(greeting);</code></pre>
                     <p>
                         A semantic breadcrumb trail that gives deep application screens orientation
                         and hierarchy. Scope is intentionally restricted to
-                        <code>nav[data-breadcrumbs]</code> — it does <strong>not</strong> affect
+                        <code>nav[data-ui="breadcrumbs"]</code> — it does <strong>not</strong> affect
                         generic <code>&lt;nav&gt;</code>, navbars, or ordered lists.
                     </p>
                     <p>
@@ -2336,7 +2336,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Authoring contract</h3>
                     <p>
-                        The only supported host is <code>nav[data-breadcrumbs]</code> with either
+                        The only supported host is <code>nav[data-ui="breadcrumbs"]</code> with either
                         <code>aria-label</code> or <code>aria-labelledby</code>. The direct child is
                         exactly one <code>&lt;ol&gt;</code>. Each <code>&lt;li&gt;</code> represents
                         one location step. The current page is marked only with
@@ -2355,7 +2355,7 @@ console.log(greeting);</code></pre>
                     </ul>
 
                     <h3>Standard trail — current page as link</h3>
-                    <nav data-breadcrumbs aria-label="Page location">
+                    <nav data-ui="breadcrumbs" aria-label="Page location">
                         <ol>
                             <li><a href="#">Home</a></li>
                             <li><a href="#">Accounts</a></li>
@@ -2365,7 +2365,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Standard trail — current page as non-interactive span</h3>
-                    <nav data-breadcrumbs aria-label="Page location">
+                    <nav data-ui="breadcrumbs" aria-label="Page location">
                         <ol>
                             <li><a href="#">Home</a></li>
                             <li><a href="#">Settings</a></li>
@@ -2374,7 +2374,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Minimal — two levels</h3>
-                    <nav data-breadcrumbs aria-label="Page location">
+                    <nav data-ui="breadcrumbs" aria-label="Page location">
                         <ol>
                             <li><a href="#">Dashboard</a></li>
                             <li><span aria-current="page">Reports</span></li>
@@ -2382,7 +2382,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Long labels — wrap test</h3>
-                    <nav data-breadcrumbs aria-label="Page location">
+                    <nav data-ui="breadcrumbs" aria-label="Page location">
                         <ol>
                             <li><a href="#">Home</a></li>
                             <li><a href="#">Global Customer Relationship Management</a></li>
@@ -2396,7 +2396,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Copy-pasteable markup</h3>
-                    <pre><code>&lt;nav data-breadcrumbs aria-label="Page location"&gt;
+                    <pre><code>&lt;nav data-ui="breadcrumbs" aria-label="Page location"&gt;
   &lt;ol&gt;
     &lt;!-- Ancestor location steps --&gt;
     &lt;li&gt;&lt;a href="/dashboard"&gt;Home&lt;/a&gt;&lt;/li&gt;
@@ -2423,7 +2423,7 @@ console.log(greeting);</code></pre>
                         <li>Route generation and <code>href</code> construction for each crumb.</li>
                         <li>
                             Localized crumb labels — the CSS selector depends only on
-                            <code>data-breadcrumbs</code>.
+                            <code>data-ui="breadcrumbs"</code>.
                         </li>
                         <li>
                             Responsive collapsing, overflow menus, or dropdown crumbs (v1
@@ -2621,7 +2621,7 @@ console.log(greeting);</code></pre>
                         When both <code>value</code> and <code>max</code> are present the element
                         renders as a familiar linear progress bar.
                     </p>
-                    <div data-field>
+                    <div data-ui="field">
                         <label for="sf-progress-det">Uploading file (65%)</label>
                         <progress id="sf-progress-det" value="65" max="100"></progress>
                     </div>
@@ -2713,7 +2713,7 @@ console.log(greeting);</code></pre>
                     <h3>Authoring contract</h3>
                     <p>
                         Wrap all toasts in
-                        <code>aside[data-toast-region][aria-label]</code> containing exactly one
+                        <code>aside[data-ui="toast-region"][aria-label]</code> containing exactly one
                         <code>&lt;ul&gt;</code> or <code>&lt;ol&gt;</code>. Each toast is a direct
                         <code>&lt;li&gt;</code> child. Inside the <code>&lt;li&gt;</code>, place a
                         <code>&lt;div role="status"&gt;</code> (polite announcement) or
@@ -2764,7 +2764,7 @@ console.log(greeting);</code></pre>
                         </p>
 
                         <aside
-                            data-toast-region
+                            data-ui="toast-region"
                             aria-label="Toast notifications"
                             style="position: absolute"
                         >
@@ -2829,7 +2829,7 @@ console.log(greeting);</code></pre>
                     </div>
 
                     <h3>Polite status toast (<code>role="status"</code>)</h3>
-                    <pre><code>&lt;aside data-toast-region aria-label="Notifications"&gt;
+                    <pre><code>&lt;aside data-ui="toast-region" aria-label="Notifications"&gt;
   &lt;ul&gt;
     &lt;li&gt;
       &lt;div role="status"&gt;
@@ -2841,7 +2841,7 @@ console.log(greeting);</code></pre>
 &lt;/aside&gt;</code></pre>
 
                     <h3>Assertive alert toast (<code>role="alert"</code>)</h3>
-                    <pre><code>&lt;aside data-toast-region aria-label="Notifications"&gt;
+                    <pre><code>&lt;aside data-ui="toast-region" aria-label="Notifications"&gt;
   &lt;ul&gt;
     &lt;li&gt;
       &lt;div role="alert"&gt;
@@ -2909,14 +2909,14 @@ console.log(greeting);</code></pre>
                     </p>
                     <p>
                         This surface is <strong>not</strong> a live-region toast queue. Use
-                        <code>aside[data-toast-region]</code> for transient, auto-announced
+                        <code>aside[data-ui="toast-region"]</code> for transient, auto-announced
                         feedback. Use this surface for a browsable notification inbox that users
                         open on demand.
                     </p>
 
                     <h3>Populated example</h3>
                     <p>
-                        Host is <code>aside[data-notification-center]</code> with
+                        Host is <code>aside[data-ui="notification-center"]</code> with
                         <code>aria-label</code> or <code>aria-labelledby</code>. The optional
                         <code>&lt;header&gt;</code> holds a title and a "Mark all read" action. Each
                         <code>&lt;li&gt;</code> may carry <code>data-unread="true"</code> for the
@@ -2926,7 +2926,7 @@ console.log(greeting);</code></pre>
                     </p>
 
                     <aside
-                        data-notification-center
+                        data-ui="notification-center"
                         aria-label="Notifications"
                         style="max-inline-size: 24rem"
                     >
@@ -2974,7 +2974,7 @@ console.log(greeting);</code></pre>
                     </aside>
 
                     <h3>Populated example markup</h3>
-                    <pre><code>&lt;aside data-notification-center aria-label="Notifications"&gt;
+                    <pre><code>&lt;aside data-ui="notification-center" aria-label="Notifications"&gt;
   &lt;header&gt;
     &lt;h2&gt;Notifications&lt;/h2&gt;
     &lt;button type="button"&gt;Mark all read&lt;/button&gt;
@@ -3011,7 +3011,7 @@ console.log(greeting);</code></pre>
                     <h3>Empty center</h3>
                     <p>
                         When there are no notifications, place a
-                        <code>section[data-region-state="empty"]</code> host inside the notification
+                        <code>section[data-ui="region-state" data-state="empty"]</code> host inside the notification
                         center instead of an empty list. Use <code>&lt;section&gt;</code> (not
                         <code>&lt;aside&gt;</code>) when nesting inside another
                         <code>&lt;aside&gt;</code> to avoid invalid nested complementary landmarks.
@@ -3020,25 +3020,25 @@ console.log(greeting);</code></pre>
                     </p>
 
                     <aside
-                        data-notification-center
+                        data-ui="notification-center"
                         aria-label="Notifications"
                         style="max-inline-size: 24rem"
                     >
                         <header>
                             <h2>Notifications</h2>
                         </header>
-                        <section data-region-state="empty">
+                        <section data-ui="region-state" data-state="empty">
                             <h3>No notifications</h3>
                             <p>You're all caught up.</p>
                         </section>
                     </aside>
 
                     <h3>Empty center markup</h3>
-                    <pre><code>&lt;aside data-notification-center aria-label="Notifications"&gt;
+                    <pre><code>&lt;aside data-ui="notification-center" aria-label="Notifications"&gt;
   &lt;header&gt;
     &lt;h2&gt;Notifications&lt;/h2&gt;
   &lt;/header&gt;
-  &lt;section data-region-state="empty"&gt;
+  &lt;section data-ui="region-state" data-state="empty"&gt;
     &lt;h3&gt;No notifications&lt;/h3&gt;
     &lt;p&gt;You're all caught up.&lt;/p&gt;
   &lt;/section&gt;
@@ -3075,7 +3075,7 @@ console.log(greeting);</code></pre>
                     </ul>
                     <p>
                         <strong>Notification center vs. toasts:</strong> Use toasts
-                        (<code>aside[data-toast-region]</code>) for transient, non-blocking feedback
+                        (<code>aside[data-ui="toast-region"]</code>) for transient, non-blocking feedback
                         that assistive technology must announce on insertion. Use the notification
                         center for a persistent, browsable inbox that users open on demand.
                     </p>
@@ -3088,7 +3088,7 @@ console.log(greeting);</code></pre>
                     <h2>Pagination</h2>
                     <p>
                         A narrow, accessible pagination component for data-heavy screens. Scope is
-                        intentionally restricted to <code>nav[data-pagination]</code> — it does
+                        intentionally restricted to <code>nav[data-ui="pagination"]</code> — it does
                         <strong>not</strong> affect breadcrumbs, navbars, or other
                         <code>&lt;nav&gt;</code> elements.
                     </p>
@@ -3099,7 +3099,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Authoring contract</h3>
                     <p>
-                        The host is <code>nav[data-pagination]</code> with either
+                        The host is <code>nav[data-ui="pagination"]</code> with either
                         <code>aria-label</code> or <code>aria-labelledby</code>. The direct child is
                         exactly one <code>&lt;ol&gt;</code> or <code>&lt;ul&gt;</code>. Each
                         <code>&lt;li&gt;</code> contains one of:
@@ -3117,7 +3117,7 @@ console.log(greeting);</code></pre>
                     </ul>
 
                     <h3>Full example — previous, pages, current, gap, next disabled</h3>
-                    <nav data-pagination aria-label="Results pagination">
+                    <nav data-ui="pagination" aria-label="Results pagination">
                         <ol>
                             <li><a href="#">Previous</a></li>
                             <li><a href="#">1</a></li>
@@ -3131,7 +3131,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>First page — disabled previous</h3>
-                    <nav data-pagination aria-label="Results pagination">
+                    <nav data-ui="pagination" aria-label="Results pagination">
                         <ol>
                             <li><span aria-disabled="true">Previous</span></li>
                             <li><a href="#" aria-current="page">1</a></li>
@@ -3144,7 +3144,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Last page — disabled next</h3>
-                    <nav data-pagination aria-label="Results pagination">
+                    <nav data-ui="pagination" aria-label="Results pagination">
                         <ol>
                             <li><a href="#">Previous</a></li>
                             <li><a href="#">1</a></li>
@@ -3157,7 +3157,7 @@ console.log(greeting);</code></pre>
                     </nav>
 
                     <h3>Copy-pasteable markup</h3>
-                    <pre><code>&lt;nav data-pagination aria-label="Results pagination"&gt;
+                    <pre><code>&lt;nav data-ui="pagination" aria-label="Results pagination"&gt;
   &lt;ol&gt;
     &lt;!-- Disabled previous control --&gt;
     &lt;li&gt;&lt;span aria-disabled="true"&gt;Previous&lt;/span&gt;&lt;/li&gt;
@@ -3206,9 +3206,8 @@ console.log(greeting);</code></pre>
                     <h2>Tabs</h2>
                     <p>
                         An accessible panel-switching primitive for settings screens, detail views,
-                        and dashboard sections. Scope is intentionally restricted to
-                        <code>section[data-tabs]</code> — it does <strong>not</strong> affect other
-                        <code>&lt;section&gt;</code> elements.
+                        and dashboards. Scope is determined by <code>[data-ui="tabs"]</code>; apply it
+                        to a semantically suitable host such as a <code>section</code> or <code</code>>div</code>.
                     </p>
                     <p>
                         <strong>Presentation only.</strong> Application code owns arrow-key
@@ -3218,7 +3217,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Authoring contract</h3>
                     <p>
-                        The host is <code>section[data-tabs]</code>. The direct child tablist is
+                        The host is any semantically suitable element carrying <code>data-ui="tabs"</code>. The direct child tablist is
                         <code>[role=tablist]</code> with either <code>aria-label</code> or
                         <code>aria-labelledby</code>. Each tab trigger is a
                         <code>button[role=tab]</code> carrying <code>aria-controls</code> and
@@ -3244,7 +3243,7 @@ console.log(greeting);</code></pre>
                     </ul>
 
                     <h3>Settings-style tabs (default underline variant)</h3>
-                    <section data-tabs>
+                    <section data-ui="tabs">
                         <div role="tablist" aria-label="Account settings">
                             <button
                                 role="tab"
@@ -3299,7 +3298,7 @@ console.log(greeting);</code></pre>
                     </section>
 
                     <h3>Dashboard filter tabs (segmented variant)</h3>
-                    <section data-tabs data-variant="segmented">
+                    <section data-ui="tabs" data-variant="segmented">
                         <div role="tablist" aria-label="Revenue period">
                             <button
                                 role="tab"
@@ -3340,7 +3339,7 @@ console.log(greeting);</code></pre>
                     </section>
 
                     <h3>Copy-pasteable markup — settings tabs (default)</h3>
-                    <pre><code>&lt;section data-tabs&gt;
+                    <pre><code>&lt;section data-ui="tabs"&gt;
   &lt;div role="tablist" aria-label="Account settings"&gt;
     &lt;button role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true"&gt;Profile&lt;/button&gt;
     &lt;button role="tab" id="tab-security" aria-controls="panel-security" aria-selected="false" tabindex="-1"&gt;Security&lt;/button&gt;
@@ -3358,7 +3357,7 @@ console.log(greeting);</code></pre>
 &lt;/section&gt;</code></pre>
 
                     <h3>Copy-pasteable markup — segmented tabs</h3>
-                    <pre><code>&lt;section data-tabs data-variant="segmented"&gt;
+                    <pre><code>&lt;section data-ui="tabs" data-variant="segmented"&gt;
   &lt;div role="tablist" aria-label="Revenue period"&gt;
     &lt;button role="tab" id="tab-7d" aria-controls="panel-7d" aria-selected="true"&gt;7 days&lt;/button&gt;
     &lt;button role="tab" id="tab-30d" aria-controls="panel-30d" aria-selected="false" tabindex="-1"&gt;30 days&lt;/button&gt;
@@ -3377,7 +3376,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Contract rules</h3>
                     <ul>
-                        <li>The only supported host is <code>section[data-tabs]</code>.</li>
+                        <li>Any semantically suitable host element may carry <code>data-ui="tabs"</code>.</li>
                         <li>
                             The host contains exactly one direct <code>[role=tablist]</code> with
                             either <code>aria-label</code> or <code>aria-labelledby</code>.
@@ -3473,11 +3472,11 @@ console.log(greeting);</code></pre>
 
                     <h3>All tones (inline prose)</h3>
                     <p>
-                        Status: <span data-badge>Neutral</span>
-                        <span data-badge data-tone="accent">Accent</span>
-                        <span data-badge data-tone="success">Success</span>
-                        <span data-badge data-tone="warning">Warning</span>
-                        <span data-badge data-tone="danger">Danger</span>
+                        Status: <span data-ui="badge">Neutral</span>
+                        <span data-ui="badge" data-tone="accent">Accent</span>
+                        <span data-ui="badge" data-tone="success">Success</span>
+                        <span data-ui="badge" data-tone="warning">Warning</span>
+                        <span data-ui="badge" data-tone="danger">Danger</span>
                     </p>
 
                     <h3>Inside a table cell (dense-layout validation)</h3>
@@ -3494,25 +3493,25 @@ console.log(greeting);</code></pre>
                             <tr>
                                 <td>#1042</td>
                                 <td>Acme Corp</td>
-                                <td><span data-badge data-tone="success">Fulfilled</span></td>
+                                <td><span data-ui="badge" data-tone="success">Fulfilled</span></td>
                                 <td>$240.00</td>
                             </tr>
                             <tr>
                                 <td>#1041</td>
                                 <td>Globex Inc</td>
-                                <td><span data-badge data-tone="warning">Pending</span></td>
+                                <td><span data-ui="badge" data-tone="warning">Pending</span></td>
                                 <td>$85.50</td>
                             </tr>
                             <tr>
                                 <td>#1040</td>
                                 <td>Initech</td>
-                                <td><span data-badge data-tone="danger">Cancelled</span></td>
+                                <td><span data-ui="badge" data-tone="danger">Cancelled</span></td>
                                 <td>$310.00</td>
                             </tr>
                             <tr>
                                 <td>#1039</td>
                                 <td>Umbrella Ltd</td>
-                                <td><span data-badge data-tone="accent">Processing</span></td>
+                                <td><span data-ui="badge" data-tone="accent">Processing</span></td>
                                 <td>$125.00</td>
                             </tr>
                         </tbody>
@@ -3520,16 +3519,16 @@ console.log(greeting);</code></pre>
 
                     <h3>Copy-pasteable markup</h3>
                     <pre><code>&lt;!-- Default (neutral) --&gt;
-&lt;span data-badge&gt;Neutral&lt;/span&gt;
+&lt;span data-ui="badge"&gt;Neutral&lt;/span&gt;
 
 &lt;!-- Explicit tone --&gt;
-&lt;span data-badge data-tone="accent"&gt;Accent&lt;/span&gt;
-&lt;span data-badge data-tone="success"&gt;Success&lt;/span&gt;
-&lt;span data-badge data-tone="warning"&gt;Warning&lt;/span&gt;
-&lt;span data-badge data-tone="danger"&gt;Danger&lt;/span&gt;
+&lt;span data-ui="badge" data-tone="accent"&gt;Accent&lt;/span&gt;
+&lt;span data-ui="badge" data-tone="success"&gt;Success&lt;/span&gt;
+&lt;span data-ui="badge" data-tone="warning"&gt;Warning&lt;/span&gt;
+&lt;span data-ui="badge" data-tone="danger"&gt;Danger&lt;/span&gt;
 
 &lt;!-- Inside a table cell --&gt;
-&lt;td&gt;&lt;span data-badge data-tone="success"&gt;Fulfilled&lt;/span&gt;&lt;/td&gt;</code></pre>
+&lt;td&gt;&lt;span data-ui="badge" data-tone="success"&gt;Fulfilled&lt;/span&gt;&lt;/td&gt;</code></pre>
 
                     <h3>Badge tokens</h3>
                     <pre><code>:root {
@@ -3561,10 +3560,10 @@ console.log(greeting);</code></pre>
 
                     <h3>Empty state</h3>
                     <p>
-                        Use <code>data-region-state="empty"</code> for sections where no content
+                        Use <code>data-ui="region-state" data-state="empty"</code> for sections where no content
                         exists yet. Informational only — no live-region role is required.
                     </p>
-                    <section data-region-state="empty">
+                    <section data-ui="region-state" data-state="empty">
                         <h3>No results found</h3>
                         <p>Try adjusting your search terms or clearing the active filters.</p>
                         <footer>
@@ -3576,11 +3575,11 @@ console.log(greeting);</code></pre>
 
                     <h3>Success state</h3>
                     <p>
-                        Use <code>data-region-state="success"</code> when a region communicates
+                        Use <code>data-ui="region-state" data-state="success"</code> when a region communicates
                         completion or a positive outcome. Add <code>role="status"</code> when a
                         screen-reader announcement is needed at the next opportunity (polite).
                     </p>
-                    <section data-region-state="success" role="status">
+                    <section data-ui="region-state" data-state="success" role="status">
                         <h3>Import complete</h3>
                         <p>
                             142 records were imported successfully and are now available in your
@@ -3593,11 +3592,11 @@ console.log(greeting);</code></pre>
 
                     <h3>Error state</h3>
                     <p>
-                        Use <code>data-region-state="error"</code> when a region fails to load or
+                        Use <code>data-ui="region-state" data-state="error"</code> when a region fails to load or
                         encounters an error. Add <code>role="alert"</code> when an immediate
                         screen-reader announcement is required (assertive).
                     </p>
-                    <section data-region-state="error" role="alert">
+                    <section data-ui="region-state" data-state="error" role="alert">
                         <h3>Unable to load report</h3>
                         <p>
                             A server error occurred while fetching the data. Your records were not
@@ -3626,7 +3625,7 @@ console.log(greeting);</code></pre>
                             padding: var(--space-4);
                         "
                     >
-                        <section data-region-state="empty">
+                        <section data-ui="region-state" data-state="empty">
                             <h4>No activity yet</h4>
                             <p>
                                 Recent activity will appear here once you start using the
@@ -3642,7 +3641,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Copy-pasteable markup</h3>
                     <pre><code>&lt;!-- Empty state — informational, no live-region role required --&gt;
-&lt;section data-region-state="empty"&gt;
+&lt;section data-ui="region-state" data-state="empty"&gt;
   &lt;h2&gt;No results found&lt;/h2&gt;
   &lt;p&gt;Try adjusting your filters or search terms.&lt;/p&gt;
   &lt;footer&gt;
@@ -3651,7 +3650,7 @@ console.log(greeting);</code></pre>
 &lt;/section&gt;
 
 &lt;!-- Success state — add role="status" when AT announcement is needed --&gt;
-&lt;section data-region-state="success" role="status"&gt;
+&lt;section data-ui="region-state" data-state="success" role="status"&gt;
   &lt;h2&gt;Import complete&lt;/h2&gt;
   &lt;p&gt;142 records were imported successfully.&lt;/p&gt;
   &lt;footer&gt;
@@ -3660,7 +3659,7 @@ console.log(greeting);</code></pre>
 &lt;/section&gt;
 
 &lt;!-- Error state — add role="alert" when immediate AT announcement is needed --&gt;
-&lt;section data-region-state="error" role="alert"&gt;
+&lt;section data-ui="region-state" data-state="error" role="alert"&gt;
   &lt;h2&gt;Unable to load data&lt;/h2&gt;
   &lt;p&gt;A server error occurred. Your data was not affected.&lt;/p&gt;
   &lt;footer&gt;
@@ -3678,18 +3677,18 @@ console.log(greeting);</code></pre>
                     <h3>Accessibility guidance</h3>
                     <ul>
                         <li>
-                            <code>data-region-state="empty"</code> is informational; no live-region
+                            <code>data-ui="region-state" data-state="empty"</code> is informational; no live-region
                             role is required. The region renders quietly and is read in document
                             order.
                         </li>
                         <li>
-                            <code>data-region-state="success"</code> should carry
+                            <code>data-ui="region-state" data-state="success"</code> should carry
                             <code>role="status"</code> when the section appears or changes content
                             and you want a polite screen-reader announcement. Omit the role when the
                             section is static and already visible on page load.
                         </li>
                         <li>
-                            <code>data-region-state="error"</code> should carry
+                            <code>data-ui="region-state" data-state="error"</code> should carry
                             <code>role="alert"</code> when the error appears dynamically and
                             requires an immediate announcement. For static error pages already in
                             the DOM at load time, the role is optional.
@@ -3700,7 +3699,7 @@ console.log(greeting);</code></pre>
                         </li>
                         <li>
                             For transient, non-blocking feedback use toast notifications
-                            (<code>aside[data-toast-region]</code>).
+                            (<code>aside[data-ui="toast-region"]</code>).
                         </li>
                     </ul>
 
@@ -3722,7 +3721,7 @@ console.log(greeting);</code></pre>
                         A reusable pattern for communicating multiple form errors clearly after a
                         failed submit. The summary block sits at the top of the form and links
                         directly to each invalid field or fieldset group. Invalid grouped fieldsets
-                        extend the existing <code>fieldset[data-field]</code> composition primitive
+                        extend the existing <code>fieldset[data-ui="field"]</code> composition primitive
                         with border reinforcement and legend emphasis.
                     </p>
                     <p>
@@ -3739,7 +3738,7 @@ console.log(greeting);</code></pre>
                         its own inline error message independently of the summary.
                     </p>
 
-                    <form data-form-errors>
+                    <form data-ui="form-errors">
                         <div data-form-summary role="alert" aria-labelledby="fvs-heading">
                             <h3 id="fvs-heading">
                                 2 errors prevented this form from being submitted
@@ -3758,12 +3757,12 @@ console.log(greeting);</code></pre>
                             </ul>
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="fvs-name">Full name</label>
                             <input id="fvs-name" type="text" value="Jane Smith" />
                         </div>
 
-                        <div data-field>
+                        <div data-ui="field">
                             <label for="fvs-email">Email address</label>
                             <input
                                 id="fvs-email"
@@ -3778,7 +3777,7 @@ console.log(greeting);</code></pre>
                         </div>
 
                         <fieldset
-                            data-field
+                            data-ui="field"
                             aria-invalid="true"
                             aria-describedby="fvs-contact-error"
                         >
@@ -3800,8 +3799,8 @@ console.log(greeting);</code></pre>
                     </form>
 
                     <h3>Copy-pasteable markup</h3>
-                    <pre><code>&lt;!-- Add data-form-errors to the form when validation has failed --&gt;
-&lt;form data-form-errors&gt;
+                    <pre><code>&lt;!-- Add data-ui="form-errors" to the form when validation has failed --&gt;
+&lt;form data-ui="form-errors"&gt;
 
   &lt;!-- Summary host: role="alert" for assertive announcement; "status" for polite --&gt;
   &lt;div data-form-summary role="alert" aria-labelledby="summary-heading"&gt;
@@ -3813,7 +3812,7 @@ console.log(greeting);</code></pre>
   &lt;/div&gt;
 
   &lt;!-- Invalid text field --&gt;
-  &lt;div data-field&gt;
+  &lt;div data-ui="field"&gt;
     &lt;label for="email"&gt;Email address&lt;/label&gt;
     &lt;input
       id="email"
@@ -3825,7 +3824,7 @@ console.log(greeting);</code></pre>
   &lt;/div&gt;
 
   &lt;!-- Invalid grouped fieldset — aria-invalid on the fieldset adds group-level emphasis --&gt;
-  &lt;fieldset data-field aria-invalid="true" aria-describedby="contact-error"&gt;
+  &lt;fieldset data-ui="field" aria-invalid="true" aria-describedby="contact-error"&gt;
     &lt;legend id="contact-legend"&gt;Preferred contact&lt;/legend&gt;
     &lt;label&gt;&lt;input type="checkbox" /&gt; Email&lt;/label&gt;
     &lt;label&gt;&lt;input type="checkbox" /&gt; Phone&lt;/label&gt;
@@ -3837,12 +3836,12 @@ console.log(greeting);</code></pre>
                     <h3>Contract rules</h3>
                     <ul>
                         <li>
-                            <code>data-form-errors</code> must be placed on the
+                            <code>data-ui="form-errors"</code> must be placed on the
                             <code>&lt;form&gt;</code> element to activate the summary styles.
                         </li>
                         <li>
                             <code>[data-form-summary]</code> must be a
-                            <strong>direct child</strong> of <code>form[data-form-errors]</code>.
+                            <strong>direct child</strong> of <code>form[data-ui="form-errors"]</code>.
                         </li>
                         <li>
                             <code>role="alert"</code> (assertive) or
@@ -3861,7 +3860,7 @@ console.log(greeting);</code></pre>
                             legend.
                         </li>
                         <li>
-                            Grouped fieldset errors extend <code>fieldset[data-field]</code> — add
+                            Grouped fieldset errors extend <code>fieldset[data-ui="field"]</code> — add
                             <code>aria-invalid="true"</code> to the
                             <code>&lt;fieldset&gt;</code> itself for group-level border and legend
                             emphasis. Individual controls inside continue using their own
@@ -3924,7 +3923,7 @@ console.log(greeting);</code></pre>
                             framework reacts to this attribute but never sets it.
                         </li>
                         <li>
-                            Removing <code>data-form-errors</code> and clearing the summary once
+                            Removing <code>data-ui="form-errors"</code> and clearing the summary once
                             errors are resolved.
                         </li>
                         <li>Error message text — all copy is application-owned.</li>
@@ -3935,7 +3934,7 @@ console.log(greeting);</code></pre>
                 <section class="showcase-section" id="command-menu">
                     <h2>Command menu</h2>
                     <p>
-                        Use <code>details[data-menu]</code> for row actions, card overflow actions,
+                        Use <code>details[data-ui="menu"]</code> for row actions, card overflow actions,
                         and any contextual action surface. The <code>summary</code> is the trigger;
                         a direct <code>ul</code> or <code>ol</code> holds the actions. No JavaScript
                         is required for the open/close baseline — the native
@@ -3944,7 +3943,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Table row actions</h3>
                     <p>
-                        Place <code>details[data-menu]</code> inside a table cell. The menu opens as
+                        Place <code>details[data-ui="menu"]</code> inside a table cell. The menu opens as
                         an overlay without reflowing the row.
                     </p>
                     <table>
@@ -3959,10 +3958,10 @@ console.log(greeting);</code></pre>
                         <tbody>
                             <tr>
                                 <td>Alice Nguyen</td>
-                                <td><span data-badge="success">Active</span></td>
+                                <td><span data-ui="badge"="success">Active</span></td>
                                 <td>Admin</td>
                                 <td style="text-align: end">
-                                    <details data-menu>
+                                    <details data-ui="menu">
                                         <summary aria-label="Actions for Alice Nguyen">
                                             <svg class="icon" aria-hidden="true">
                                                 <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -3981,10 +3980,10 @@ console.log(greeting);</code></pre>
                             </tr>
                             <tr>
                                 <td>Bob Okonkwo</td>
-                                <td><span data-badge="warning">Pending</span></td>
+                                <td><span data-ui="badge"="warning">Pending</span></td>
                                 <td>Member</td>
                                 <td style="text-align: end">
-                                    <details data-menu>
+                                    <details data-ui="menu">
                                         <summary aria-label="Actions for Bob Okonkwo">
                                             <svg class="icon" aria-hidden="true">
                                                 <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -4003,10 +4002,10 @@ console.log(greeting);</code></pre>
                             </tr>
                             <tr>
                                 <td>Carmen Reyes</td>
-                                <td><span data-badge>Inactive</span></td>
+                                <td><span data-ui="badge">Inactive</span></td>
                                 <td>Viewer</td>
                                 <td style="text-align: end">
-                                    <details data-menu>
+                                    <details data-ui="menu">
                                         <summary aria-label="Actions for Carmen Reyes">
                                             <svg class="icon" aria-hidden="true">
                                                 <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -4028,7 +4027,7 @@ console.log(greeting);</code></pre>
 
                     <h3>Card overflow actions</h3>
                     <p>
-                        Place <code>details[data-menu]</code> in a card header. Use
+                        Place <code>details[data-ui="menu"]</code> in a card header. Use
                         <code>data-align="start"</code> to anchor the menu to the inline-start edge
                         when the trigger is not at the inline-end of its container.
                     </p>
@@ -4039,7 +4038,7 @@ console.log(greeting);</code></pre>
                             grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
                         "
                     >
-                        <article data-card>
+                        <article data-ui="card">
                             <header
                                 style="
                                     display: flex;
@@ -4048,7 +4047,7 @@ console.log(greeting);</code></pre>
                                 "
                             >
                                 <h4 style="margin: 0">Project Alpha</h4>
-                                <details data-menu>
+                                <details data-ui="menu">
                                     <summary aria-label="Project Alpha actions">
                                         <svg class="icon" aria-hidden="true">
                                             <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -4068,7 +4067,7 @@ console.log(greeting);</code></pre>
                             <p>A web-based project management tool for distributed teams.</p>
                         </article>
 
-                        <article data-card>
+                        <article data-ui="card">
                             <header
                                 style="
                                     display: flex;
@@ -4077,7 +4076,7 @@ console.log(greeting);</code></pre>
                                 "
                             >
                                 <h4 style="margin: 0">Project Beta</h4>
-                                <details data-menu>
+                                <details data-ui="menu">
                                     <summary aria-label="Project Beta actions">
                                         <svg class="icon" aria-hidden="true">
                                             <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -4103,9 +4102,9 @@ console.log(greeting);</code></pre>
                         Add <code>data-align="start"</code> when the trigger is on the inline-start
                         side and the menu should open toward the inline-end.
                     </p>
-                    <article data-card style="max-inline-size: 24rem">
+                    <article data-ui="card" style="max-inline-size: 24rem">
                         <header style="display: flex; align-items: center; gap: var(--space-3)">
-                            <details data-menu data-align="start">
+                            <details data-ui="menu" data-align="start">
                                 <summary aria-label="Document actions">
                                     <svg class="icon" aria-hidden="true">
                                         <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -4164,7 +4163,7 @@ console.log(greeting);</code></pre>
                 <section class="showcase-section" id="data-view">
                     <h2>Data-view shell</h2>
                     <p>
-                        <code>section[data-data-view]</code> is an opinionated framing shell for
+                        <code>section[data-ui="data-view"]</code> is an opinionated framing shell for
                         records pages. It composes the existing table, pagination, badge, loading,
                         and region-state primitives into one reusable production section — without
                         inventing new widget semantics.
@@ -4179,20 +4178,20 @@ console.log(greeting);</code></pre>
                     <h3>Populated records table</h3>
                     <p>
                         The header holds the section title and a primary action. The toolbar
-                        composes existing <code>div[data-input-group]</code> and
+                        composes existing <code>div[data-ui="input-group"]</code> and
                         <code>select</code> controls. The results summary communicates count and
                         filter context. The content region holds the table. The footer holds
-                        <code>nav[data-pagination]</code>.
+                        <code>nav[data-ui="pagination"]</code>.
                     </p>
 
-                    <section data-data-view>
+                    <section data-ui="data-view">
                         <header>
                             <h3>Users</h3>
                             <button type="button">Add user</button>
                         </header>
 
                         <form data-data-toolbar>
-                            <div data-input-group style="flex: 1 1 16rem">
+                            <div data-ui="input-group" style="flex: 1 1 16rem">
                                 <span data-icon aria-hidden="true">
                                     <svg
                                         width="14"
@@ -4256,11 +4255,11 @@ console.log(greeting);</code></pre>
                                             <td>alice@example.com</td>
                                             <td>Admin</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                             <td><time datetime="2026-04-12">Apr 12, 2026</time></td>
                                             <td>
-                                                <details data-menu>
+                                                <details data-ui="menu">
                                                     <summary aria-label="Actions for Alice Martin">
                                                         <svg class="icon" aria-hidden="true">
                                                             <use
@@ -4284,11 +4283,11 @@ console.log(greeting);</code></pre>
                                             <td>ben@example.com</td>
                                             <td>Editor</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                             <td><time datetime="2026-04-11">Apr 11, 2026</time></td>
                                             <td>
-                                                <details data-menu>
+                                                <details data-ui="menu">
                                                     <summary aria-label="Actions for Ben Okafor">
                                                         <svg class="icon" aria-hidden="true">
                                                             <use
@@ -4312,11 +4311,11 @@ console.log(greeting);</code></pre>
                                             <td>carmen@example.com</td>
                                             <td>Viewer</td>
                                             <td>
-                                                <span data-badge data-tone="warning">Pending</span>
+                                                <span data-ui="badge" data-tone="warning">Pending</span>
                                             </td>
                                             <td><time datetime="2026-04-08">Apr 8, 2026</time></td>
                                             <td>
-                                                <details data-menu>
+                                                <details data-ui="menu">
                                                     <summary aria-label="Actions for Carmen Reyes">
                                                         <svg class="icon" aria-hidden="true">
                                                             <use
@@ -4340,11 +4339,11 @@ console.log(greeting);</code></pre>
                                             <td>david@example.com</td>
                                             <td>Editor</td>
                                             <td>
-                                                <span data-badge data-tone="success">Active</span>
+                                                <span data-ui="badge" data-tone="success">Active</span>
                                             </td>
                                             <td><time datetime="2026-04-13">Apr 13, 2026</time></td>
                                             <td>
-                                                <details data-menu>
+                                                <details data-ui="menu">
                                                     <summary aria-label="Actions for David Lim">
                                                         <svg class="icon" aria-hidden="true">
                                                             <use
@@ -4368,11 +4367,11 @@ console.log(greeting);</code></pre>
                                             <td>elena@example.com</td>
                                             <td>Admin</td>
                                             <td>
-                                                <span data-badge data-tone="danger">Inactive</span>
+                                                <span data-ui="badge" data-tone="danger">Inactive</span>
                                             </td>
                                             <td><time datetime="2026-03-22">Mar 22, 2026</time></td>
                                             <td>
-                                                <details data-menu>
+                                                <details data-ui="menu">
                                                     <summary aria-label="Actions for Elena Petrov">
                                                         <svg class="icon" aria-hidden="true">
                                                             <use
@@ -4397,7 +4396,7 @@ console.log(greeting);</code></pre>
                         </div>
 
                         <footer>
-                            <nav data-pagination aria-label="Users page navigation">
+                            <nav data-ui="pagination" aria-label="Users page navigation">
                                 <ol>
                                     <li><span aria-disabled="true">Previous</span></li>
                                     <li><a href="#data-view" aria-current="page">1</a></li>
@@ -4419,14 +4418,14 @@ console.log(greeting);</code></pre>
                         operable.
                     </p>
 
-                    <section data-data-view>
+                    <section data-ui="data-view">
                         <header>
                             <h3>Orders</h3>
                             <button type="button">New order</button>
                         </header>
 
                         <form data-data-toolbar>
-                            <div data-input-group style="flex: 1 1 16rem">
+                            <div data-ui="input-group" style="flex: 1 1 16rem">
                                 <span data-icon aria-hidden="true">
                                     <svg
                                         width="14"
@@ -4492,18 +4491,18 @@ console.log(greeting);</code></pre>
                     <p>
                         When a search or filter returns no results, replace the table in
                         <code>[data-data-content]</code> with a
-                        <code>section[data-region-state="empty"]</code>. The toolbar and header
+                        <code>section[data-ui="region-state" data-state="empty"]</code>. The toolbar and header
                         remain visible so the user can adjust their query.
                     </p>
 
-                    <section data-data-view>
+                    <section data-ui="data-view">
                         <header>
                             <h3>Invoices</h3>
                             <button type="button">Create invoice</button>
                         </header>
 
                         <form data-data-toolbar>
-                            <div data-input-group style="flex: 1 1 16rem">
+                            <div data-ui="input-group" style="flex: 1 1 16rem">
                                 <span data-icon aria-hidden="true">
                                     <svg
                                         width="14"
@@ -4536,7 +4535,7 @@ console.log(greeting);</code></pre>
                         </p>
 
                         <div data-data-content>
-                            <section data-region-state="empty">
+                            <section data-ui="region-state" data-state="empty">
                                 <h4>No invoices match your search</h4>
                                 <p>Try clearing your filters or adjusting the search term.</p>
                                 <footer>
@@ -4549,18 +4548,18 @@ console.log(greeting);</code></pre>
                     <h3>Error state</h3>
                     <p>
                         When data fails to load, replace the content region with a
-                        <code>section[data-region-state="error"]</code>. Pair with
+                        <code>section[data-ui="region-state" data-state="error"]</code>. Pair with
                         <code>role="alert"</code> when the error appears dynamically and requires an
                         immediate screen-reader announcement.
                     </p>
 
-                    <section data-data-view>
+                    <section data-ui="data-view">
                         <header>
                             <h3>Reports</h3>
                         </header>
 
                         <div data-data-content>
-                            <section data-region-state="error" role="alert">
+                            <section data-ui="region-state" data-state="error" role="alert">
                                 <h4>Unable to load reports</h4>
                                 <p>A server error occurred. Your data was not affected.</p>
                                 <footer>
@@ -4585,7 +4584,7 @@ console.log(greeting);</code></pre>
                         </li>
                         <li>
                             Pagination math and URL generation —
-                            <code>nav[data-pagination]</code> link generation is application-owned.
+                            <code>nav[data-ui="pagination"]</code> link generation is application-owned.
                         </li>
                         <li>
                             Filter state persistence and aria-live announcements — application code
@@ -4607,239 +4606,121 @@ console.log(greeting);</code></pre>
                 <section id="cards">
                     <h2>Cards</h2>
                     <p>
-                        <code>article[data-card]</code> is a reusable content-surface for presenting
-                        a single entity with optional media, tone cues, and density control. The
-                        host is never made interactive — use one heading link for navigation.
+                        <code>[data-ui="card"]</code> styles a reusable content surface without
+                        prescribing its host element or requiring component-part attributes. The host
+                        is never interactive; use one heading link for navigation.
                     </p>
 
-                    <h3>Default (neutral) card</h3>
+                    <h3>Minimal semantic card</h3>
                     <div style="max-inline-size: 24rem">
-                        <article data-card>
-                            <div data-card-main>
-                                <header>
-                                    <h3>Article title</h3>
-                                    <p
-                                        style="
-                                            font-size: var(--font-size-sm);
-                                            color: var(--color-text-secondary);
-                                        "
-                                    >
-                                        12 Apr 2026 · 4 min read
-                                    </p>
-                                </header>
-                                <div data-card-body>
-                                    <p>
-                                        A short description of the article content that spans a
-                                        couple of lines to show spacing.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button">Read more</button>
-                                </footer>
-                            </div>
+                        <article data-ui="card">
+                            <h3>Article title</h3>
+                            <p>A short description of the article content.</p>
+                            <a href="#">Read more</a>
                         </article>
                     </div>
 
-                    <h3>Linked card</h3>
+                    <h3>List item card</h3>
+                    <ul role="list">
+                        <li data-ui="card">
+                            <h3>Queue item</h3>
+                            <p>Waiting for review</p>
+                        </li>
+                    </ul>
+
+                    <h3>Linked card with optional semantic parts</h3>
                     <p>
                         One heading link acts as the primary navigation affordance. Secondary
                         controls remain independently focusable and operable.
                     </p>
                     <div style="max-inline-size: 24rem">
-                        <article data-card>
-                            <div data-card-main>
-                                <header>
-                                    <h3><a href="#">Linked card title</a></h3>
-                                    <p
-                                        style="
-                                            font-size: var(--font-size-sm);
-                                            color: var(--color-text-secondary);
-                                        "
-                                    >
-                                        8 Apr 2026
-                                    </p>
-                                </header>
-                                <div data-card-body>
-                                    <p>
-                                        The heading link is the navigation affordance. Secondary
-                                        controls in the footer stay independently operable.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button" data-variant="outlined">Bookmark</button>
-                                    <details data-menu>
-                                        <summary aria-label="More options">⋯</summary>
-                                        <ul role="list">
-                                            <li><button type="button">Share</button></li>
-                                            <li><button type="button">Report</button></li>
-                                        </ul>
-                                    </details>
-                                </footer>
-                            </div>
+                        <article data-ui="card">
+                            <header>
+                                <h3><a href="#">Linked card title</a></h3>
+                                <p>8 Apr 2026</p>
+                            </header>
+                            <p>The heading link is the navigation affordance. Secondary controls stay operable.</p>
+                            <footer>
+                                <button type="button" data-variant="outlined">Bookmark</button>
+                                <details data-ui="menu">
+                                    <summary aria-label="More options">⋯</summary>
+                                    <ul role="list">
+                                        <li><button type="button">Share</button></li>
+                                        <li><button type="button">Report</button></li>
+                                    </ul>
+                                </details>
+                            </footer>
                         </article>
                     </div>
 
                     <h3>Top-media card</h3>
                     <div style="max-inline-size: 24rem">
-                        <article data-card data-media-position="top">
-                            <figure data-card-media>
-                                <img
-                                    src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2394a3b8'%3E16 / 9 media%3C/text%3E%3C/svg%3E"
-                                    alt="Placeholder media — 16:9 ratio"
-                                />
+                        <article data-ui="card">
+                            <figure>
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2394a3b8'%3E16 / 9 media%3C/text%3E%3C/svg%3E" alt="Placeholder media — 16:9 ratio" />
                             </figure>
-                            <div data-card-main>
-                                <header><h3>Top-media card</h3></header>
-                                <div data-card-body>
-                                    <p>
-                                        A cover image sits above the content block, clipped to the
-                                        card radius.
-                                    </p>
-                                </div>
-                                <footer>
-                                    <button type="button">View</button>
-                                </footer>
-                            </div>
+                            <h3>Top-media card</h3>
+                            <p>A cover image sits above the content.</p>
                         </article>
                     </div>
 
                     <h3>Side-media card</h3>
                     <p>
-                        Uses <code>data-media-position="start"</code>. Media width is controlled by
-                        <code>--layout-card-media-inline-size</code>. The layout collapses to
-                        stacked when the card's inline size drops below 28 rem.
+                        Uses <code>data-media-position="start"</code>. An unmarked wrapper groups
+                        content beside the media; the layout wraps to stacked rows when the card is too narrow.
                     </p>
-                    <article data-card data-media-position="start" style="max-inline-size: 36rem">
-                        <figure data-card-media>
-                            <img
-                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2394a3b8'%3Emedia%3C/text%3E%3C/svg%3E"
-                                alt="Placeholder thumbnail"
-                            />
+                    <article data-ui="card" data-media-position="start" style="max-inline-size: 36rem">
+                        <figure>
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect width='160' height='160' fill='%23334155'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%2394a3b8'%3Emedia%3C/text%3E%3C/svg%3E" alt="Placeholder thumbnail" />
                         </figure>
-                        <div data-card-main>
-                            <header>
-                                <h3><a href="#">Side-media linked card</a></h3>
-                            </header>
-                            <div data-card-body>
-                                <p>
-                                    At wider container widths the media sits in a side slot. On
-                                    narrow containers it collapses to a stacked layout
-                                    automatically.
-                                </p>
-                            </div>
-                            <footer>
-                                <span data-badge data-tone="success">Published</span>
-                            </footer>
+                        <div>
+                            <header><h3><a href="#">Side-media linked card</a></h3></header>
+                            <p>At wider widths media sits beside the content; in a narrow container it moves above it.</p>
+                            <footer><span data-ui="badge" data-tone="success">Published</span></footer>
                         </div>
                     </article>
 
                     <h3>Tone variants</h3>
-                    <div
-                        style="
-                            display: grid;
-                            grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
-                            gap: var(--space-4);
-                        "
-                    >
-                        <article data-card>
-                            <div data-card-main>
-                                <header><h3>Neutral (default)</h3></header>
-                                <div data-card-body>
-                                    <p>Standard surface — no tone attribute needed.</p>
-                                </div>
-                            </div>
-                        </article>
-                        <article data-card data-tone="accent">
-                            <div data-card-main>
-                                <header><h3>Accent</h3></header>
-                                <div data-card-body>
-                                    <p>Highlights a featured or primary-action item.</p>
-                                </div>
-                            </div>
-                        </article>
-                        <article data-card data-tone="success">
-                            <div data-card-main>
-                                <header><h3>Success</h3></header>
-                                <div data-card-body>
-                                    <p>Signals a completed or healthy state.</p>
-                                </div>
-                                <footer><span data-badge data-tone="success">Active</span></footer>
-                            </div>
-                        </article>
-                        <article data-card data-tone="warning">
-                            <div data-card-main>
-                                <header><h3>Warning</h3></header>
-                                <div data-card-body>
-                                    <p>Signals a cautionary or attention-needed state.</p>
-                                </div>
-                                <footer>
-                                    <span data-badge data-tone="warning">Review needed</span>
-                                </footer>
-                            </div>
-                        </article>
-                        <article data-card data-tone="danger">
-                            <div data-card-main>
-                                <header><h3>Danger</h3></header>
-                                <div data-card-body>
-                                    <p>Signals an error or destructive state.</p>
-                                </div>
-                                <footer><span data-badge data-tone="danger">Failed</span></footer>
-                            </div>
-                        </article>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: var(--space-4);">
+                        <article data-ui="card"><h3>Neutral</h3><p>Standard surface.</p></article>
+                        <article data-ui="card" data-tone="accent"><h3>Accent</h3><p>Featured item.</p></article>
+                        <article data-ui="card" data-tone="success"><h3>Success</h3><p>Completed or healthy.</p></article>
+                        <article data-ui="card" data-tone="warning"><h3>Warning</h3><p>Needs attention.</p></article>
+                        <article data-ui="card" data-tone="danger"><h3>Danger</h3><p>Critical or destructive context.</p></article>
                     </div>
 
                     <h3>Compact density</h3>
                     <div style="max-inline-size: 24rem">
-                        <article data-card data-density="compact">
-                            <div data-card-main>
-                                <header><h3>Compact card</h3></header>
-                                <div data-card-body>
-                                    <p>Reduced padding and gap for dense list views or sidebars.</p>
-                                </div>
-                                <footer>
-                                    <button type="button">Action</button>
-                                </footer>
-                            </div>
+                        <article data-ui="card" data-density="compact">
+                            <h3>Compact card</h3>
+                            <p>Reduced padding and gap for dense list views or sidebars.</p>
+                            <footer><button type="button">Action</button></footer>
                         </article>
                     </div>
 
                     <h3>Card tokens</h3>
                     <pre><code>:root {
-  --layout-card-padding:             var(--space-5);    /* internal padding (comfortable) */
-  --layout-card-padding-compact:     var(--space-3);    /* internal padding (compact) */
-  --layout-card-gap:                 var(--space-4);    /* gap between header / body / footer */
-  --layout-card-gap-compact:         var(--space-2);    /* gap override (compact) */
-  --layout-card-radius:              var(--radius-lg);  /* host border radius */
-  --layout-card-media-inline-size:   10rem;             /* side-media track width */
-  --layout-card-media-aspect-ratio:  16 / 9;            /* media intrinsic ratio */
+  --layout-card-padding:             var(--space-5);
+  --layout-card-padding-compact:     var(--space-3);
+  --layout-card-gap:                 var(--space-4);
+  --layout-card-gap-compact:         var(--space-2);
+  --layout-card-radius:              var(--radius-lg);
+  --layout-card-media-inline-size:   10rem;
+  --layout-card-media-aspect-ratio:  16 / 9;
 }</code></pre>
 
                     <h3>Framework scope (what lumen.css does not own)</h3>
                     <ul>
-                        <li>
-                            Navigation destinations — <code>href</code> on heading links is
-                            application-owned.
-                        </li>
-                        <li>
-                            Analytics and tracking — click handlers and impression events are
-                            application-owned.
-                        </li>
-                        <li>
-                            Data loading — populating card content dynamically is application-owned.
-                        </li>
-                        <li>
-                            Media sources — <code>src</code>, <code>srcset</code>, <code>alt</code>,
-                            and lazy-loading are application-owned.
-                        </li>
-                        <li>
-                            Command handlers — buttons and menu items inside <code>footer</code> are
-                            wired by application code.
-                        </li>
+                        <li>Navigation destinations — heading-link <code>href</code> values are application-owned.</li>
+                        <li>Analytics and tracking — click handlers and impression events are application-owned.</li>
+                        <li>Data loading — populating card content dynamically is application-owned.</li>
+                        <li>Media sources — <code>src</code>, <code>srcset</code>, <code>alt</code>, and lazy loading are application-owned.</li>
+                        <li>Command handlers — buttons and menu items are wired by application code.</li>
                     </ul>
                 </section>
             </main>
         </div>
-        <!-- /div[data-layout-shell] -->
+        <!-- /div[data-ui="layout-shell"] -->
 
         <script>
             // Theme toggle: persist preference across page loads

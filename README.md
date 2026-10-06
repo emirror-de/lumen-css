@@ -6,6 +6,22 @@ A CSS-only, CSS-variable-configurable, semantic-first framework for productive b
 
 ## Installation
 
+Install from npm:
+
+```sh
+npm install lumen.css
+```
+
+Import the full stylesheet from your application entry point:
+
+```js
+import "lumen.css";
+```
+
+The package also exposes `lumen.css/min` for the minified stylesheet and direct paths `lumen.css/css/lumen.css` and `lumen.css/css/lumen.min.css`. Import one entry point only—do not load the source and minified builds together.
+
+The stylesheet uses cascade layers in this order: `reset`, `tokens`, `base`, `typography`, `controls`, `data`, `state`, `composition`. These are stable internal boundaries in the full stylesheet, not separately published entry points; consumers should import the full build rather than hand-picking layers that may have dependencies on earlier layers.
+
 **GitHub Releases**
 
 Download `lumen.css` or `lumen.min.css` from the project's GitHub Releases page and copy the file into your application, for example under `css/`.
@@ -38,10 +54,56 @@ That's it. Your semantic HTML is now styled.
 - **Configurable via CSS variables** — override any semantic token on `:root`.
 - **Semantic-first** — element selectors and meaningful attributes drive all styling.
 - **No required classes** — basic styling works without adding a single class to your HTML.
-- **No layout system** — native CSS Grid and Flexbox handle layout; the framework stays out of the way.
+- **Small composition vocabulary** — opt-in `data-layout` primitives cover common stack, cluster, grid, split, center, and container patterns without utility-attribute sprawl.
 - **Built-in light and dark themes** — automatic via `prefers-color-scheme`; override with `data-theme="dark"` or `data-theme="light"` on `<html>`.
 - **Accessible defaults** — WCAG 2.1 AA contrast, visible focus rings, `prefers-reduced-motion` support, logical properties throughout.
-- **Explicit browser support** — Chrome/Edge 121+, Firefox 121+, Safari 17.2+ (Dec 2023 baseline). Advanced features such as `:has()`, `color-mix()`, and relative color syntax set the minimum. See [Browser Support](docs/browser-support.html) for the full matrix, degradation notes, and hard non-goals.
+- **Explicit browser support** — current and previous stable releases of Chrome and Edge on desktop, Firefox and Safari on desktop, Safari on iOS, and Chrome on Android. See [Browser Support](docs/browser-support.html) for tested versions and feature notes.
+
+## Attribute contract
+
+Component identity, appearance, and state use separate parts of the HTML API:
+
+```html
+<article data-ui="card" data-tone="danger">
+  <h2>Payment failed</h2>
+</article>
+```
+
+- **Component identity:** `data-ui="name"`, such as `data-ui="card"` or `data-ui="tabs"`.
+- **Appearance:** documented properties such as `data-tone`, `data-variant`, and `data-density`.
+- **State:** native HTML and ARIA attributes whenever they express the state (`disabled`, `hidden`, `aria-expanded`, `aria-selected`). Use a custom state attribute only when no suitable native or ARIA state exists. For example, region feedback uses `<section data-ui="region-state" data-state="empty">` because HTML/ARIA has no equivalent presentation state; use `role="status"` or `role="alert"` when announcement is needed.
+
+Lumen does not use data attributes for generic spacing, sizing, display, or alignment utilities. The bounded `data-layout` values are reusable layout algorithms, not one-off utility declarations. See [Contributing](CONTRIBUTING.md) for the public-attribute rules and the [component contract audit](docs/component-contract-audit.md) for current structure decisions.
+
+## Composition primitives
+
+Use `data-layout` for a small set of reusable layout algorithms. The attribute accepts only these documented values; it does not expose arbitrary CSS properties:
+
+| Value | Behavior |
+|---|---|
+| `stack` | Places children in a vertical grid with consistent spacing. |
+| `cluster` | Wraps children in an inline flex row, vertically centered. |
+| `grid` | Creates responsive equal-width columns with a 16rem minimum where space allows. |
+| `split` | Places items at opposite ends when they fit, wrapping when they do not. |
+| `center` | Centers child content and text. |
+| `container` | Centers a fluid content region capped at 72rem. |
+
+```html
+<section data-layout="stack">
+  <h2>Recent activity</h2>
+  <div data-layout="grid">
+    <article data-ui="card"><h3>Deployment</h3><p>Completed</p></article>
+    <article data-ui="card"><h3>Review</h3><p>Pending</p></article>
+  </div>
+</section>
+
+<div data-layout="cluster" aria-label="Filters">
+  <button type="button">All</button>
+  <button type="button">Assigned to me</button>
+</div>
+```
+
+These primitives are presentation-only; they do not imply semantics or application behavior. Use semantic HTML for the host and children.
 
 ## Customisation
 
@@ -57,6 +119,16 @@ Override semantic tokens before or after the import:
 ```
 
 ### Public token API
+
+Lumen's public tokens follow three layers:
+
+- **Primitive tokens** (`--_…`) are internal implementation values and are not a supported override surface.
+- **Semantic tokens** describe framework-wide meaning, including colors, typography, spacing, focus, radius, and transitions.
+- **Component tokens** tune a specific reusable pattern, such as `--layout-navbar-*`, `--layout-card-*`, and `--table-*`.
+
+Override public semantic or component tokens; do not depend on `--_…` primitives. Semantic tokens use names based on their role (for example, `--color-*`, `--space-*`, and `--font-*`); component tokens use a component namespace such as `--layout-card-*` or `--table-*`. New public tokens should follow the same naming and ownership distinction.
+
+The stylesheet supplies defaults for its public tokens. Set overrides on `:root` (or a narrower theme scope); use the CSS `var(--token, fallback)` form in consumer styles when your own styles must remain usable without Lumen. Values beginning with `--_` are private and may change without notice. See the [token audit](docs/token-audit.md) for current duplicate/unclear-token findings and [machine-readable source requirements](docs/token-source-requirements.md) for the planned section 8 tooling contract.
 
 | Category        | Tokens                                                                 |
 |-----------------|------------------------------------------------------------------------|
@@ -90,7 +162,7 @@ Tokens prefixed `--_` are **internal primitives** and not part of the stable pub
 
 ## Layout shell
 
-`div[data-layout-shell]` is the single supported container-based layout host. It composes a sticky header, a primary sidebar, a main content area, an optional inspector panel, and an optional footer without requiring any per-page layout CSS.
+`div[data-ui="layout-shell"]` is the single supported container-based layout host. It composes a sticky header, a primary sidebar, a main content area, an optional inspector panel, and an optional footer without requiring any per-page layout CSS.
 
 ### Supported variant matrix
 
@@ -112,7 +184,7 @@ Exactly eight direct-child combinations are supported. All are detected automati
 ### Authoring contract
 
 ```html
-<div data-layout-shell>
+<div data-ui="layout-shell">
 
   <!-- optional sticky header -->
   <header data-layout-header>
@@ -129,7 +201,7 @@ Exactly eight direct-child combinations are supported. All are detected automati
     >☰</button>
 
     <!-- primary navigation -->
-    <nav id="primary-navbar" data-navbar aria-label="Primary">
+    <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="/" aria-current="page">Home</a></li>
         <li>
@@ -181,7 +253,7 @@ Exactly eight direct-child combinations are supported. All are detected automati
 
 ### Shell contract
 
-- `div[data-layout-shell]` is the only supported layout host — all shell styles are scoped to its direct children.
+- `div[data-ui="layout-shell"]` is the only supported layout host — all shell styles are scoped to its direct children.
 - Supported direct-child order: `header[data-layout-header]` (optional), `aside[data-layout-sidebar]` (optional), `main` (required), `aside[data-layout-panel]` (optional), `footer[data-layout-footer]` (optional).
 - `header[data-layout-header]` — spans the full top edge; sticky.
 - `aside[data-layout-sidebar]` — fixed-width left track; independently scrollable.
@@ -196,7 +268,7 @@ Exactly eight direct-child combinations are supported. All are detected automati
 #### Variant 1 — `main` only
 
 ```html
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <main>
     <h1>Page title</h1>
     <p>Content.</p>
@@ -207,10 +279,10 @@ Exactly eight direct-child combinations are supported. All are detected automati
 #### Variant 3 — `header + main + panel`
 
 ```html
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="/">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="/" aria-current="page">Home</a></li>
       </ul>
@@ -230,10 +302,10 @@ Exactly eight direct-child combinations are supported. All are detected automati
 #### Variant 7 — `header + sidebar + main + footer`
 
 ```html
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="/">Acme</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="/" aria-current="page">Dashboard</a></li>
       </ul>
@@ -260,10 +332,10 @@ Exactly eight direct-child combinations are supported. All are detected automati
 #### Variant 8 — `header + sidebar + main + panel + footer`
 
 ```html
-<div data-layout-shell>
+<div data-ui="layout-shell">
   <header data-layout-header>
     <a href="/">Acme Admin</a>
-    <nav data-navbar aria-label="Primary">
+    <nav data-ui="navbar" aria-label="Primary">
       <ul>
         <li><a href="/" aria-current="page">Dashboard</a></li>
       </ul>
@@ -319,7 +391,7 @@ At `width ≤ 48em` (768 px):
 
 ## Navbar pattern
 
-`nav[data-navbar]` is the primary navigation contract. It must be a direct child of `header[data-layout-header]` and contains one or two direct `<ul>` elements (primary/start group and optional secondary/end group).
+`nav[data-ui="navbar"]` is the primary navigation contract. It must be a direct child of `header[data-layout-header]` and contains one or two direct `<ul>` elements (primary/start group and optional secondary/end group).
 
 ### Authoring contract
 
@@ -336,7 +408,7 @@ At `width ≤ 48em` (768 px):
     type="button"
   >☰</button>
 
-  <nav id="primary-navbar" data-navbar aria-label="Primary">
+  <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
     <!-- primary / start group -->
     <ul>
       <li><a href="/" aria-current="page">Home</a></li>
@@ -366,18 +438,18 @@ At `width ≤ 48em` (768 px):
 
 ### Navbar contract
 
-- `nav[data-navbar]` is the only supported primary navigation host — scoped to `header[data-layout-header]`.
+- `nav[data-ui="navbar"]` is the only supported primary navigation host — scoped to `header[data-layout-header]`.
 - Contains one or two direct `<ul>` elements: first is the primary/start group; second (optional) is the secondary/end group.
 - Top-level navigation items: `li > a` for plain links, `li > a[href] + ul` for single-level grouped navigation — the `a` serves as both a navigation link and the dropdown trigger; the dropdown opens on hover or focus-within with no JavaScript required.
 - Nested navigation depth is limited to one level.
 - `aria-current="page"` on the active link only.
-- `button[data-nav-toggle][aria-expanded][aria-controls]` must appear immediately before the controlled `nav[data-navbar][id]` when responsive collapse is needed.
+- `button[data-nav-toggle][aria-expanded][aria-controls]` must appear immediately before the controlled `nav[data-ui="navbar"][id]` when responsive collapse is needed.
 - `div[data-layout-actions]` as the last direct child of the header for header-level actions (sign-in, theme toggle, etc.).
 
 ### Responsive behavior
 
-- Above `48em`: `nav[data-navbar]` is always visible inline; `button[data-nav-toggle]` is hidden.
-- At/below `48em`: `button[data-nav-toggle]` is visible; `nav[data-navbar]` collapses by default and becomes a full-width stacked panel below the header row when `aria-expanded="true"`.
+- Above `48em`: `nav[data-ui="navbar"]` is always visible inline; `button[data-nav-toggle]` is hidden.
+- At/below `48em`: `button[data-nav-toggle]` is visible; `nav[data-ui="navbar"]` collapses by default and becomes a full-width stacked panel below the header row when `aria-expanded="true"`.
 - `prefers-reduced-motion: reduce` disables navbar transition effects.
 
 ### What lumen.css does not own
@@ -511,7 +583,7 @@ lumen.css provides a semantic, fixed top-end toast stack for transient, non-bloc
 ### Authoring contract
 
 ```html
-<aside data-toast-region aria-label="Notifications">
+<aside data-ui="toast-region" aria-label="Notifications">
   <ul>
     <!-- Polite update — announced at the next opportunity -->
     <li>
@@ -562,7 +634,7 @@ lumen.css provides a semantic, fixed top-end toast stack for transient, non-bloc
 
 ### Contract rules
 
-- The only supported host is `aside[data-toast-region][aria-label]`.
+- The only supported host is `aside[data-ui="toast-region"][aria-label]`.
 - The region contains exactly one direct `<ul>` or `<ol>`.
 - Each toast is a direct `<li>` child of the list. Inside `<li>`, a single `<div role="status">` (polite) or `<div role="alert">` (assertive) wraps all toast content — this div is the live-region boundary.
 - Announcement urgency is expressed only by `role` on the inner `div` — do not use `role` on `<li>` or to convey visual tone.
@@ -606,7 +678,7 @@ lumen.css provides a persistent, browsable notification-center panel for product
 ### Authoring contract
 
 ```html
-<aside data-notification-center aria-label="Notifications">
+<aside data-ui="notification-center" aria-label="Notifications">
   <header>
     <h2>Notifications</h2>
     <button type="button">Mark all read</button>
@@ -645,15 +717,15 @@ lumen.css provides a persistent, browsable notification-center panel for product
 </aside>
 ```
 
-Empty center — compose with the existing `[data-region-state]` host when there are no notifications:
+Empty center — compose with the existing `[data-ui="region-state"]` host when there are no notifications:
 
 ```html
-<aside data-notification-center aria-label="Notifications">
+<aside data-ui="notification-center" aria-label="Notifications">
   <header>
     <h2>Notifications</h2>
   </header>
 
-  <aside data-region-state="empty">
+  <aside data-ui="region-state" data-state="empty">
     <h3>No notifications</h3>
     <p>You're all caught up.</p>
   </aside>
@@ -662,7 +734,7 @@ Empty center — compose with the existing `[data-region-state]` host when there
 
 ### Contract rules
 
-- The only supported host is `aside[data-notification-center]` with either `aria-label` or `aria-labelledby`.
+- The only supported host is `aside[data-ui="notification-center"]` with either `aria-label` or `aria-labelledby`.
 - The host may contain an optional `<header>`, one required `<ul>` or `<ol>`, and an optional `<footer>`.
 - Each direct `<li>` may contain, in any order:
   - `:is(h3, h4, h5, h6)` — notification heading (**required**).
@@ -672,7 +744,7 @@ Empty center — compose with the existing `[data-region-state]` host when there
   - `button[type="button"][data-dismiss]` — dismiss or mark-read button (optional); always provide `aria-label` for screen-reader users.
 - Unread state is expressed with `data-unread="true"` on the `<li>`. There is no native semantic equivalent — this is a purely visual distinction.
 - Optional tone is expressed with `data-tone="success|warning|danger"` on the `<li>` and reuses the framework's existing semantic tone token families.
-- For an empty center, place a `[data-region-state="empty"]` host inside the `<aside>` instead of an empty `<ul>`.
+- For an empty center, place a `[data-ui="region-state"][data-state="empty"]` host inside the `<aside>` instead of an empty `<ul>`.
 - The `<header>` may contain one heading and one optional action button (for example "Mark all read"). Application code drives the button behaviour.
 - The `<footer>` is intended for a single "View all" link or summary action.
 
@@ -693,9 +765,9 @@ Empty center — compose with the existing `[data-region-state]` host when there
 | **Discovery** | User-opened panel or in-page section | Fixed overlay, always visible when present |
 | **Urgency** | Inbox model — all items share equal visual priority (tone optional) | Urgency driven by `role="status"` vs `role="alert"` |
 | **Live region** | Not a live region — not announced on insertion | `role="status"` / `role="alert"` announce on insertion |
-| **Host** | `aside[data-notification-center]` | `aside[data-toast-region]` |
+| **Host** | `aside[data-ui="notification-center"]` | `aside[data-ui="toast-region"]` |
 
-Use toasts (`aside[data-toast-region]`) for transient, non-blocking feedback that must be announced by assistive technology immediately or at the next opportunity. Use the notification center for a persistent, browsable inbox that users open on demand.
+Use toasts (`aside[data-ui="toast-region"]`) for transient, non-blocking feedback that must be announced by assistive technology immediately or at the next opportunity. Use the notification center for a persistent, browsable inbox that users open on demand.
 
 ### Notification center tokens
 
@@ -714,7 +786,7 @@ lumen.css provides a narrow, accessible pagination component for data-heavy scre
 ### Authoring contract
 
 ```html
-<nav data-pagination aria-label="Results pagination">
+<nav data-ui="pagination" aria-label="Results pagination">
   <ol>
     <!-- Disabled previous control (non-interactive) -->
     <li><span aria-disabled="true">Previous</span></li>
@@ -743,7 +815,7 @@ lumen.css provides a narrow, accessible pagination component for data-heavy scre
 
 ### Contract rules
 
-- The only supported host is `nav[data-pagination]` with either `aria-label` or `aria-labelledby`.
+- The only supported host is `nav[data-ui="pagination"]` with either `aria-label` or `aria-labelledby`.
 - The host contains exactly one direct `<ol>` or `<ul>`.
 - Each direct `<li>` contains exactly one of:
   - `a[href]` — normal page link (interactive).
@@ -776,7 +848,7 @@ lumen.css provides a semantic breadcrumb pattern for deep application hierarchie
 ### Authoring contract
 
 ```html
-<nav data-breadcrumbs aria-label="Page location">
+<nav data-ui="breadcrumbs" aria-label="Page location">
   <ol>
     <!-- Ancestor location steps -->
     <li><a href="/dashboard">Home</a></li>
@@ -794,7 +866,7 @@ lumen.css provides a semantic breadcrumb pattern for deep application hierarchie
 
 ### Contract rules
 
-- The only supported host is `nav[data-breadcrumbs]` with either `aria-label` or `aria-labelledby`.
+- The only supported host is `nav[data-ui="breadcrumbs"]` with either `aria-label` or `aria-labelledby`.
 - The host contains exactly one direct `<ol>`.
 - Each direct `<li>` represents one location step.
 - Ancestor steps use `<a href="…">` (interactive).
@@ -802,7 +874,7 @@ lumen.css provides a semantic breadcrumb pattern for deep application hierarchie
   - `<a href="…" aria-current="page">` — interactive link variant.
   - `<span aria-current="page">` — non-interactive text variant.
 - Separators are decorative CSS (`li + li::before`) — never written into the DOM, so screen readers read a clean list of crumb labels only.
-- The `data-breadcrumbs` attribute is the scope selector; the CSS contract does not depend on localized `aria-label` text.
+- The `data-ui="breadcrumbs"` attribute is the scope selector; the CSS contract does not depend on localized `aria-label` text.
 
 ### Long-label and wrapping behaviour
 
@@ -811,7 +883,7 @@ Breadcrumbs wrap naturally by default. No single-line overflow truncation is app
 ### What lumen.css does not own
 
 - **Route generation** — application code constructs `href` values for each crumb.
-- **Localized labels** — the CSS selector depends only on `data-breadcrumbs`, never on label text.
+- **Localized labels** — the CSS selector depends only on `data-ui="breadcrumbs"`, never on label text.
 - **Responsive collapsing** — overflow menus and collapsed ellipsis crumbs are intentionally deferred in v1.
 
 ### Breadcrumb tokens
@@ -826,12 +898,12 @@ Breadcrumbs wrap naturally by default. No single-line overflow truncation is app
 
 ## Tabs
 
-lumen.css provides an accessible panel-switching primitive for settings screens, detail views, and dashboard sections. **Presentation only** — the framework styles ARIA states but does not own keyboard navigation, panel activation logic, or hidden-state management.
+lumen.css provides presentation for accessible panel-switching markup. The stylesheet works without JavaScript; an optional dependency-free module adds click activation, keyboard navigation, focus movement, and ARIA/hidden-state synchronization. See the [tabs behavior guide](docs/tabs-behavior.md) for setup and teardown.
 
 ### Authoring contract
 
 ```html
-<section data-tabs>
+<section data-ui="tabs">
   <div role="tablist" aria-label="Account settings">
     <!-- Active tab: aria-selected="true", tabindex="0" -->
     <button role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true">Profile</button>
@@ -860,7 +932,7 @@ lumen.css provides an accessible panel-switching primitive for settings screens,
 Add `data-variant="segmented"` to the host for a pill/segmented-control appearance. The ARIA contract, keyboard behavior, and panel mechanics are **identical** — `data-variant="segmented"` is a visual treatment, not a separate component or public API.
 
 ```html
-<section data-tabs data-variant="segmented">
+<section data-ui="tabs" data-variant="segmented">
   <div role="tablist" aria-label="Revenue period">
     <button role="tab" id="tab-7d" aria-controls="panel-7d" aria-selected="true">7 days</button>
     <button role="tab" id="tab-30d" aria-controls="panel-30d" aria-selected="false" tabindex="-1">30 days</button>
@@ -874,7 +946,7 @@ Add `data-variant="segmented"` to the host for a pill/segmented-control appearan
 
 ### Contract rules
 
-- The only supported host is `section[data-tabs]`.
+- Apply `data-ui="tabs"` to a semantically suitable host; no particular tag is required. Use `section` when the group is a titled thematic section, otherwise `div` is appropriate.
 - The host contains exactly one direct `[role=tablist]` with either `aria-label` or `aria-labelledby`.
 - Tab triggers are `button[role=tab]` — not links; this pattern is for in-page panel switching, not route navigation.
 - Each button carries `aria-controls` (matching the target panel `id`) and `aria-selected="true|false"`.
@@ -884,13 +956,7 @@ Add `data-variant="segmented"` to the host for a pill/segmented-control appearan
 
 ### Keyboard and application responsibilities
 
-lumen.css styles ARIA states only. Application code owns all behavioral concerns:
-
-- **Arrow-key navigation** — `ArrowLeft` / `ArrowRight` move focus between tab triggers inside the tablist.
-- **Roving tabindex** — the active tab has `tabindex="0"`; all others have `tabindex="-1"`. This ensures a single tab stop for the whole tab group.
-- **Tab activation strategy** — automatic (activate on focus) or manual (activate on `Enter` / `Space`). The WAI-ARIA Authoring Practices Guide covers both patterns.
-- **Panel visibility** — toggling the `hidden` attribute on `[role=tabpanel]` elements to show the active panel and hide all others.
-- **ARIA state** — setting `aria-selected="true"` on the active tab trigger and `aria-selected="false"` on all others when switching panels.
+Without the optional module, application code owns arrow-key navigation, activation strategy, roving tabindex, panel visibility, and `aria-selected` synchronization. The optional `lumen.css/tabs` behavior implements automatic activation on arrow navigation and click; applications retain ownership of panel content, loading, routing, and any custom behavior.
 
 ### What lumen.css does not own
 
@@ -952,13 +1018,13 @@ If `input[type="reset"]` uses `data-tone` or `data-variant`, the variant styling
 
 ## Field composition primitives
 
-`data-field` and `data-field-row` are narrow, opt-in composition wrappers that solve what native HTML alone cannot: a consistent way to associate a label, help text, error message, and success message with a single control or a grouped set of controls. They are **not** general layout utilities.
+`data-ui="field"` and `data-ui="field-row"` are narrow, opt-in composition wrappers that solve what native HTML alone cannot: a consistent way to associate a label, help text, error message, and success message with a single control or a grouped set of controls. They are **not** general layout utilities.
 
 ### Authoring contract
 
 ```html
 <!-- Single-field wrapper: div -->
-<div data-field>
+<div data-ui="field">
   <label for="email">Email address</label>
   <input type="email" id="email" name="email" />
   <span data-help>We only use this for account notifications.</span>  <!-- optional -->
@@ -967,20 +1033,20 @@ If `input[type="reset"]` uses `data-tone` or `data-variant`, the variant styling
 </div>
 
 <!-- Grouped-choice wrapper: fieldset -->
-<fieldset data-field>
+<fieldset data-ui="field">
   <legend>Notification frequency</legend>
   <label><input type="radio" name="freq" value="daily" /> Daily</label>
   <label><input type="radio" name="freq" value="weekly" /> Weekly</label>
   <span data-help>Digest emails are sent at 08:00 in your local timezone.</span>
 </fieldset>
 
-<!-- Inline field row: responsive auto-fit grid of div[data-field] children -->
-<div data-field-row>
-  <div data-field>
+<!-- Inline field row: responsive auto-fit grid of div[data-ui="field"] children -->
+<div data-ui="field-row">
+  <div data-ui="field">
     <label for="first">First name</label>
     <input type="text" id="first" name="first_name" />
   </div>
-  <div data-field>
+  <div data-ui="field">
     <label for="last">Last name</label>
     <input type="text" id="last" name="last_name" />
   </div>
@@ -989,17 +1055,17 @@ If `input[type="reset"]` uses `data-tone` or `data-variant`, the variant styling
 
 ### Contract rules
 
-- `div[data-field]` — single-field wrapper; direct children: one `label`, one control, and optional `[data-help]`, `[data-error]`, `[data-success]` markers.
-- `fieldset[data-field]` — grouped-choice wrapper; direct children: one `legend`, one or more controls (radios/checkboxes in `label` wrappers), and the same optional markers.
-- `div[data-field-row]` — responsive inline row; direct children must be `div[data-field]` wrappers.
-- `[data-help]`, `[data-error]`, and `[data-success]` must be **direct children** of `[data-field]`. They carry no implicit display logic; application code decides which to show at any given time.
+- `div[data-ui="field"]` — single-field wrapper; direct children: one `label`, one control, and optional `[data-help]`, `[data-error]`, `[data-success]` markers.
+- `fieldset[data-ui="field"]` — grouped-choice wrapper; direct children: one `legend`, one or more controls (radios/checkboxes in `label` wrappers), and the same optional markers.
+- `div[data-ui="field-row"]` — responsive inline row; direct children must be `div[data-ui="field"]` wrappers.
+- `[data-help]`, `[data-error]`, and `[data-success]` must be **direct children** of `[data-ui="field"]`. They carry no implicit display logic; application code decides which to show at any given time.
 - Invalid-state reinforcement applies automatically when the wrapped control matches `:invalid` (with a non-empty value) or carries `aria-invalid="true"`.
-- The scope of `[data-field]` and `[data-field-row]` is intentionally narrow. Do not use them as generic layout primitives.
+- The scope of `[data-ui="field"]` and `[data-ui="field-row"]` is intentionally narrow. Do not use them as generic layout primitives.
 
 ### Invalid-state example
 
 ```html
-<div data-field>
+<div data-ui="field">
   <label for="email">Email address</label>
   <input type="email" id="email" name="email"
          value="not-an-email" aria-invalid="true"
@@ -1034,9 +1100,9 @@ When `aria-invalid="true"` is present:
 
 ## Input group composition
 
-`data-input-group` is a narrow, opt-in composition wrapper that provides the visual shell for common production controls: search fields with leading icons, currency inputs with prefix labels, unit fields with suffix labels, and fields with trailing action buttons.
+`data-ui="input-group"` is a narrow, opt-in composition wrapper that provides the visual shell for common production controls: search fields with leading icons, currency inputs with prefix labels, unit fields with suffix labels, and fields with trailing action buttons.
 
-**Presentation only** — the framework styles the visual composition. Application code owns search submission, clear-button behaviour, unit conversion, input masking, and validation messaging. `data-input-group` is not a general-purpose horizontal layout primitive.
+**Presentation only** — the framework styles the visual composition. Application code owns search submission, clear-button behaviour, unit conversion, input masking, and validation messaging. `data-ui="input-group"` is not a general-purpose horizontal layout primitive.
 
 ### Supported direct children
 
@@ -1052,26 +1118,26 @@ When `aria-invalid="true"` is present:
 
 ```html
 <!-- Leading icon search field -->
-<div data-input-group>
+<div data-ui="input-group">
   <span data-icon aria-hidden="true">⌕</span>
   <input type="search" id="site-search" placeholder="Search…" />
   <button type="submit" aria-label="Search">Search</button>
 </div>
 
 <!-- Currency prefix field -->
-<div data-input-group>
+<div data-ui="input-group">
   <span data-prefix aria-hidden="true">$</span>
   <input type="number" id="amount" inputmode="decimal" placeholder="0.00" />
 </div>
 
 <!-- Suffix unit field -->
-<div data-input-group>
+<div data-ui="input-group">
   <input type="number" id="weight" inputmode="decimal" placeholder="0.0" />
   <span data-suffix aria-hidden="true">kg</span>
 </div>
 
 <!-- Trailing action button field -->
-<div data-input-group>
+<div data-ui="input-group">
   <input type="text" id="api-key" value="sk-••••••••" readonly />
   <button type="button" aria-label="Copy API key">Copy</button>
 </div>
@@ -1093,7 +1159,7 @@ The wrapper presents as one cohesive control surface:
 - **Clear-button behaviour** — resetting or clearing a field is application logic.
 - **Unit conversion** — the suffix label is decorative; conversion logic lives in application code.
 - **Input masking** — currency formatting, phone formatting, and similar masks belong to application code.
-- **Validation messaging** — combine `data-input-group` with `div[data-field]` for label, help text, and error message composition.
+- **Validation messaging** — combine `data-ui="input-group"` with `div[data-ui="field"]` for label, help text, and error message composition.
 
 ### Input group tokens
 
@@ -1107,15 +1173,15 @@ The wrapper presents as one cohesive control surface:
 
 ## Form validation summary
 
-A reusable pattern for communicating multiple form errors after a failed submit. The summary block anchors at the top of the form and links directly to each invalid control or grouped fieldset legend. Grouped fieldset errors extend the existing `fieldset[data-field]` composition primitive.
+A reusable pattern for communicating multiple form errors after a failed submit. The summary block anchors at the top of the form and links directly to each invalid control or grouped fieldset legend. Grouped fieldset errors extend the existing `fieldset[data-ui="field"]` composition primitive.
 
 ### Authoring contract
 
 ```html
-<!-- Add data-form-errors to the <form> when validation has failed -->
-<form data-form-errors>
+<!-- Add data-ui="form-errors" to the <form> when validation has failed -->
+<form data-ui="form-errors">
 
-  <!-- Summary host: must be a direct child of form[data-form-errors] -->
+  <!-- Summary host: must be a direct child of form[data-ui="form-errors"] -->
   <!-- role="alert" for assertive announcement; "status" for polite -->
   <div data-form-summary role="alert" aria-labelledby="summary-heading">
     <h2 id="summary-heading">2 errors prevented this form from being submitted</h2>
@@ -1126,7 +1192,7 @@ A reusable pattern for communicating multiple form errors after a failed submit.
   </div>
 
   <!-- Invalid text field -->
-  <div data-field>
+  <div data-ui="field">
     <label for="email">Email address</label>
     <input
       id="email"
@@ -1138,7 +1204,7 @@ A reusable pattern for communicating multiple form errors after a failed submit.
   </div>
 
   <!-- Invalid grouped fieldset — aria-invalid on the fieldset adds group-level emphasis -->
-  <fieldset data-field aria-invalid="true" aria-describedby="contact-error">
+  <fieldset data-ui="field" aria-invalid="true" aria-describedby="contact-error">
     <legend id="contact-legend">Preferred contact</legend>
     <label><input type="checkbox" /> Email</label>
     <label><input type="checkbox" /> Phone</label>
@@ -1150,12 +1216,12 @@ A reusable pattern for communicating multiple form errors after a failed submit.
 
 ### Contract rules
 
-- `data-form-errors` must be placed on the `<form>` element to activate summary styles.
-- `[data-form-summary]` must be a **direct child** of `form[data-form-errors]`.
+- `data-ui="form-errors"` must be placed on the `<form>` element to activate summary styles.
+- `[data-form-summary]` must be a **direct child** of `form[data-ui="form-errors"]`.
 - `role="alert"` (assertive) or `role="status"` (polite) is required on `[data-form-summary]`.
 - `[data-form-summary]` must contain exactly one heading child (`h2`, `h3`, or `h4`) and one direct `<ul>` or `<ol>`.
 - Each list item must contain an anchor (`<a href="#id">`) targeting the `id` of an invalid control or a grouped legend.
-- Grouped fieldset errors extend `fieldset[data-field]` — add `aria-invalid="true"` to the `<fieldset>` for group-level border reinforcement and legend emphasis. Individual controls inside continue using their own `aria-invalid` / `:invalid` styling.
+- Grouped fieldset errors extend `fieldset[data-ui="field"]` — add `aria-invalid="true"` to the `<fieldset>` for group-level border reinforcement and legend emphasis. Individual controls inside continue using their own `aria-invalid` / `:invalid` styling.
 
 ### What lumen.css does not own
 
@@ -1163,7 +1229,7 @@ A reusable pattern for communicating multiple form errors after a failed submit.
 - **Populating the summary list** — application code generates the error links and inserts them into the `<ul>`.
 - **Focus management** — move focus to the summary heading or the first invalid field after submit.
 - **Setting `aria-invalid`** — the framework reacts to this attribute but never sets it.
-- **Removing `data-form-errors`** — clear the attribute and summary content once errors are resolved.
+- **Removing `data-ui="form-errors"`** — clear the attribute and summary content once errors are resolved.
 - **Error message copy** — all text is application-owned.
 
 ### Form validation summary tokens
@@ -1184,12 +1250,12 @@ A reusable pattern for communicating multiple form errors after a failed submit.
 
 ## Command menu
 
-Use `details[data-menu]` for row actions, card overflow actions, and any contextual action surface. The direct `summary` is the trigger; a direct `ul` or `ol` holds the action items.
+Use `details[data-ui="menu"]` for row actions, card overflow actions, and any contextual action surface. The direct `summary` is the trigger; a direct `ul` or `ol` holds the action items.
 
 ### Host contract
 
 ```html
-<details data-menu>
+<details data-ui="menu">
   <summary aria-label="Row actions">&#8942;</summary>
   <ul>
     <li><a href="/edit">Edit</a></li>
@@ -1200,7 +1266,7 @@ Use `details[data-menu]` for row actions, card overflow actions, and any context
 </details>
 ```
 
-- Host: `details[data-menu]`
+- Host: `details[data-ui="menu"]`
 - Trigger: direct `summary` — any content (text, icon, ellipsis character)
 - Action list: one direct `ul` or `ol`
 - Action items: `a[href]` or `button[type=button]` inside `li`
@@ -1212,7 +1278,7 @@ Use `details[data-menu]` for row actions, card overflow actions, and any context
 Default placement is `bottom-inline-end` (menu aligns to the inline-end edge of the trigger). Add `data-align="start"` to anchor the menu to the inline-start edge:
 
 ```html
-<details data-menu data-align="start">
+<details data-ui="menu" data-align="start">
   …
 </details>
 ```
@@ -1265,6 +1331,8 @@ Open `docs/recipes.html` in a browser for copy-pasteable, full-page application 
 | [Notification center](docs/recipes.html#notification-center) | Notification center, region states, toast stack |
 
 Each recipe uses only documented framework contracts. Application-owned behavior (toggle handlers, keyboard navigation, validation logic) is noted inline.
+
+For a connected multi-screen scenario, open the [Acme Console example](docs/app-example.html). It links dashboard, records, detail, and settings sections in one responsive shell and demonstrates forms, tables, tabs, notifications, and navigation. The page is a static presentation sample; its notes identify routes, persistence, search, validation, and other behavior a real application must implement.
 
 ## Data tables
 
@@ -1340,22 +1408,22 @@ Sticky headers degrade gracefully when no overflow container is present. Print o
 
 Compact inline pills for status labels in tables, cards, lists, and dashboards. Badges are **purely presentational and non-interactive**. v1 provides a single compact pill shape only — no size variants, icon slots, or dismissible behavior.
 
-**Supported host elements:** `span`, `strong`, `small` with `[data-badge]`.
+**Supported host elements:** `span`, `strong`, `small` with `[data-ui="badge"]`.
 
 **Supported tones:** `neutral` (default), `accent`, `success`, `warning`, `danger`.
 
 ```html
 <!-- Default (neutral) -->
-<span data-badge>Neutral</span>
+<span data-ui="badge">Neutral</span>
 
 <!-- Explicit tone -->
-<span data-badge data-tone="accent">Accent</span>
-<span data-badge data-tone="success">Success</span>
-<span data-badge data-tone="warning">Warning</span>
-<span data-badge data-tone="danger">Danger</span>
+<span data-ui="badge" data-tone="accent">Accent</span>
+<span data-ui="badge" data-tone="success">Success</span>
+<span data-ui="badge" data-tone="warning">Warning</span>
+<span data-ui="badge" data-tone="danger">Danger</span>
 
 <!-- Inside a table cell -->
-<td><span data-badge data-tone="success">Fulfilled</span></td>
+<td><span data-ui="badge" data-tone="success">Fulfilled</span></td>
 ```
 
 Tone colors are resolved from the existing semantic token families (`--color-{tone}-subtle`, `--color-{tone}-text`, `--color-{tone}-border`). Sizing and shape are controlled by the four badge tokens:
@@ -1377,7 +1445,7 @@ lumen.css provides reusable region-level presentation patterns for communicating
 
 ```html
 <!-- Empty state — informational, no live-region role required -->
-<section data-region-state="empty">
+<section data-ui="region-state" data-state="empty">
   <h2>No results found</h2>
   <p>Try adjusting your filters or search terms.</p>
   <footer>
@@ -1386,7 +1454,7 @@ lumen.css provides reusable region-level presentation patterns for communicating
 </section>
 
 <!-- Success state — add role="status" when AT announcement is needed (polite) -->
-<section data-region-state="success" role="status">
+<section data-ui="region-state" data-state="success" role="status">
   <h2>Import complete</h2>
   <p>142 records were imported successfully.</p>
   <footer>
@@ -1395,7 +1463,7 @@ lumen.css provides reusable region-level presentation patterns for communicating
 </section>
 
 <!-- Error state — add role="alert" when immediate AT announcement is needed (assertive) -->
-<section data-region-state="error" role="alert">
+<section data-ui="region-state" data-state="error" role="alert">
   <h2>Unable to load data</h2>
   <p>A server error occurred. Your data was not affected.</p>
   <footer>
@@ -1408,15 +1476,15 @@ lumen.css provides reusable region-level presentation patterns for communicating
 
 - Supported host elements: `section`, `article`, `main`, `aside`.
 - Supported states: `empty`, `success`, `error`.
-- `data-region-state="empty"` is informational — no live-region role is required.
-- `data-region-state="success"` should carry `role="status"` when the section appears or changes content dynamically and you want a polite screen-reader announcement.
-- `data-region-state="error"` should carry `role="alert"` when the error appears dynamically and requires an immediate screen-reader announcement. For static error content already in the DOM at load time the role is optional.
+- `data-ui="region-state" data-state="empty"` is informational — no live-region role is required.
+- `data-ui="region-state" data-state="success"` should carry `role="status"` when the section appears or changes content dynamically and you want a polite screen-reader announcement.
+- `data-ui="region-state" data-state="error"` should carry `role="alert"` when the error appears dynamically and requires an immediate screen-reader announcement. For static error content already in the DOM at load time the role is optional.
 - The host may contain a heading, body content (`p`, `ul`, `ol`), and an optional direct `footer` for action buttons or links.
 - Colors derive from the existing `--color-success-*` and `--color-danger-*` semantic token families — no new feedback palette.
 
 ### When to use a dialog instead
 
-Use a `<dialog>` when the feedback requires a user decision before the flow can continue (for example: a destructive confirmation). Use toast notifications (`aside[data-toast-region]`) for transient, non-blocking feedback.
+Use a `<dialog>` when the feedback requires a user decision before the flow can continue (for example: a destructive confirmation). Use toast notifications (`aside[data-ui="toast-region"]`) for transient, non-blocking feedback.
 
 ### What lumen.css does not own
 
@@ -1437,94 +1505,71 @@ Use a `<dialog>` when the feedback requires a user decision before the flow can 
 
 ## Card
 
-`article[data-card]` is a reusable content-surface for presenting a single entity — a post, product, user, or any bounded piece of content — with optional media, tone cues, and density control.
+`[data-ui="card"]` is a reusable content surface for presenting a single entity — a post, product, user, or any bounded piece of content — with optional media, tone cues, and density control. Choose the host element that best fits the content semantics.
 
 **Presentation only** — lumen.css owns layout, spacing, border, and tone. Application code owns navigation destinations, analytics, data loading, media sources, and any command handlers inside the card.
 
 ### Authoring contract
 
 ```html
-<!-- Default neutral card -->
-<article data-card>
-  <div data-card-main>
-    <header>
-      <h3>Card title</h3>
-      <p>Supporting meta text</p>
-    </header>
-    <div data-card-body>
-      <p>Card body content goes here.</p>
-    </div>
-    <footer>
-      <button type="button">Action</button>
-    </footer>
-  </div>
+<!-- Minimal card: semantic host and ordinary content -->
+<article data-ui="card">
+  <h2>Card title</h2>
+  <p>Card body content goes here.</p>
+  <a href="/items/1">View item</a>
 </article>
 
-<!-- Linked card — one heading link; host stays non-interactive -->
-<article data-card>
-  <div data-card-main>
-    <header>
-      <h3><a href="/items/1">Card title</a></h3>
-    </header>
-    <div data-card-body>
-      <p>The heading link is the navigation affordance. Secondary controls remain independently operable.</p>
-    </div>
-    <footer>
-      <button type="button">Secondary action</button>
-      <details data-menu>
-        <summary aria-label="More options">⋯</summary>
-        <ul role="list">
-          <li><button type="button">Edit</button></li>
-          <li><button type="button">Delete</button></li>
-        </ul>
-      </details>
-    </footer>
-  </div>
-</article>
+<!-- Use a neutral host when no more specific semantic element fits -->
+<div data-ui="card">
+  <h3>Queue item</h3>
+  <p>Waiting for review</p>
+</div>
+
+<!-- Optional semantic parts need no part-specific data attributes -->
+<section data-ui="card">
+  <header>
+    <h2><a href="/items/1">Card title</a></h2>
+    <p>Supporting meta text</p>
+  </header>
+  <p>The heading link is the navigation affordance. Secondary controls remain independently operable.</p>
+  <footer><button type="button">Secondary action</button></footer>
+</section>
 
 <!-- Top-media card -->
-<article data-card data-media-position="top">
-  <figure data-card-media>
-    <img src="cover.jpg" alt="Cover image description" />
-  </figure>
-  <div data-card-main>
-    <header><h3>Top-media card</h3></header>
-    <div data-card-body><p>Media renders above the content block.</p></div>
+<article data-ui="card">
+  <figure><img src="cover.jpg" alt="Cover image description" /></figure>
+  <h2>Top-media card</h2>
+  <p>Media renders above the content.</p>
+</article>
+
+<!-- Side-media card: the unmarked wrapper groups content beside the figure -->
+<article data-ui="card" data-media-position="start">
+  <figure><img src="thumb.jpg" alt="Thumbnail description" /></figure>
+  <div>
+    <h2>Side-media card</h2>
+    <p>Media collapses above the content in a narrow container.</p>
+    <footer><button type="button">Open</button></footer>
   </div>
 </article>
 
-<!-- Side-media card — collapses to stacked on narrow containers -->
-<article data-card data-media-position="start">
-  <figure data-card-media>
-    <img src="thumb.jpg" alt="Thumbnail description" />
-  </figure>
-  <div data-card-main>
-    <header><h3>Side-media card</h3></header>
-    <div data-card-body><p>Media sits in a side slot at wider widths and collapses to stacked on narrow containers.</p></div>
-  </div>
-</article>
-
-<!-- Toned cards -->
-<article data-card data-tone="accent">…</article>
-<article data-card data-tone="success">…</article>
-<article data-card data-tone="warning">…</article>
-<article data-card data-tone="danger">…</article>
-
-<!-- Compact density -->
-<article data-card data-density="compact">…</article>
+<!-- Toned and compact cards -->
+<article data-ui="card" data-tone="accent">…</article>
+<article data-ui="card" data-tone="success">…</article>
+<article data-ui="card" data-tone="warning">…</article>
+<article data-ui="card" data-tone="danger">…</article>
+<article data-ui="card" data-density="compact">…</article>
 ```
 
 ### Contract rules
 
-- The host element **must** be `article[data-card]`.
-- `div[data-card-main]` is **required** and must be a direct child of the host.
-- Supported direct children of the host (in order): optional `figure[data-card-media]`, required `div[data-card-main]`.
-- Inside `div[data-card-main]`, supported children (in order): optional `header`, required `div[data-card-body]`, optional `footer`.
+- Use `data-ui="card"` on any semantically appropriate host, such as `article`, `section`, `div`, or `li`.
+- Ordinary direct children are styled without component-part attributes. Use native `header`, `figure`, and `footer` where they convey meaning.
+- Side media uses a direct `figure` followed by one unmarked direct wrapper that groups the card's content; no wrapper is required for the common stacked card.
 - `data-tone` accepts: `neutral` (default), `accent`, `success`, `warning`, `danger`.
 - `data-density` accepts: `comfortable` (default), `compact`.
 - `data-media-position` accepts: `top` (default stacked), `start` (side slot at wider widths, collapses to stacked at `inline-size < 28rem`).
-- The linked-card pattern uses **one heading link** inside `header` or `div[data-card-body]` as the primary navigation affordance. The host itself must not be interactive, and no stretched-link overlay is supported.
-- Nested secondary controls (`button`, `details[data-menu]`, etc.) remain independently focusable and operable.
+- The linked-card pattern uses **one heading link** as the primary navigation affordance. The host itself must not be interactive, and no stretched-link overlay is supported.
+- Nested secondary controls (`button`, `details[data-ui="menu"]`, etc.) remain independently focusable and operable.
 - Tone styling is subtle and semantic — it uses the existing `--color-{tone}-subtle`, `--color-{tone}-border` token families without making the card resemble an alert banner.
 
 ### What lumen.css does not own
@@ -1539,9 +1584,7 @@ Use a `<dialog>` when the feedback requires a user decision before the flow can 
 
 - Clickable host cards (the host is never made interactive).
 - Stretched-link overlays (`::after` pointer-event tricks that make the whole card clickable).
-- Arbitrary child trees without `div[data-card-main]`.
-- Gallery or media-carousel behavior inside `figure[data-card-media]`.
-- Semantic host elements other than `article[data-card]`.
+- Gallery or media-carousel behavior inside the card's `figure`.
 
 ### Card tokens
 
@@ -1559,14 +1602,14 @@ Use a `<dialog>` when the feedback requires a user decision before the flow can 
 
 ## Data-view shell
 
-`section[data-data-view]` is an opinionated framing shell for production list, search, and admin screens. It composes the framework's existing table, pagination, badge, loading, region-state, form, and input-group primitives into one cohesive section layout.
+`section[data-ui="data-view"]` is an opinionated framing shell for production list, search, and admin screens. It composes the framework's existing table, pagination, badge, loading, region-state, form, and input-group primitives into one cohesive section layout.
 
 **Composition only** — the shell provides framing and spacing. It does not own search logic, filter state, pagination math, data loading, or result rendering.
 
 ### Authoring contract
 
 ```html
-<section data-data-view>
+<section data-ui="data-view">
 
   <!-- Optional: page-level heading + primary action -->
   <header>
@@ -1576,7 +1619,7 @@ Use a `<dialog>` when the feedback requires a user decision before the flow can 
 
   <!-- Optional: search, filter, and action toolbar -->
   <form data-data-toolbar>
-    <div data-input-group>
+    <div data-ui="input-group">
       <span data-icon><svg aria-hidden="true">…</svg></span>
       <input type="search" placeholder="Search users…" />
     </div>
@@ -1601,7 +1644,7 @@ Use a `<dialog>` when the feedback requires a user decision before the flow can 
 
   <!-- Optional: pagination or secondary actions -->
   <footer>
-    <nav data-pagination aria-label="Pagination">…</nav>
+    <nav data-ui="pagination" aria-label="Pagination">…</nav>
   </footer>
 
 </section>
@@ -1619,12 +1662,12 @@ Apply `aria-busy="true"` to `[data-data-content]` to trigger the framework's bui
 
 ### Empty and error states
 
-Place an existing `[data-region-state]` host inside `[data-data-content]`:
+Place an existing `[data-ui="region-state"]` host inside `[data-data-content]`:
 
 ```html
 <!-- No results -->
 <div data-data-content>
-  <section data-region-state="empty">
+  <section data-ui="region-state" data-state="empty">
     <h3>No users found</h3>
     <p>Try adjusting your search or filters.</p>
     <footer><button type="button">Clear filters</button></footer>
@@ -1633,7 +1676,7 @@ Place an existing `[data-region-state]` host inside `[data-data-content]`:
 
 <!-- Load error -->
 <div data-data-content>
-  <section data-region-state="error" role="alert">
+  <section data-ui="region-state" data-state="error" role="alert">
     <h3>Unable to load users</h3>
     <p>A server error occurred. Your data was not affected.</p>
     <footer><button type="button">Try again</button></footer>
@@ -1643,19 +1686,19 @@ Place an existing `[data-region-state]` host inside `[data-data-content]`:
 
 ### Contract rules
 
-- The host element **must** be `section[data-data-view]`.
+- The host element **must** be `section[data-ui="data-view"]`.
 - `[data-data-content]` is **required**; all other direct children are optional.
 - Allowed direct children (in order): optional `header`, optional `form[data-data-toolbar]`, optional `[data-results-summary]`, required `[data-data-content]`, optional `footer`.
 - `form[data-data-toolbar]` composes existing form controls and input groups — no new widget semantics are introduced.
 - `[data-results-summary]` provides status copy only; it **must not** contain interactive controls.
-- The content region may contain a `<table>`, a list, cards, or an existing `[data-region-state]` host.
+- The content region may contain a `<table>`, a list, cards, or an existing `[data-ui="region-state"]` host.
 - `[aria-busy="true"]` on `[data-data-content]` uses the existing framework loading pattern — the shell adds no parallel spinner.
-- The `footer` is the correct location for `nav[data-pagination]` or secondary action buttons.
+- The `footer` is the correct location for `nav[data-ui="pagination"]` or secondary action buttons.
 
 ### What lumen.css does not own
 
 - **Search and filter logic** — application code wires up toolbar submissions and updates the content region.
-- **Pagination math** — the application calculates page offsets and renders the correct `nav[data-pagination]` links.
+- **Pagination math** — the application calculates page offsets and renders the correct `nav[data-ui="pagination"]` links.
 - **Result copy** — all text inside `[data-results-summary]` is provided by the application.
 - **Data loading and transitions** — application code sets and removes `aria-busy` and replaces content region children.
 - **Focus management** — application code manages focus after dynamic content updates.
@@ -1720,4 +1763,4 @@ Consumer overrides should go in an unlayered block or in a layer declared after 
 
 ## v1 scope
 
-Foundations, typography, forms, tables, details/dialog, semantic states, toast notifications, persistent notification-center panels (`aside[data-notification-center]` — browsable inbox surface for unread, read, and actionable notifications; complements the transient toast stack), pagination, breadcrumb navigation, field composition primitives (`data-field`, `data-field-row`, `data-help`, `data-error`, `data-success`), input group composition (`data-input-group`, `data-prefix`, `data-suffix`, `data-icon`), optional button variants (`data-tone="neutral|accent|success|warning|danger"` and `data-variant="outlined"`) scoped to button-like controls only, status badges (`[data-badge]` on `span`, `strong`, or `small` — non-interactive compact pills only), region-state patterns (`[data-region-state="empty|success|error"]` on `section`, `article`, `main`, or `aside` — presentation-only region feedback surfaces), container-based layout shell (`div[data-layout-shell]` — full-page production layout with eight supported direct-child combinations from `main`-only to the full `header + sidebar + main + panel + footer` shell; all variants detected via `:has()` with no modifier attribute needed), header navigation (`nav[data-navbar]` inside `header[data-layout-header]` — responsive primary navigation with `li > a[href] + ul` grouped items and optional `button[data-nav-toggle]` collapse), command menus (`details[data-menu]` — overlay action surfaces for row actions, card overflow actions, and contextual menus), data-view shells (`section[data-data-view]` — opinionated framing shell for production list, search, and admin screens that composes the framework's existing table, pagination, badge, loading, region-state, form, and input-group primitives), and cards (`article[data-card]` — reusable content-surface for posts, products, users, and bounded content with optional media, semantic tone variants, compact density mode, and linked-card support via one internal heading link). No grid system and no flex utilities.
+Foundations, typography, forms, tables, details/dialog, semantic states, toast notifications, persistent notification-center panels (`aside[data-ui="notification-center"]` — browsable inbox surface for unread, read, and actionable notifications; complements the transient toast stack), pagination, breadcrumb navigation, field composition primitives (`data-ui="field"`, `data-ui="field-row"`, `data-help`, `data-error`, `data-success`), input group composition (`data-ui="input-group"`, `data-prefix`, `data-suffix`, `data-icon`), optional button variants (`data-tone="neutral|accent|success|warning|danger"` and `data-variant="outlined"`) scoped to button-like controls only, status badges (`[data-ui="badge"]` on `span`, `strong`, or `small` — non-interactive compact pills only), region-state patterns (`[data-ui="region-state"][data-state="empty|success|error"]` on `section`, `article`, `main`, or `aside` — presentation-only region feedback surfaces), container-based layout shell (`div[data-ui="layout-shell"]` — full-page production layout with eight supported direct-child combinations from `main`-only to the full `header + sidebar + main + panel + footer` shell; all variants detected via `:has()` with no modifier attribute needed), header navigation (`nav[data-ui="navbar"]` inside `header[data-layout-header]` — responsive primary navigation with `li > a[href] + ul` grouped items and optional `button[data-nav-toggle]` collapse), command menus (`details[data-ui="menu"]` — overlay action surfaces for row actions, card overflow actions, and contextual menus), data-view shells (`section[data-ui="data-view"]` — opinionated framing shell for production list, search, and admin screens that composes the framework's existing table, pagination, badge, loading, region-state, form, and input-group primitives), and cards (`[data-ui="card"]` on a semantically appropriate host — reusable content surface for posts, products, users, and bounded content with optional media, semantic tone variants, compact density mode, and linked-card support via one heading link). No grid system and no flex utilities.

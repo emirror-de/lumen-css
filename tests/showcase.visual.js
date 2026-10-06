@@ -74,6 +74,20 @@ test.describe('Showcase — full page', () => {
 });
 
 // ---------------------------------------------------------------------------
+// Acme Console end-to-end application example
+// ---------------------------------------------------------------------------
+
+test.describe('Application example — Acme Console', () => {
+  test('light theme page layout', async ({ page }) => {
+    await screenshotPage(page, 'docs/app-example.html', 'app-example-light.png');
+  });
+
+  test('dark theme', async ({ page }) => {
+    await screenshotPage(page, 'docs/app-example.html', 'app-example-dark.png', { forceDark: true });
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Layout shell
 // ---------------------------------------------------------------------------
 
@@ -82,7 +96,7 @@ test.describe('Layout shell', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      '[data-layout-shell]',
+      '[data-ui="layout-shell"]',
       'layout-shell-full.png'
     );
   });
@@ -107,7 +121,7 @@ test.describe('Navbar', () => {
     test.skip(viewport !== null && viewport.width < 768, 'dropdown only visible at wide viewport');
     await page.goto(fileUrl('docs/showcase.html'));
     // Trigger dropdown by hovering over the first item that has a nested ul
-    const dropdownTrigger = page.locator('nav[data-navbar] li:has(ul) > a, nav[data-navbar] li:has(ul) > details > summary').first();
+    const dropdownTrigger = page.locator('nav[data-ui="navbar"] li:has(ul) > a, nav[data-ui="navbar"] li:has(ul) > details > summary').first();
     await dropdownTrigger.hover();
     const header = page.locator('header[data-layout-header]').first();
     await expect(header).toHaveScreenshot('navbar-dropdown-open.png', { animations: 'disabled' });
@@ -141,7 +155,7 @@ test.describe('Forms', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      '[data-form-errors]',
+      '[data-ui="form-errors"]',
       'form-validation-summary.png'
     );
   });
@@ -156,7 +170,7 @@ test.describe('Tabs', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      'section[data-tabs]:not([data-variant])',
+      '[data-ui="tabs"]:not([data-variant])',
       'tabs-standard.png'
     );
   });
@@ -165,7 +179,7 @@ test.describe('Tabs', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      'section[data-tabs][data-variant="segmented"]',
+      '[data-ui="tabs"][data-variant="segmented"]',
       'tabs-segmented.png'
     );
   });
@@ -195,7 +209,7 @@ test.describe('Toast region', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      'aside[data-toast-region]',
+      'aside[data-ui="toast-region"]',
       'toast-region.png'
     );
   });
@@ -210,7 +224,7 @@ test.describe('Notification center', () => {
     await screenshotElement(
       page,
       'docs/recipes.html',
-      'aside[data-notification-center]',
+      'aside[data-ui="notification-center"]',
       'notification-center.png'
     );
   });
@@ -225,7 +239,7 @@ test.describe('Pagination', () => {
     await screenshotElement(
       page,
       'docs/recipes.html',
-      'nav[data-pagination]',
+      'nav[data-ui="pagination"]',
       'pagination.png'
     );
   });
@@ -240,7 +254,7 @@ test.describe('Breadcrumbs', () => {
     await screenshotElement(
       page,
       'docs/showcase.html',
-      'nav[data-breadcrumbs]',
+      'nav[data-ui="breadcrumbs"]',
       'breadcrumbs.png'
     );
   });

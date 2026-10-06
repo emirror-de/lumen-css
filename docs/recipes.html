@@ -70,7 +70,7 @@
                 inline-size: 1rem;
                 block-size: 1rem;
             }
-            details[data-menu] > summary > .icon {
+            details[data-ui="menu"] > summary > .icon {
                 inline-size: 1rem;
                 block-size: 1rem;
             }
@@ -116,7 +116,7 @@
                 </symbol>
             </defs>
         </svg>
-        <div data-layout-shell>
+        <div data-ui="layout-shell">
             <header data-layout-header>
                 <a href="../README.md" style="text-decoration: none; flex-shrink: 0"
                     ><img
@@ -140,7 +140,7 @@
                         );
                     "
                 ></button>
-                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="showcase.html">Showcase</a></li>
@@ -195,9 +195,9 @@
        RECIPE 1 — Sign-in form
        Primitives used:
          · layout shell (variant 2: header + main)  → README § Layout shell
-         · div[data-field]                           → README § Field composition primitives
-         · div[data-field-row]                       → README § Field composition primitives
-         · form[data-form-errors] / [data-form-summary] → README § Form validation summary
+         · div[data-ui="field"]                           → README § Field composition primitives
+         · div[data-ui="field-row"]                       → README § Field composition primitives
+         · form[data-ui="form-errors"] / [data-form-summary] → README § Form validation summary
        ===================================================================== -->
                 <section id="sign-in" class="recipe-section">
                     <h2>Recipe 1 — Sign-in form</h2>
@@ -223,7 +223,7 @@
         Layout shell — variant 2 (header + main) is the minimal production shell.
         The sign-in form itself lives inside <main>.
       -->
-                        <div data-layout-shell style="min-block-size: 30rem; position: relative">
+                        <div data-ui="layout-shell" style="min-block-size: 30rem; position: relative">
                             <header data-layout-header>
                                 <a
                                     href="/"
@@ -234,7 +234,7 @@
                                     "
                                     >Acme</a
                                 >
-                                <nav data-navbar aria-label="Primary">
+                                <nav data-ui="navbar" aria-label="Primary">
                                     <ul>
                                         <li><a href="/pricing">Pricing</a></li>
                                         <li><a href="/docs">Docs</a></li>
@@ -250,10 +250,9 @@
                                 "
                             >
                                 <article
-                                    data-card
+                                    data-ui="card"
                                     style="max-inline-size: 28rem; inline-size: 100%"
                                 >
-                                    <div data-card-main>
                                         <header>
                                             <h1 style="font-size: var(--font-size-xl)">
                                                 Sign in to Acme
@@ -263,13 +262,12 @@
                                                 <a href="/register">Create one</a>
                                             </p>
                                         </header>
-                                        <div data-card-body>
                                             <!--
-                  Show form[data-form-errors] only after a failed submit.
-                  Application code adds data-form-errors to the form element,
+                  Show form[data-ui="form-errors"] only after a failed submit.
+                  Application code adds data-ui="form-errors" to the form element,
                   populates the summary list, and moves focus to #sign-in-summary-heading.
                 -->
-                                            <form method="post" action="/sign-in" data-form-errors>
+                                            <form method="post" action="/sign-in" data-ui="form-errors">
                                                 <div
                                                     data-form-summary
                                                     role="alert"
@@ -293,7 +291,7 @@
                                                     </ul>
                                                 </div>
 
-                                                <div data-field>
+                                                <div data-ui="field">
                                                     <label for="sign-in-email">Email address</label>
                                                     <input
                                                         type="email"
@@ -309,7 +307,7 @@
                                                     >
                                                 </div>
 
-                                                <div data-field>
+                                                <div data-ui="field">
                                                     <label for="sign-in-password">Password</label>
                                                     <input
                                                         type="password"
@@ -339,8 +337,6 @@
                                                     </button>
                                                 </div>
                                             </form>
-                                        </div>
-                                    </div>
                                 </article>
                             </main>
                         </div>
@@ -349,15 +345,15 @@
                     <ul class="contracts-list">
                         <li>
                             Layout shell variant 2 —
-                            <code>div[data-layout-shell] &gt; header + main</code>
+                            <code>div[data-ui="layout-shell"] &gt; header + main</code>
                         </li>
-                        <li>Card — <code>article[data-card] &gt; div[data-card-main]</code></li>
+                        <li>Card — <code>[data-ui="card"]</code> on a semantically appropriate host</li>
                         <li>
-                            Field composition — <code>div[data-field]</code>,
+                            Field composition — <code>div[data-ui="field"]</code>,
                             <code>[data-error]</code>, <code>[data-help]</code>
                         </li>
                         <li>
-                            Form validation summary — <code>form[data-form-errors]</code>,
+                            Form validation summary — <code>form[data-ui="form-errors"]</code>,
                             <code>[data-form-summary]</code>
                         </li>
                         <li>Button tone — <code>button.accent</code></li>
@@ -370,9 +366,9 @@
        RECIPE 2 — Settings page with tabs
        Primitives used:
          · layout shell (variant 5: header + sidebar + main) → README § Layout shell
-         · section[data-tabs]                               → README § Tabs
-         · div[data-field], div[data-field-row]             → README § Field composition primitives
-         · div[data-input-group]                            → README § Input group composition
+         · [data-ui="tabs"]                               → README § Tabs
+         · div[data-ui="field"], div[data-ui="field-row"]             → README § Field composition primitives
+         · div[data-ui="input-group"]                            → README § Input group composition
        ===================================================================== -->
                 <section id="settings-tabs" class="recipe-section">
                     <h2>Recipe 2 — Settings page with tabs</h2>
@@ -389,7 +385,7 @@
                     </p>
 
                     <div class="recipe-frame">
-                        <div data-layout-shell style="min-block-size: 34rem; position: relative">
+                        <div data-ui="layout-shell" style="min-block-size: 34rem; position: relative">
                             <header data-layout-header>
                                 <a
                                     href="/"
@@ -400,7 +396,7 @@
                                     "
                                     >Acme</a
                                 >
-                                <nav data-navbar aria-label="Primary">
+                                <nav data-ui="navbar" aria-label="Primary">
                                     <ul>
                                         <li><a href="/dashboard">Dashboard</a></li>
                                         <li><a href="/users">Users</a></li>
@@ -425,7 +421,7 @@
                                 </nav>
                             </aside>
                             <main>
-                                <nav data-breadcrumbs aria-label="Page location">
+                                <nav data-ui="breadcrumbs" aria-label="Page location">
                                     <ol>
                                         <li><a href="/dashboard">Home</a></li>
                                         <li>
@@ -441,7 +437,7 @@
             Tabs: application code manages keyboard navigation, aria-selected, and panel hidden state.
             The framework styles aria-selected="true|false" and the tabpanel layout.
           -->
-                                <section data-tabs>
+                                <section data-ui="tabs">
                                     <div role="tablist" aria-label="Settings sections">
                                         <button
                                             role="tab"
@@ -478,8 +474,8 @@
                                         aria-labelledby="tab-profile"
                                     >
                                         <form method="post" action="/settings/account/profile">
-                                            <div data-field-row>
-                                                <div data-field>
+                                            <div data-ui="field-row">
+                                                <div data-ui="field">
                                                     <label for="settings-first">First name</label>
                                                     <input
                                                         type="text"
@@ -489,7 +485,7 @@
                                                         value="Alex"
                                                     />
                                                 </div>
-                                                <div data-field>
+                                                <div data-ui="field">
                                                     <label for="settings-last">Last name</label>
                                                     <input
                                                         type="text"
@@ -500,7 +496,7 @@
                                                     />
                                                 </div>
                                             </div>
-                                            <div data-field>
+                                            <div data-ui="field">
                                                 <label for="settings-email">Email address</label>
                                                 <input
                                                     type="email"
@@ -536,7 +532,7 @@
                                         hidden
                                     >
                                         <form method="post" action="/settings/account/security">
-                                            <div data-field>
+                                            <div data-ui="field">
                                                 <label for="settings-current-pw"
                                                     >Current password</label
                                                 >
@@ -547,7 +543,7 @@
                                                     autocomplete="current-password"
                                                 />
                                             </div>
-                                            <div data-field>
+                                            <div data-ui="field">
                                                 <label for="settings-new-pw">New password</label>
                                                 <input
                                                     type="password"
@@ -560,7 +556,7 @@
                                                     one number.</span
                                                 >
                                             </div>
-                                            <div data-field>
+                                            <div data-ui="field">
                                                 <label for="settings-confirm-pw"
                                                     >Confirm new password</label
                                                 >
@@ -589,7 +585,7 @@
                                             method="post"
                                             action="/settings/account/notifications"
                                         >
-                                            <fieldset data-field>
+                                            <fieldset data-ui="field">
                                                 <legend>Email notifications</legend>
                                                 <label
                                                     ><input
@@ -632,18 +628,18 @@
                         <li>
                             Layout shell variant 5 —
                             <code
-                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                >div[data-ui="layout-shell"] &gt; header + aside[data-layout-sidebar] +
                                 main</code
                             >
                         </li>
-                        <li>Breadcrumbs — <code>nav[data-breadcrumbs]</code></li>
+                        <li>Breadcrumbs — <code>nav[data-ui="breadcrumbs"]</code></li>
                         <li>
-                            Tabs — <code>section[data-tabs]</code>, <code>[role=tablist]</code>,
+                            Tabs — <code>[data-ui="tabs"]</code>, <code>[role=tablist]</code>,
                             <code>[role=tab]</code>, <code>[role=tabpanel]</code>
                         </li>
                         <li>
-                            Field composition — <code>div[data-field]</code>,
-                            <code>div[data-field-row]</code>, <code>fieldset[data-field]</code>
+                            Field composition — <code>div[data-ui="field"]</code>,
+                            <code>div[data-ui="field-row"]</code>, <code>fieldset[data-ui="field"]</code>
                         </li>
                         <li>
                             Button variants — <code>button.accent</code>,
@@ -658,12 +654,12 @@
        RECIPE 3 — Records list page with data-view shell
        Primitives used:
          · layout shell (variant 5: header + sidebar + main) → README § Layout shell
-         · section[data-data-view]                           → README § Data-view shell
+         · section[data-ui="data-view"]                           → README § Data-view shell
          · table with data-sticky-header                     → README § Data tables
-         · div[data-input-group]                             → README § Input group composition
-         · nav[data-pagination]                              → README § Pagination
-         · span[data-badge]                                  → README § Status badges
-         · details[data-menu]                                → README § Command menu
+         · div[data-ui="input-group"]                             → README § Input group composition
+         · nav[data-ui="pagination"]                              → README § Pagination
+         · span[data-ui="badge"]                                  → README § Status badges
+         · details[data-ui="menu"]                                → README § Command menu
        ===================================================================== -->
                 <section id="records-list" class="recipe-section">
                     <h2>Recipe 3 — Records list</h2>
@@ -684,7 +680,7 @@
                     </p>
 
                     <div class="recipe-frame">
-                        <div data-layout-shell style="min-block-size: 36rem; position: relative">
+                        <div data-ui="layout-shell" style="min-block-size: 36rem; position: relative">
                             <header data-layout-header>
                                 <a
                                     href="/"
@@ -695,7 +691,7 @@
                                     "
                                     >Acme</a
                                 >
-                                <nav data-navbar aria-label="Primary">
+                                <nav data-ui="navbar" aria-label="Primary">
                                     <ul>
                                         <li><a href="/dashboard">Dashboard</a></li>
                                         <li><a href="/users" aria-current="page">Users</a></li>
@@ -714,7 +710,7 @@
                                 </nav>
                             </aside>
                             <main>
-                                <section data-data-view>
+                                <section data-ui="data-view">
                                     <header>
                                         <h1>Users</h1>
                                         <button type="button" data-tone="accent">
@@ -723,7 +719,7 @@
                                     </header>
 
                                     <form data-data-toolbar>
-                                        <div data-input-group>
+                                        <div data-ui="input-group">
                                             <span data-icon aria-hidden="true"
                                                 ><svg class="icon" aria-hidden="true">
                                                     <use href="#icon-lucide-search"></use></svg
@@ -771,12 +767,12 @@
                                                         <td>alex@acme.com</td>
                                                         <td>Admin</td>
                                                         <td>
-                                                            <span data-badge data-tone="success"
+                                                            <span data-ui="badge" data-tone="success"
                                                                 >Active</span
                                                             >
                                                         </td>
                                                         <td>
-                                                            <details data-menu data-align="start">
+                                                            <details data-ui="menu" data-align="start">
                                                                 <summary
                                                                     aria-label="Actions for Alex Chen"
                                                                 >
@@ -815,12 +811,12 @@
                                                         <td>sam@acme.com</td>
                                                         <td>Member</td>
                                                         <td>
-                                                            <span data-badge data-tone="warning"
+                                                            <span data-ui="badge" data-tone="warning"
                                                                 >Pending</span
                                                             >
                                                         </td>
                                                         <td>
-                                                            <details data-menu data-align="start">
+                                                            <details data-ui="menu" data-align="start">
                                                                 <summary
                                                                     aria-label="Actions for Sam Rivera"
                                                                 >
@@ -858,9 +854,9 @@
                                                         <td>Jordan Lee</td>
                                                         <td>jordan@acme.com</td>
                                                         <td>Member</td>
-                                                        <td><span data-badge>Inactive</span></td>
+                                                        <td><span data-ui="badge">Inactive</span></td>
                                                         <td>
-                                                            <details data-menu data-align="start">
+                                                            <details data-ui="menu" data-align="start">
                                                                 <summary
                                                                     aria-label="Actions for Jordan Lee"
                                                                 >
@@ -900,7 +896,7 @@
                                     </div>
 
                                     <footer>
-                                        <nav data-pagination aria-label="Users pagination">
+                                        <nav data-ui="pagination" aria-label="Users pagination">
                                             <ol>
                                                 <li><span aria-disabled="true">Previous</span></li>
                                                 <li>
@@ -925,25 +921,25 @@
                         <li>
                             Layout shell variant 5 —
                             <code
-                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                >div[data-ui="layout-shell"] &gt; header + aside[data-layout-sidebar] +
                                 main</code
                             >
                         </li>
                         <li>
-                            Data-view shell — <code>section[data-data-view]</code>,
+                            Data-view shell — <code>section[data-ui="data-view"]</code>,
                             <code>form[data-data-toolbar]</code>, <code>[data-data-content]</code>
                         </li>
                         <li>
-                            Input group — <code>div[data-input-group]</code> with
+                            Input group — <code>div[data-ui="input-group"]</code> with
                             <code>[data-icon]</code>
                         </li>
                         <li>
                             Table — <code>table[data-sticky-header]</code> inside
                             <code>div[data-table-container]</code>
                         </li>
-                        <li>Badges — <code>span[data-badge][data-tone]</code></li>
-                        <li>Command menu — <code>details[data-menu][data-align="start"]</code></li>
-                        <li>Pagination — <code>nav[data-pagination]</code></li>
+                        <li>Badges — <code>span[data-ui="badge"][data-tone]</code></li>
+                        <li>Command menu — <code>details[data-ui="menu"][data-align="start"]</code></li>
+                        <li>Pagination — <code>nav[data-ui="pagination"]</code></li>
                     </ul>
                 </section>
 
@@ -953,10 +949,10 @@
        RECIPE 4 — Record detail with app shell
        Primitives used:
          · layout shell (variant 6: header + sidebar + main + panel) → README § Layout shell
-         · nav[data-breadcrumbs]                                     → README § Breadcrumb navigation
-         · section[data-tabs]                                        → README § Tabs
-         · span[data-badge]                                          → README § Status badges
-         · details[data-menu]                                        → README § Command menu
+         · nav[data-ui="breadcrumbs"]                                     → README § Breadcrumb navigation
+         · [data-ui="tabs"]                                        → README § Tabs
+         · span[data-ui="badge"]                                          → README § Status badges
+         · details[data-ui="menu"]                                        → README § Command menu
          · aside[data-layout-panel]                                  → README § Layout shell
        ===================================================================== -->
                 <section id="record-detail" class="recipe-section">
@@ -976,7 +972,7 @@
                     </p>
 
                     <div class="recipe-frame">
-                        <div data-layout-shell style="min-block-size: 38rem; position: relative">
+                        <div data-ui="layout-shell" style="min-block-size: 38rem; position: relative">
                             <header data-layout-header>
                                 <a
                                     href="/"
@@ -987,7 +983,7 @@
                                     "
                                     >Acme</a
                                 >
-                                <nav data-navbar aria-label="Primary">
+                                <nav data-ui="navbar" aria-label="Primary">
                                     <ul>
                                         <li><a href="/dashboard">Dashboard</a></li>
                                         <li><a href="/users" aria-current="page">Users</a></li>
@@ -1004,7 +1000,7 @@
                                 </nav>
                             </aside>
                             <main>
-                                <nav data-breadcrumbs aria-label="Page location">
+                                <nav data-ui="breadcrumbs" aria-label="Page location">
                                     <ol>
                                         <li><a href="/dashboard">Home</a></li>
                                         <li><a href="/users">Users</a></li>
@@ -1022,8 +1018,8 @@
                                     "
                                 >
                                     <h1 style="margin: 0">Alex Chen</h1>
-                                    <span data-badge data-tone="success">Active</span>
-                                    <details data-menu>
+                                    <span data-ui="badge" data-tone="success">Active</span>
+                                    <details data-ui="menu">
                                         <summary aria-label="User actions">
                                             <svg class="icon" aria-hidden="true">
                                                 <use href="#icon-lucide-ellipsis-vertical"></use>
@@ -1049,7 +1045,7 @@
                                     alex@acme.com &mdash; Admin &mdash; Member since Jan 2024
                                 </p>
 
-                                <section data-tabs>
+                                <section data-ui="tabs">
                                     <div role="tablist" aria-label="User details">
                                         <button
                                             role="tab"
@@ -1140,7 +1136,7 @@
                                     <dt>Timezone</dt>
                                     <dd>America/New_York</dd>
                                     <dt>2FA</dt>
-                                    <dd><span data-badge data-tone="success">Enabled</span></dd>
+                                    <dd><span data-ui="badge" data-tone="success">Enabled</span></dd>
                                 </dl>
                             </aside>
                         </div>
@@ -1150,14 +1146,14 @@
                         <li>
                             Layout shell variant 6 —
                             <code
-                                >div[data-layout-shell] &gt; header + aside[data-layout-sidebar] +
+                                >div[data-ui="layout-shell"] &gt; header + aside[data-layout-sidebar] +
                                 main + aside[data-layout-panel]</code
                             >
                         </li>
-                        <li>Breadcrumbs — <code>nav[data-breadcrumbs]</code></li>
-                        <li>Badge — <code>span[data-badge][data-tone]</code></li>
-                        <li>Command menu — <code>details[data-menu]</code></li>
-                        <li>Tabs — <code>section[data-tabs]</code></li>
+                        <li>Breadcrumbs — <code>nav[data-ui="breadcrumbs"]</code></li>
+                        <li>Badge — <code>span[data-ui="badge"][data-tone]</code></li>
+                        <li>Command menu — <code>details[data-ui="menu"]</code></li>
+                        <li>Tabs — <code>[data-ui="tabs"]</code></li>
                     </ul>
                 </section>
 
@@ -1167,9 +1163,9 @@
        RECIPE 5 — Notification center usage
        Primitives used:
          · layout shell (variant 5: header + sidebar + main) → README § Layout shell
-         · aside[data-notification-center]                   → README § Notification center
-         · aside[data-toast-region]                          → README § Toast notifications
-         · [data-region-state="empty"]                       → README § Region states
+         · aside[data-ui="notification-center"]                   → README § Notification center
+         · aside[data-ui="toast-region"]                          → README § Toast notifications
+         · [data-ui="region-state" data-state="empty"]                       → README § Region states
        ===================================================================== -->
                 <section id="notification-center" class="recipe-section">
                     <h2>Recipe 5 — Notification center</h2>
@@ -1201,7 +1197,7 @@
                             Notification center — filled state
                         </h3>
                         <aside
-                            data-notification-center
+                            data-ui="notification-center"
                             aria-label="Notifications (filled)"
                             style="max-inline-size: 22rem"
                         >
@@ -1259,14 +1255,14 @@
                             Notification center — empty state
                         </h3>
                         <aside
-                            data-notification-center
+                            data-ui="notification-center"
                             aria-label="Notifications (empty)"
                             style="max-inline-size: 22rem"
                         >
                             <header>
                                 <h2>Notifications</h2>
                             </header>
-                            <section data-region-state="empty">
+                            <section data-ui="region-state" data-state="empty">
                                 <h3>No notifications</h3>
                                 <p>You&rsquo;re all caught up.</p>
                             </section>
@@ -1287,7 +1283,7 @@
                             (rendered inline for recipe display only).
                         </p>
                         <aside
-                            data-toast-region
+                            data-ui="toast-region"
                             aria-label="Toast notifications"
                             style="
                                 position: static;
@@ -1328,7 +1324,7 @@
                     <ul class="contracts-list">
                         <li>
                             Notification center —
-                            <code>aside[data-notification-center][aria-label]</code>
+                            <code>aside[data-ui="notification-center"][aria-label]</code>
                         </li>
                         <li>
                             Notification items — <code>li[data-unread="true"]</code>,
@@ -1336,11 +1332,11 @@
                         </li>
                         <li>
                             Empty state composition —
-                            <code>aside[data-region-state="empty"]</code> inside the notification
+                            <code>aside[data-ui="region-state" data-state="empty"]</code> inside the notification
                             center
                         </li>
                         <li>
-                            Toast region — <code>aside[data-toast-region]</code> with
+                            Toast region — <code>aside[data-ui="toast-region"]</code> with
                             <code>li &gt; div[role="status"]</code> and
                             <code>li &gt; div[role="alert"]</code>
                         </li>
@@ -1349,7 +1345,7 @@
                 </section>
             </main>
         </div>
-        <!-- /data-layout-shell -->
+        <!-- /data-ui="layout-shell" -->
         <script>
             (function () {
                 function getEffectiveTheme() {

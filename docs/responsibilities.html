@@ -108,7 +108,7 @@
                 </symbol>
             </defs>
         </svg>
-        <div data-layout-shell>
+        <div data-ui="layout-shell">
             <header data-layout-header>
                 <a href="index.html" style="text-decoration: none; flex-shrink: 0"
                     ><img
@@ -132,7 +132,7 @@
                         );
                     "
                 ></button>
-                <nav id="primary-navbar" data-navbar aria-label="Primary">
+                <nav id="primary-navbar" data-ui="navbar" aria-label="Primary">
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="showcase.html">Showcase</a></li>
@@ -199,7 +199,7 @@
 
                     <!-- ── Layout shell ───────────────────────────────────────────────── -->
                     <section id="layout-shell">
-                        <h2>Layout shell (<code>div[data-layout-shell]</code>)</h2>
+                        <h2>Layout shell (<code>div[data-ui="layout-shell"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -269,7 +269,7 @@
                     <!-- ── Navbar ─────────────────────────────────────────────────────── -->
                     <section id="navbar">
                         <h2>
-                            Navbar (<code>nav[data-navbar]</code> inside
+                            Navbar (<code>nav[data-ui="navbar"]</code> inside
                             <code>header[data-layout-header]</code>)
                         </h2>
                         <table class="resp-table">
@@ -340,7 +340,7 @@
 
                     <!-- ── Tabs ───────────────────────────────────────────────────────── -->
                     <section id="tabs">
-                        <h2>Tabs (<code>section[data-tabs]</code>)</h2>
+                        <h2>Tabs (<code>[data-ui="tabs"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -415,7 +415,7 @@
 
                     <!-- ── Command menu ───────────────────────────────────────────────── -->
                     <section id="command-menu">
-                        <h2>Command menu (<code>details[data-menu]</code>)</h2>
+                        <h2>Command menu (<code>details[data-ui="menu"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -480,7 +480,7 @@
                     <!-- ── Form validation ────────────────────────────────────────────── -->
                     <section id="form-validation">
                         <h2>
-                            Form validation summary (<code>form[data-form-errors]</code> +
+                            Form validation summary (<code>form[data-ui="form-errors"]</code> +
                             <code>[data-form-summary]</code>)
                         </h2>
                         <table class="resp-table">
@@ -498,7 +498,7 @@
                                         link list)
                                     </td>
                                     <td class="tick">
-                                        ✅ Styled when <code>data-form-errors</code> is on
+                                        ✅ Styled when <code>data-ui="form-errors"</code> is on
                                         <code>&lt;form&gt;</code>
                                     </td>
                                     <td class="dash">—</td>
@@ -541,7 +541,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Clearing <code>data-form-errors</code> on success</td>
+                                    <td>Clearing <code>data-ui="form-errors"</code> on success</td>
                                     <td class="dash">—</td>
                                     <td>
                                         Remove the attribute and clear the summary when errors
@@ -559,7 +559,7 @@
 
                     <!-- ── Toasts ─────────────────────────────────────────────────────── -->
                     <section id="toasts">
-                        <h2>Toast notifications (<code>aside[data-toast-region]</code>)</h2>
+                        <h2>Toast notifications (<code>aside[data-ui="toast-region"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -637,7 +637,7 @@
 
                     <!-- ── Notification center ────────────────────────────────────────── -->
                     <section id="notification-center">
-                        <h2>Notification center (<code>aside[data-notification-center]</code>)</h2>
+                        <h2>Notification center (<code>aside[data-ui="notification-center"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -723,7 +723,7 @@
 
                     <!-- ── Pagination ─────────────────────────────────────────────────── -->
                     <section id="pagination">
-                        <h2>Pagination (<code>nav[data-pagination]</code>)</h2>
+                        <h2>Pagination (<code>nav[data-ui="pagination"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -783,7 +783,7 @@
 
                     <!-- ── Breadcrumbs ────────────────────────────────────────────────── -->
                     <section id="breadcrumbs">
-                        <h2>Breadcrumbs (<code>nav[data-breadcrumbs]</code>)</h2>
+                        <h2>Breadcrumbs (<code>nav[data-ui="breadcrumbs"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -877,8 +877,8 @@
                     <!-- ── Field composition ──────────────────────────────────────────── -->
                     <section id="field">
                         <h2>
-                            Field composition (<code>[data-field]</code>,
-                            <code>[data-field-row]</code>)
+                            Field composition (<code>[data-ui="field"]</code>,
+                            <code>[data-ui="field-row"]</code>)
                         </h2>
                         <table class="resp-table">
                             <thead>
@@ -929,7 +929,7 @@
 
                     <!-- ── Input group ────────────────────────────────────────────────── -->
                     <section id="input-group">
-                        <h2>Input group (<code>div[data-input-group]</code>)</h2>
+                        <h2>Input group (<code>[data-ui="input-group"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -982,7 +982,7 @@
 
                     <!-- ── Cards ──────────────────────────────────────────────────────── -->
                     <section id="cards">
-                        <h2>Cards (<code>article[data-card]</code>)</h2>
+                        <h2>Cards (<code>[data-ui="card"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -1000,7 +1000,7 @@
                                 <tr>
                                     <td>Media slot layout and aspect ratio</td>
                                     <td class="tick">
-                                        ✅ Owned via <code>figure[data-card-media]</code>
+                                        ✅ Owned via a direct semantic <code>figure</code>
                                     </td>
                                     <td class="dash">—</td>
                                 </tr>
@@ -1034,7 +1034,7 @@
 
                     <!-- ── Data-view shell ────────────────────────────────────────────── -->
                     <section id="data-view">
-                        <h2>Data-view shell (<code>section[data-data-view]</code>)</h2>
+                        <h2>Data-view shell (<code>section[data-ui="data-view"]</code>)</h2>
                         <table class="resp-table">
                             <thead>
                                 <tr>
@@ -1067,7 +1067,7 @@
                                     <td class="dash">—</td>
                                     <td>
                                         Application code computes and renders
-                                        <code>nav[data-pagination]</code>
+                                        <code>nav[data-ui="pagination"]</code>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1112,7 +1112,7 @@
                 </p>
             </footer>
         </div>
-        <!-- /data-layout-shell -->
+        <!-- /data-ui="layout-shell" -->
 
         <script>
             (function () {
